@@ -1,0 +1,205 @@
+<resources>
+    <string name="app_name">SeguroTurbo</string>
+    <string name="splash_slogan">Sécurité • Performance • Benchmark</string>
+
+    <!-- Navigation -->
+    <string name="nav_seguranca">Sécurité</string>
+    <string name="nav_game_turbo">Game Turbo</string>
+    <string name="nav_benchmark">Benchmark</string>
+
+    <!-- Sécurité -->
+    <string name="sec_title">Sécurité de l\'appareil</string>
+    <string name="sec_subtitle">Système de protection avancée</string>
+    <string name="sec_scan_button">Analyser maintenant</string>
+    <string name="sec_clean_button">Nettoyer les déchets</string>
+    <string name="sec_status_scanning">Analyse du système…</string>
+    <string name="sec_status_ready">Prêt à analyser</string>
+    <string name="sec_status_secure">Appareil sécurisé</string>
+    <string name="sec_status_alerts">%1$d alerte(s) détectée(s)</string>
+    <string name="sec_alerts_title">Alertes de sécurité</string>
+    <string name="sec_clean_title">Nettoyage des fichiers</string>
+    <string name="sec_clean_progress">Nettoyage… %1$d%%</string>
+    <string name="sec_no_threats">Aucun problème détecté. Système protégé.</string>
+    <string name="sec_score_title">Score de sécurité</string>
+    <string name="sec_score_value">%1$d/100</string>
+    <string name="sec_fix">Corriger</string>
+    <string name="sec_fix_clean">Nettoyer</string>
+    <string name="sec_share">Partager le rapport</string>
+
+    <!-- Game Turbo -->
+    <string name="gt_title">Game Turbo</string>
+    <string name="gt_game_mode">Mode Jeu</string>
+    <string name="gt_game_mode_on">Mode Jeu ACTIVÉ</string>
+    <string name="gt_game_mode_off">Mode Jeu désactivé</string>
+    <string name="gt_mode_desc">Ressources du système priorisées pour les jeux</string>
+    <string name="gt_optimize">Optimiser les jeux</string>
+    <string name="gt_optimizing">Optimisation… %1$d%%</string>
+    <string name="gt_optimized">OPTIMISÉ</string>
+    <string name="gt_games_title">Jeux installés</string>
+    <string name="gt_no_games">Aucun jeu détecté sur l\'appareil</string>
+    <string name="gt_battery_title">Optimisation de la batterie</string>
+    <string name="gt_battery_ok">Exempt de l\'optimisation de la batterie</string>
+    <string name="gt_battery_warn">Optimisation de la batterie active</string>
+    <string name="gt_battery_desc">Sans la limitation du système, les jeux sont plus performants.</string>
+    <string name="gt_battery_btn">Ajuster</string>
+    <string name="gt_dnd_title">Ne pas déranger automatique</string>
+    <string name="gt_dnd_desc">Coupe les notifications pendant que le Mode Jeu est actif</string>
+    <string name="gt_dnd_need_access">Accordez l\'accès à Ne pas déranger dans les réglages</string>
+
+    <!-- Profils de performance -->
+    <string name="gt_perfil_titulo">Profil de performance</string>
+    <string name="gt_perfil_economia">Économie</string>
+    <string name="gt_perfil_equilibrado">Équilibré</string>
+    <string name="gt_perfil_turbo">Turbo</string>
+    <string name="gt_perfil_economia_desc">Moins d\'interférence de l\'app : Ne pas déranger reste désactivé et le système gère les performances.</string>
+    <string name="gt_perfil_equilibrado_desc">Par défaut — équilibre entre performance et consommation de batterie.</string>
+    <string name="gt_perfil_turbo_desc">Performance maximale : active automatiquement Ne pas déranger avec le Mode Jeu.</string>
+
+    <!-- Moniteur thermique -->
+    <string name="gt_termico_titulo">Moniteur thermique</string>
+    <string name="gt_termico_valor">%1$.1f °C</string>
+    <string name="gt_termico_normal">Normal</string>
+    <string name="gt_termico_morno">Tiède</string>
+    <string name="gt_termico_aquecido">Chaud</string>
+    <string name="gt_termico_indisponivel">Indisponible</string>
+    <string name="gt_termico_desc">Température de la batterie. Au-dessus de 42 °C, les performances peuvent baisser.</string>
+
+    <!-- Benchmark -->
+    <string name="bm_title">Benchmark de performance</string>
+    <string name="bm_start">Lancer le test</string>
+    <string name="bm_testing">Test en cours…</string>
+    <string name="bm_testing_progress">Test… %1$d%%</string>
+    <string name="bm_total_score">SCORE TOTAL</string>
+    <string name="bm_results">Résultats détaillés</string>
+    <string name="bm_cpu">CPU</string>
+    <string name="bm_gpu">GPU</string>
+    <string name="bm_mem">MEM (RAM)</string>
+    <string name="bm_ux">UX (Stockage)</string>
+    <string name="bm_device_info">Informations sur l\'appareil</string>
+    <string name="bm_loading">Chargement…</string>
+    <string name="bm_model">Modèle</string>
+    <string name="bm_chipset">Chipset</string>
+    <string name="bm_cores">Cœurs de CPU</string>
+    <string name="bm_ram">Mémoire RAM</string>
+    <string name="bm_ram_value">%1$d MB (%2$d MB libres)</string>
+    <string name="bm_storage">Stockage</string>
+    <string name="bm_storage_value">%1$.1f Go libres sur %2$.1f Go</string>
+    <string name="bm_system">Système</string>
+    <string name="bm_hw_title">Mesures du matériel</string>
+    <string name="bm_gpu_fps">GPU (OpenGL)</string>
+    <string name="bm_gpu_fps_value">%1$d IPS</string>
+    <string name="bm_storage_speed">Stockage</string>
+    <string name="bm_storage_speed_value">%1$.0f Mo/s</string>
+    <string name="bm_share">Partager le résultat</string>
+    <string name="bm_history_chart">Évolution du score</string>
+    <string name="bm_compare_title">Comparaison</string>
+    <string name="bm_compare_avg">Moyenne de l\'appareil</string>
+    <string name="bm_compare_best">Meilleur résultat</string>
+    <string name="bm_compare_rank">Votre score</string>
+    <string name="bm_compare_rank_value">%1$d sur %2$d tests</string>
+    <string name="bm_compare_points">%1$d points</string>
+
+    <!-- Réglages -->
+    <string name="cfg_title">Réglages</string>
+    <string name="cfg_dark">Thème</string>
+    <string name="cfg_dark_desc">Suit le système ou fixe le thème néon clair/sombre</string>
+    <string name="cfg_tema_sistema">Système</string>
+    <string name="cfg_tema_claro">Clair</string>
+    <string name="cfg_tema_escuro">Sombre</string>
+    <string name="cfg_font">Taille de la police</string>
+    <string name="cfg_font_desc">Ajuste la taille de tous les textes</string>
+    <string name="cfg_font_small">Petite</string>
+    <string name="cfg_font_normal">Normale</string>
+    <string name="cfg_font_large">Grande</string>
+    <string name="cfg_lembrete">Rappel de vérification</string>
+    <string name="cfg_lembrete_desc">Notifie tous les 7 jours pour analyser l\'appareil</string>
+    <string name="cfg_upd_auto">Rechercher les mises à jour automatiquement</string>
+    <string name="cfg_upd_auto_desc">Une fois par jour, vérifie en arrière-plan s\'il existe une nouvelle version</string>
+    <string name="cfg_backup">Sauvegarde et restauration</string>
+    <string name="cfg_backup_desc">Enregistre ou restaure vos réglages et l\'historique dans un fichier</string>
+    <string name="cfg_backup_exportar">Enregistrer</string>
+    <string name="cfg_backup_importar">Restaurer</string>
+    <string name="backup_ok">Sauvegarde enregistrée</string>
+    <string name="backup_restaurado">Sauvegarde restaurée</string>
+    <string name="backup_erro">Impossible d\'utiliser ce fichier</string>
+    <string name="notif_canal_atualizacao">Mises à jour</string>
+    <string name="notif_canal_atualizacao_desc">Avis de nouvelles versions de SeguroTurbo</string>
+
+    <!-- Notification / Widget -->
+    <string name="notif_titulo">Il est temps de vérifier l\'appareil</string>
+    <string name="notif_texto">Ouvrez SeguroTurbo et lancez une nouvelle analyse de sécurité.</string>
+    <string name="widget_acao">Toucher pour ouvrir</string>
+    <string name="widget_sem_dados">Aucune donnée</string>
+
+    <!-- Composants / Historique -->
+    <string name="hist_title">Historique</string>
+    <string name="hist_empty">Aucun enregistrement pour l\'instant</string>
+    <string name="hist_clear">Effacer</string>
+    <string name="hist_csv">CSV</string>
+    <string name="hist_export">Historique SeguroTurbo (CSV)</string>
+
+    <!-- Partager -->
+    <string name="share_image">Image</string>
+    <string name="share_pdf">PDF</string>
+
+    <!-- Détails de l\'alerte -->
+    <string name="sec_detail_what">Ce que cela signifie</string>
+    <string name="sec_detail_fix">Comment corriger</string>
+    <string name="sec_detail_close">Fermer</string>
+    <string name="sec_threat_open">Toucher pour voir les détails</string>
+    <string name="sec_detail_seguranca">Activez un verrouillage d\'écran (code, mot de passe ou biométrie) dans Réglages › Sécurité.</string>
+    <string name="sec_detail_fontes">Désactivez « Installer des apps inconnues » pour les apps qui n\'en ont pas besoin, dans Réglages › Apps › Accès spécial.</string>
+    <string name="sec_detail_acesso">Vérifiez les services d\'accessibilité actifs et désactivez ceux que vous ne reconnaissez pas, dans Réglages › Accessibilité.</string>
+    <string name="sec_detail_dev">Désactivez les Options pour les développeurs quand vous ne les utilisez pas, dans Réglages › Système.</string>
+    <string name="sec_detail_cache">Touchez « Nettoyer » pour libérer les fichiers temporaires accumulés.</string>
+    <string name="sec_detail_bateria">Exemptez SeguroTurbo de l\'optimisation de la batterie pour recevoir le rappel à l\'heure.</string>
+    <string name="sec_detail_atualizacao">Cherchez les mises à jour du système dans Réglages › À propos du téléphone › Mise à jour logicielle.</string>
+    <string name="sec_detail_nenhuma">Gardez le système à jour et vérifiez régulièrement les autorisations de vos apps.</string>
+    <string name="sec_detail_rede">Ouvrez les réglages Wi‑Fi, oubliez le réseau ouvert et préférez les réseaux avec mot de passe. Sur les réseaux publics, utilisez un VPN et activez le DNS privé.</string>
+    <string name="sec_detail_tela">Ouvrez les réglages d\'écran et réduisez le délai de verrouillage automatique (l\'idéal est 30 secondes ou moins).</string>
+
+    <!-- Contenu des rapports -->
+    <string name="rep_sec_title">Sécurité de l\'appareil</string>
+    <string name="rep_sec_subtitle">Rapport généré par SeguroTurbo</string>
+    <string name="rep_bm_title">Benchmark de performance</string>
+    <string name="rep_bm_subtitle">Score total</string>
+    <string name="rep_alertas">Alertes détectées</string>
+    <string name="rep_situacao">Situation</string>
+    <string name="rep_tudo_certo">Tout est bon</string>
+    <string name="rep_aparelho">Appareil</string>
+    <string name="rep_chipset">Chipset</string>
+    <string name="rep_total">Total</string>
+    <string name="rep_armazenamento">Stockage</string>
+
+    <!-- Général -->
+    <string name="btn_ok">OK</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_subtitulo">Sécurité • Performance • Benchmark</string>
+    <string name="onboarding_seg">Analyse réelle de l\'appareil (root, verrouillage d\'écran, correctif de sécurité, Play Protect) avec un score de 0 à 100 et un bouton pour corriger.</string>
+    <string name="onboarding_gt">Mode Jeu, liste des jeux installés, optimisation de la batterie et Ne pas déranger automatique.</string>
+    <string name="onboarding_bm">Mesure le CPU, le GPU (OpenGL) et le stockage, avec un historique en graphique et un partage en image ou PDF.</string>
+    <string name="onboarding_perm_titulo">Autorisations (uniquement quand vous les utilisez)</string>
+    <string name="onboarding_perm_desc">Notifications pour le rappel de vérification, installation d\'apps lors de la mise à jour et Ne pas déranger en Mode Jeu. Rien n\'est utilisé sans votre action.</string>
+    <string name="onboarding_comecar">Commencer</string>
+
+    <!-- Mises à jour -->
+    <string name="upd_titulo">Nouvelle version disponible</string>
+    <string name="upd_disponivel">Version %1$s disponible</string>
+    <string name="upd_versao_atual">Version installée : %1$s</string>
+    <string name="upd_baixar">Télécharger</string>
+    <string name="upd_depois">Plus tard</string>
+    <string name="upd_verificar">Mises à jour</string>
+    <string name="upd_verificar_btn">Vérifier</string>
+    <string name="upd_verificando">Vérification…</string>
+    <string name="upd_atualizado">Vous avez déjà la version la plus récente</string>
+    <string name="upd_instalar">Télécharger et installer</string>
+    <string name="upd_abrir_navegador">Ouvrir dans le navigateur</string>
+    <string name="upd_baixando">Téléchargement… %1$d%%</string>
+    <string name="upd_baixando_indeterminado">Téléchargement…</string>
+    <string name="upd_permitir">Autorisez SeguroTurbo à installer des apps pour continuer</string>
+    <string name="upd_erro_download">Impossible de télécharger la mise à jour</string>
+    <string name="upd_erro_assinatura">Le fichier téléchargé est invalide (signature différente)</string>
+    <string name="cfg_assinatura">Signature de l\'app (SHA‑256)</string>
+    <string name="cfg_assinatura_desc">Vérifie si l\'APK est authentique (même certificat sur toutes les versions)</string>
+</resources>

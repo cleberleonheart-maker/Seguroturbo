@@ -22,10 +22,10 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [ ] **Teste de rede**: velocidade de download e latência.
 - [ ] **Teste de tela/touch**: resposta ao toque e multitouch.
 - [ ] **Compartilhar o gráfico** de evolução das pontuações.
-
 ## Produto / UX
 
-- [ ] **Mais idiomas**: francês (o espanhol entrou na v1.15).
+- [ ] **Widgets adicionais**: mais atalhos na tela inicial.
+
 ## Qualidade / engenharia
 
 - [ ] **Testes instrumentados** (Compose UI) para os fluxos principais.
@@ -52,3 +52,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Cobertura de testes no CI** com JaCoCo (v1.15).
 - [x] **Backup/restauração** das preferências e do histórico (v1.16).
 - [x] **Checagem periódica de atualização** em segundo plano (WorkManager) (v1.16).
+- [x] **Espanhol e francês** nas strings — app em pt/en/es/fr (v1.15–v1.17).
