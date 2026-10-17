@@ -2,6 +2,8 @@ package com.seguraturbo.app.ui.gameturbo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seguraturbo.app.R
 import com.seguraturbo.app.model.AcaoConfig
 import com.seguraturbo.app.model.Game
+import com.seguraturbo.app.model.PerfilDesempenho
 import com.seguraturbo.app.ui.components.BarraProgressoNeon
 import com.seguraturbo.app.ui.components.BotaoNeon
 import com.seguraturbo.app.ui.components.CartaoFuturista
@@ -90,6 +93,8 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
                 }
             }
         }
+
+        item { CartaoPerfil(vm) }
 
         item { CartaoNaoPerturbe(vm) }
 
@@ -156,6 +161,65 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         }
     }
 }
+
+@Composable
+private fun CartaoPerfil(vm: GameTurboViewModel) {
+    CartaoFuturista {
+        TituloSecao(stringResource(R.string.gt_perfil_titulo))
+        Spacer(Modifier.height(12.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            PerfilOpcao(PerfilDesempenho.ECONOMIA, vm.perfil, vm::selecionarPerfil, Modifier.weight(1f))
+            PerfilOpcao(PerfilDesempenho.EQUILIBRADO, vm.perfil, vm::selecionarPerfil, Modifier.weight(1f))
+            PerfilOpcao(PerfilDesempenho.TURBO, vm.perfil, vm::selecionarPerfil, Modifier.weight(1f))
+        }
+        Spacer(Modifier.height(12.dp))
+        Text(descricaoPerfil(vm.perfil), color = Cores.TextoCinza, fontSize = 12.sp)
+    }
+}
+
+@Composable
+private fun PerfilOpcao(
+    perfil: PerfilDesempenho,
+    atual: PerfilDesempenho,
+    onSelecionar: (PerfilDesempenho) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val selecionado = perfil == atual
+    val cor = if (selecionado) Cores.Ciano else Cores.TextoCinza
+    Box(
+        modifier = modifier
+            .height(40.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (selecionado) Cores.Ciano.copy(alpha = 0.14f) else Cores.Fundo)
+            .border(
+                width = 1.dp,
+                color = cor.copy(alpha = if (selecionado) 0.9f else 0.4f),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clickable { onSelecionar(perfil) },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(rotuloPerfil(perfil), color = cor, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+private fun rotuloPerfil(p: PerfilDesempenho): String = stringResource(
+    when (p) {
+        PerfilDesempenho.ECONOMIA -> R.string.gt_perfil_economia
+        PerfilDesempenho.EQUILIBRADO -> R.string.gt_perfil_equilibrado
+        PerfilDesempenho.TURBO -> R.string.gt_perfil_turbo
+    }
+)
+
+@Composable
+private fun descricaoPerfil(p: PerfilDesempenho): String = stringResource(
+    when (p) {
+        PerfilDesempenho.ECONOMIA -> R.string.gt_perfil_economia_desc
+        PerfilDesempenho.EQUILIBRADO -> R.string.gt_perfil_equilibrado_desc
+        PerfilDesempenho.TURBO -> R.string.gt_perfil_turbo_desc
+    }
+)
 
 @Composable
 private fun CartaoNaoPerturbe(vm: GameTurboViewModel) {

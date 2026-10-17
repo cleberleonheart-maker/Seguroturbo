@@ -46,6 +46,15 @@
     <string name="gt_dnd_desc">Silences notifications while Game Mode is on</string>
     <string name="gt_dnd_need_access">Grant Do Not Disturb access in settings</string>
 
+    <!-- Performance profiles -->
+    <string name="gt_perfil_titulo">Performance profile</string>
+    <string name="gt_perfil_economia">Battery saver</string>
+    <string name="gt_perfil_equilibrado">Balanced</string>
+    <string name="gt_perfil_turbo">Turbo</string>
+    <string name="gt_perfil_economia_desc">Lower app interference: Do Not Disturb stays off and the system manages performance.</string>
+    <string name="gt_perfil_equilibrado_desc">Default — balance between performance and battery use.</string>
+    <string name="gt_perfil_turbo_desc">Maximum performance: turns on Do Not Disturb automatically with Game Mode.</string>
+
     <!-- Benchmark -->
     <string name="bm_title">Performance Benchmark</string>
     <string name="bm_start">Start Test</string>
@@ -115,6 +124,7 @@
     <string name="sec_detail_bateria">Exempt SeguroTurbo from battery optimization to receive the reminder on time.</string>
     <string name="sec_detail_atualizacao">Look for system updates in Settings › About phone › Software update.</string>
     <string name="sec_detail_nenhuma">Keep the system updated and review your apps\' permissions regularly.</string>
+    <string name="sec_detail_rede">Open Wi‑Fi settings, forget the open network and prefer password-protected ones. On public networks, use a VPN and enable Private DNS.</string>
 
     <!-- Conteúdo dos relatórios -->
     <string name="rep_sec_title">Device security</string>

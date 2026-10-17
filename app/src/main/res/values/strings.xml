@@ -46,6 +46,15 @@
     <string name="gt_dnd_desc">Silencia as notificações enquanto o Modo Jogo está ativo</string>
     <string name="gt_dnd_need_access">Conceda o acesso ao Não Perturbe nas configurações</string>
 
+    <!-- Perfis de desempenho -->
+    <string name="gt_perfil_titulo">Perfil de desempenho</string>
+    <string name="gt_perfil_economia">Economia</string>
+    <string name="gt_perfil_equilibrado">Equilibrado</string>
+    <string name="gt_perfil_turbo">Turbo</string>
+    <string name="gt_perfil_economia_desc">Menos interferência do app: o Não Perturbe fica desligado e o sistema gerencia o desempenho.</string>
+    <string name="gt_perfil_equilibrado_desc">Padrão — equilíbrio entre desempenho e consumo de bateria.</string>
+    <string name="gt_perfil_turbo_desc">Desempenho máximo: liga o Não Perturbe automaticamente junto com o Modo Jogo.</string>
+
     <!-- Benchmark -->
     <string name="bm_title">Benchmark de Desempenho</string>
     <string name="bm_start">Iniciar Teste</string>
@@ -115,6 +124,7 @@
     <string name="sec_detail_bateria">Isole o SeguroTurbo da otimização de bateria para receber o lembrete no horário.</string>
     <string name="sec_detail_atualizacao">Procure atualizações do sistema em Configurações › Sobre o telefone › Atualização de software.</string>
     <string name="sec_detail_nenhuma">Mantenha o sistema atualizado e revise as permissões dos seus apps periodicamente.</string>
+    <string name="sec_detail_rede">Abra as configurações de Wi‑Fi, esqueça a rede aberta e prefira redes com senha. Em redes públicas, use uma VPN e ative o DNS privado.</string>
 
     <!-- Conteúdo dos relatórios -->
     <string name="rep_sec_title">Segurança do dispositivo</string>

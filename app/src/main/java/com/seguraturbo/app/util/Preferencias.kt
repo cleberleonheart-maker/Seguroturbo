@@ -1,6 +1,7 @@
 package com.seguraturbo.app.util
 
 import android.content.Context
+import com.seguraturbo.app.model.PerfilDesempenho
 
 /**
  * Preferências simples do app (tema, tamanho da fonte e jogos otimizados),
@@ -17,6 +18,7 @@ object Preferencias {
     private const val K_VERSAO_IGNORADA = "versao_ignorada"
     private const val K_DND_AUTO = "dnd_auto"
     private const val K_FILTRO_ANTERIOR = "filtro_anterior"
+    private const val K_PERFIL_DESEMPENHO = "perfil_desempenho"
     private const val K_ONBOARDING_VISTO = "onboarding_visto"
 
     // ---- Tema ----
@@ -84,6 +86,17 @@ object Preferencias {
 
     fun definirFiltroAnterior(ctx: Context, filtro: Int) {
         prefs(ctx).edit().putInt(K_FILTRO_ANTERIOR, filtro).apply()
+    }
+
+    // ---- Perfil de desempenho do Game Turbo ----
+    fun perfilDesempenho(ctx: Context): PerfilDesempenho = runCatching {
+        PerfilDesempenho.valueOf(
+            prefs(ctx).getString(K_PERFIL_DESEMPENHO, null) ?: PerfilDesempenho.EQUILIBRADO.name
+        )
+    }.getOrDefault(PerfilDesempenho.EQUILIBRADO)
+
+    fun definirPerfilDesempenho(ctx: Context, perfil: PerfilDesempenho) {
+        prefs(ctx).edit().putString(K_PERFIL_DESEMPENHO, perfil.name).apply()
     }
 
     // ---- Onboarding (tela de boas-vindas exibida só no primeiro uso) ----

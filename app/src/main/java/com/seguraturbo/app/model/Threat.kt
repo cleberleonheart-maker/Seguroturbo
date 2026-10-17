@@ -26,5 +26,6 @@ enum class AcaoConfig {
     SEGURANCA,
     CACHE,
     BATERIA,
-    ATUALIZACAO_SISTEMA
+    ATUALIZACAO_SISTEMA,
+    REDES
 }

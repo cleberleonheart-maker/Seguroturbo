@@ -25,6 +25,7 @@ import java.io.File
  *  - opções de desenvolvedor
  *  - patch de segurança do sistema (data das últimas correções)
  *  - Google Play Protect / verificação de apps
+ *  - Rede: Wi‑Fi aberto, VPN e DNS privado
  *  - apps com permissões sensíveis
  *  - cache/temporários acumulados
  *
@@ -117,6 +118,9 @@ object SecurityScanner {
 
         delay(350)
         verificarPlayProtect(ctx)?.let { encontradas += it }
+
+        delay(350)
+        verificarRede(ctx)?.let { encontradas += it }
 
         delay(350)
         val appsSensiveis = withContext(Dispatchers.IO) { appsComPermissoesSensiveis(ctx) }
@@ -320,5 +324,32 @@ object SecurityScanner {
         true
     } catch (e: Exception) {
         false
+    }
+
+    /**
+     * Avalia a rede atual: alerta quando o Wi‑Fi conectado não tem senha e
+     * informa (na descrição) se há VPN ativa e DNS privado — recursos que
+     * protegem o tráfego em redes públicas.
+     */
+    private fun verificarRede(ctx: Context): Threat? {
+        val rede = try {
+            RedeSeguranca.analisar(ctx)
+        } catch (e: Exception) {
+            return null
+        }
+        if (!rede.wifiAberta) return null
+
+        val comVpn = rede.vpnAtiva
+        val dns = if (rede.dnsPrivadoAtivo) "DNS privado ativo" else "DNS privado desativado"
+        val vpn = if (comVpn) "VPN ativa" else "VPN inativa"
+        return Threat(
+            nome = if (comVpn) "Rede Wi‑Fi aberta (com VPN)" else "Rede Wi‑Fi aberta",
+            tipo = "REDE",
+            risco = if (comVpn) "BAIXO" else "MÉDIO",
+            descricao = "Conectado a uma rede sem senha; o tráfego pode ser interceptado. " +
+                "$vpn · $dns. Evite acessar contas e bancos enquanto estiver nessa rede.",
+            acao = AcaoConfig.REDES,
+            peso = if (comVpn) 5 else 12
+        )
     }
 }

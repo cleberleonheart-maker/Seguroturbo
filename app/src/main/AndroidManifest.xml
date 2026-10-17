@@ -15,6 +15,11 @@
          O usuário ainda precisa conceder o acesso de política de notificação. -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
+    <!-- Consulta o estado da rede (Wi‑Fi, VPN e DNS privado) para o scan.
+         São permissões normais, sem pedido ao usuário. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <!-- Permite ler os apps com atividade de launcher para acharmos os jogos. -->
     <queries>
         <intent>

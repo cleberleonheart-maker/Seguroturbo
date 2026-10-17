@@ -28,6 +28,14 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.11
+
+- **Checagem de rede na Segurança**: o scan agora detecta quando o **Wi‑Fi conectado
+  não tem senha** e informa se há **VPN ativa** e **DNS privado** — recursos que
+  protegem o tráfego em redes públicas. O alerta abre as configurações de Wi‑Fi.
+- **Perfis de desempenho no Game Turbo**: escolha entre **Economia**, **Equilibrado**
+  e **Turbo**. O perfil Turbo liga o **Não Perturbe automático** junto com o Modo Jogo.
+
 ## Novidades da versão 1.10
 
 - **Tela de boas-vindas (onboarding)**: no primeiro uso o app apresenta os três

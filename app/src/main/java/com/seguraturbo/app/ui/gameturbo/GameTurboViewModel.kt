@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.seguraturbo.app.model.Game
 import com.seguraturbo.app.model.HistoricoEntrada
+import com.seguraturbo.app.model.PerfilDesempenho
 import com.seguraturbo.app.util.HistoricoStore
 import com.seguraturbo.app.util.JogosDetector
 import com.seguraturbo.app.util.ModoConcentracao
@@ -38,8 +39,11 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     var dndAuto by mutableStateOf(false)
     /** true = o app tem acesso para alterar o modo Não Perturbe. */
     var dndAcesso by mutableStateOf(false)
+    /** Perfil de desempenho atual do Game Turbo. */
+    var perfil by mutableStateOf(PerfilDesempenho.EQUILIBRADO)
 
     init {
+        perfil = Preferencias.perfilDesempenho(getApplication<Application>())
         carregarHistorico()
         // A detecção lê ícones de todos os apps: faz fora da thread principal.
         viewModelScope.launch {
@@ -84,6 +88,32 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
             mensagem = null
             ModoConcentracao.pedirAcesso(app)
         }
+    }
+
+    /** Recebe o perfil escolhido e aplica os ajustes correspondentes. */
+    fun selecionarPerfil(novo: PerfilDesempenho) {
+        if (novo == perfil) return
+        val app = getApplication<Application>()
+        perfil = novo
+        Preferencias.definirPerfilDesempenho(app, novo)
+        // O perfil Turbo liga o Não Perturbe automático; os demais desligam.
+        definirDndAuto(novo == PerfilDesempenho.TURBO)
+        HistoricoStore.adicionar(
+            app,
+            HistoricoEntrada(
+                tipo = HistoricoEntrada.Tipo.TURBO,
+                data = System.currentTimeMillis(),
+                titulo = "Perfil de desempenho",
+                detalhe = nomePerfil(novo)
+            )
+        )
+        carregarHistorico()
+    }
+
+    private fun nomePerfil(p: PerfilDesempenho): String = when (p) {
+        PerfilDesempenho.ECONOMIA -> "Economia"
+        PerfilDesempenho.EQUILIBRADO -> "Equilibrado"
+        PerfilDesempenho.TURBO -> "Turbo"
     }
 
     /** Recebe o valor real do Switch (evita dessincronizar em toques rápidos). */

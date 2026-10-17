@@ -5,7 +5,7 @@ está implementado, exceto o que estiver marcado como **feito**.
 
 ## Segurança (mais checagens reais)
 
-- [ ] **Wi-Fi**: detectar rede aberta (sem senha), VPN ativa e DNS configurado.
+- [x] **Wi-Fi**: detectar rede aberta (sem senha), VPN ativa e DNS configurado.
 - [ ] **Auditoria de permissões**: tela detalhada de quais apps têm acesso a
       câmera, microfone, SMS, localização etc. (hoje há só um resumo).
 - [ ] **Root/SELinux/bootloader**: ampliar a detecção de root (estado do SELinux,
@@ -17,7 +17,7 @@ está implementado, exceto o que estiver marcado como **feito**.
 
 ## Desempenho / Game Turbo
 
-- [ ] **Perfis de desempenho**: Economia / Equilibrado / Turbo.
+- [x] **Perfis de desempenho**: Economia / Equilibrado / Turbo.
 - [ ] **Monitor térmico**: temperatura da bateria/térmico com alerta de aquecimento.
 - [ ] **Limpeza de RAM**: encerrar apps escolhidos pelo usuário em segundo plano.
 - [ ] **Bloqueio de tela (screen pinning)** ao iniciar um jogo.
@@ -53,3 +53,5 @@ está implementado, exceto o que estiver marcado como **feito**.
 - [x] **Auto-update no app** (v1.9): baixa e instala a nova versão sem abrir o navegador.
 - [x] **Onboarding** no primeiro uso (v1.10).
 - [x] **Testes unitários** de versões/patch e **lint no CI** (v1.10).
+- [x] **Checagem de Wi‑Fi/VPN/DNS** na Segurança (v1.11).
+- [x] **Perfis de desempenho** Economia/Equilibrado/Turbo (v1.11).
