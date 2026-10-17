@@ -2,6 +2,7 @@ package com.seguraturbo.app.util
 
 import android.content.Context
 import com.seguraturbo.app.model.PerfilDesempenho
+import com.seguraturbo.app.model.TemaModo
 
 /**
  * Preferências simples do app (tema, tamanho da fonte e jogos otimizados),
@@ -11,6 +12,7 @@ object Preferencias {
 
     private const val PREFS = "seguraturbo_prefs"
     private const val K_TEMA_ESCURO = "tema_escuro"
+    private const val K_TEMA_MODO = "tema_modo"
     private const val K_ESCALA_FONTE = "escala_fonte"
     private const val K_JOGOS_OTIMIZADOS = "jogos_otimizados"
     private const val K_LEMBRETE = "lembrete_ativo"
@@ -27,6 +29,22 @@ object Preferencias {
 
     fun definirTemaEscuro(ctx: Context, escuro: Boolean) {
         prefs(ctx).edit().putBoolean(K_TEMA_ESCURO, escuro).apply()
+    }
+
+    /**
+     * Modo de tema. Se ainda não foi escolhido, deriva do antigo booleano
+     * claro/escuro para preservar a preferência de quem já usava o app.
+     */
+    fun temaModo(ctx: Context): TemaModo {
+        val salvo = prefs(ctx).getString(K_TEMA_MODO, null)
+        if (salvo != null) {
+            runCatching { TemaModo.valueOf(salvo) }.getOrNull()?.let { return it }
+        }
+        return if (temaEscuro(ctx)) TemaModo.ESCURO else TemaModo.CLARO
+    }
+
+    fun definirTemaModo(ctx: Context, modo: TemaModo) {
+        prefs(ctx).edit().putString(K_TEMA_MODO, modo.name).apply()
     }
 
     // ---- Tamanho da fonte (1f = padrão) ----

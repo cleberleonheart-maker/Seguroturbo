@@ -92,11 +92,19 @@
     <string name="bm_storage_speed_value">%1$.0f MB/s</string>
     <string name="bm_share">Compartilhar resultado</string>
     <string name="bm_history_chart">Evolução da pontuação</string>
+    <string name="bm_compare_title">Comparação</string>
+    <string name="bm_compare_avg">Média do aparelho</string>
+    <string name="bm_compare_best">Melhor resultado</string>
+    <string name="bm_compare_rank">Sua nota agora</string>
+    <string name="bm_compare_rank_value">%1$dº de %2$d testes</string>
+    <string name="bm_compare_points">%1$d pontos</string>
 
     <!-- Configurações -->
     <string name="cfg_title">Configurações</string>
-    <string name="cfg_dark">Tema escuro</string>
-    <string name="cfg_dark_desc">Alterna entre o tema neon escuro e o claro</string>
+    <string name="cfg_dark">Tema</string>
+    <string name="cfg_dark_desc">Segue o sistema ou fixa o tema neon claro/escuro</string>
+    <string name="cfg_tema_sistema">Sistema</string>    <string name="cfg_tema_claro">Claro</string>
+    <string name="cfg_tema_escuro">Escuro</string>
     <string name="cfg_font">Tamanho da fonte</string>
     <string name="cfg_font_desc">Ajusta o tamanho de todos os textos</string>
     <string name="cfg_font_small">Pequena</string>

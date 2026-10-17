@@ -22,11 +22,9 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [ ] **Teste de rede**: velocidade de download e latência.
 - [ ] **Teste de tela/touch**: resposta ao toque e multitouch.
 - [ ] **Compartilhar o gráfico** de evolução das pontuações.
-- [ ] **Comparação**: média/ranking local com os resultados anteriores.
 
 ## Produto / UX
 
-- [ ] **Tema automático** (seguir o sistema) além do claro/escuro manual.
 - [ ] **Checagem periódica de atualização** em segundo plano (WorkManager).
 - [ ] **Mais idiomas** (espanhol, francês).
 - [ ] **Backup/restauração** das preferências e do histórico.
@@ -52,3 +50,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Exportar histórico em CSV** (v1.12).
 - [x] **Sideload**: apps instalados fora da loja (v1.13).
 - [x] **Assinatura do app** SHA‑256 nas configurações (v1.13).
+- [x] **Tema automático** (seguir o sistema) (v1.14).
+- [x] **Comparação local** de benchmark: média e ranking (v1.14).

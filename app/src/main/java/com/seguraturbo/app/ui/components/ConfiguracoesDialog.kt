@@ -3,6 +3,7 @@ package com.seguraturbo.app.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
 import com.seguraturbo.app.R
+import com.seguraturbo.app.model.TemaModo
 import com.seguraturbo.app.ui.theme.Aparencia
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.Agendador
@@ -57,10 +59,11 @@ fun ConfiguracoesDialog(
     onFechar: () -> Unit
 ) {
     val ctx = LocalContext.current
-    var escuro by remember { mutableStateOf(Cores.escuro) }
+    var modo by remember { mutableStateOf(Aparencia.temaModo) }
     var escala by remember { mutableStateOf(Aparencia.escalaFonte) }
     var lembrete by remember { mutableStateOf(Preferencias.lembreteAtivo(ctx)) }
     val assinatura by remember { mutableStateOf(AssinaturaApp.sha256(ctx)) }
+    val sistemaEscuro = isSystemInDarkTheme()
 
     val pedirNotificacao = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -70,6 +73,12 @@ fun ConfiguracoesDialog(
         R.string.cfg_font_small to 0.85f,
         R.string.cfg_font_normal to 1f,
         R.string.cfg_font_large to 1.3f
+    )
+
+    val opcoesTema = listOf(
+        TemaModo.SISTEMA to R.string.cfg_tema_sistema,
+        TemaModo.CLARO to R.string.cfg_tema_claro,
+        TemaModo.ESCURO to R.string.cfg_tema_escuro
     )
 
     AlertDialog(
@@ -86,31 +95,58 @@ fun ConfiguracoesDialog(
         },
         text = {
             Column {
+                Text(
+                    stringResource(R.string.cfg_dark),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.cfg_dark_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+                Spacer(Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            stringResource(R.string.cfg_dark),
-                            color = Cores.TextoClaro,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            stringResource(R.string.cfg_dark_desc),
-                            color = Cores.TextoCinza,
-                            fontSize = 12.sp
-                        )
-                    }
-                    Switch(
-                        checked = escuro,
-                        onCheckedChange = { novo ->
-                            escuro = novo
-                            Cores.definirTema(novo)
-                            Preferencias.definirTemaEscuro(ctx, novo)
+                    opcoesTema.forEach { (opcao, rotuloRes) ->
+                        val selecionado = modo == opcao
+                        val cor = if (selecionado) Cores.Ciano else Cores.TextoCinza
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(cor.copy(alpha = if (selecionado) 0.16f else 0.05f))
+                                .border(
+                                    width = 1.dp,
+                                    color = cor.copy(alpha = if (selecionado) 0.9f else 0.3f),
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .clickable {
+                                    modo = opcao
+                                    Aparencia.temaModo = opcao
+                                    Preferencias.definirTemaModo(ctx, opcao)
+                                    Cores.definirTema(
+                                        when (opcao) {
+                                            TemaModo.SISTEMA -> sistemaEscuro
+                                            TemaModo.CLARO -> false
+                                            TemaModo.ESCURO -> true
+                                        }
+                                    )
+                                }
+                                .padding(vertical = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                stringResource(rotuloRes),
+                                color = cor,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
-                    )
+                    }
                 }
 
                 Spacer(Modifier.height(18.dp))

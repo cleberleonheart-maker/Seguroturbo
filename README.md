@@ -28,6 +28,13 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.14
+
+- **Tema automático**: agora dá para **seguir o sistema** (claro/escuro mudam
+  sozinhos) ou fixar Claro/Escuro, em Configurações.
+- **Comparação local no Benchmark**: mostra a **média** do aparelho, o **melhor
+  resultado** e em que **posição** a sua nota atual ficou.
+
 ## Novidades da versão 1.13
 
 - **Apps fora da loja** na Segurança: avisa quando há apps instalados sem vir

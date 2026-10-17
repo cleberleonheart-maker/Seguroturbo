@@ -36,6 +36,7 @@ import com.seguraturbo.app.ui.components.LinhaInfo
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.DeviceInfo
+import com.seguraturbo.app.util.Comparacao
 import com.seguraturbo.app.util.RelatorioImagem
 import com.seguraturbo.app.util.RelatorioPdf
 import java.util.Locale
@@ -141,6 +142,38 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
                         cor = Cores.Ciano,
                         modifier = Modifier.weight(1f).height(48.dp)
                     )
+                }
+            }
+        }
+
+        if (vm.pontuacoes.isNotEmpty()) {
+            val comparacao = Comparacao.resumo(vm.pontuacoes, vm.resultado?.total)
+            item {
+                CartaoFuturista {
+                    TituloSecao(stringResource(R.string.bm_compare_title))
+                    Spacer(Modifier.height(10.dp))
+                    comparacao.media?.let {
+                        LinhaInfo(
+                            stringResource(R.string.bm_compare_avg),
+                            stringResource(R.string.bm_compare_points, it)
+                        )
+                    }
+                    comparacao.melhor?.let {
+                        LinhaInfo(
+                            stringResource(R.string.bm_compare_best),
+                            stringResource(R.string.bm_compare_points, it)
+                        )
+                    }
+                    comparacao.posicao?.let {
+                        LinhaInfo(
+                            stringResource(R.string.bm_compare_rank),
+                            stringResource(
+                                R.string.bm_compare_rank_value,
+                                it,
+                                comparacao.total
+                            )
+                        )
+                    }
                 }
             }
         }

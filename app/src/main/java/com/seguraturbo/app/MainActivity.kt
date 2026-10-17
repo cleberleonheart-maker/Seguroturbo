@@ -1,6 +1,7 @@
 package com.seguraturbo.app
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.seguraturbo.app.model.TemaModo
 import com.seguraturbo.app.ui.MainScreen
 import com.seguraturbo.app.ui.onboarding.OnboardingScreen
 import com.seguraturbo.app.ui.splash.SplashScreen
@@ -34,7 +36,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Aplica o tema e o tamanho da fonte salvos antes de desenhar.
-        Cores.definirTema(Preferencias.temaEscuro(this))
+        val modoTema = Preferencias.temaModo(this)
+        Aparencia.temaModo = modoTema
+        val sistemaEscuro =
+            (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+                android.content.res.Configuration.UI_MODE_NIGHT_YES
+        Cores.definirTema(
+            when (modoTema) {
+                TemaModo.SISTEMA -> sistemaEscuro
+                TemaModo.CLARO -> false
+                TemaModo.ESCURO -> true
+            }
+        )
         Aparencia.escalaFonte = Preferencias.escalaFonte(this)
 
         // Prepara o canal de notificação e mantém o lembrete coerente com a preferência.

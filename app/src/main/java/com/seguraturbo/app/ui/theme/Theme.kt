@@ -4,8 +4,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,10 +16,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.sp
+import com.seguraturbo.app.model.TemaModo
 
-/** Estado global de aparência (tamanho da fonte). O tema é lido de [Cores]. */
+/** Estado global de aparência (tamanho da fonte e modo de tema). */
 object Aparencia {
     var escalaFonte by mutableStateOf(1f)
+    var temaModo by mutableStateOf(TemaModo.ESCURO)
 }
 
 private fun esquemaEscuro() = darkColorScheme(
@@ -74,6 +78,17 @@ fun SeguroTurboTheme(content: @Composable () -> Unit) {
         density = densidadeAtual.density,
         fontScale = densidadeAtual.fontScale * Aparencia.escalaFonte
     )
+    val sistemaEscuro = isSystemInDarkTheme()
+    val modo = Aparencia.temaModo
+    LaunchedEffect(modo, sistemaEscuro) {
+        Cores.definirTema(
+            when (modo) {
+                TemaModo.SISTEMA -> sistemaEscuro
+                TemaModo.CLARO -> false
+                TemaModo.ESCURO -> true
+            }
+        )
+    }
     CompositionLocalProvider(LocalDensity provides densidadeEscalada) {
         MaterialTheme(
             colorScheme = if (Cores.escuro) esquemaEscuro() else esquemaClaro(),
