@@ -40,6 +40,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.seguraturbo.app.R
+import com.seguraturbo.app.model.Changelog
 import com.seguraturbo.app.model.TemaModo
 import com.seguraturbo.app.ui.theme.Aparencia
 import com.seguraturbo.app.ui.theme.Cores
@@ -68,6 +69,7 @@ fun ConfiguracoesDialog(
     var escala by remember { mutableStateOf(Aparencia.escalaFonte) }
     var lembrete by remember { mutableStateOf(Preferencias.lembreteAtivo(ctx)) }
     var atualizacaoAuto by remember { mutableStateOf(Preferencias.atualizacaoAutomatica(ctx)) }
+    var mostrarNovidades by remember { mutableStateOf(false) }
     val assinatura by remember { mutableStateOf(AssinaturaApp.sha256(ctx)) }
     val sistemaEscuro = isSystemInDarkTheme()
 
@@ -429,6 +431,33 @@ fun ConfiguracoesDialog(
                         )
                     }
                 }
+
+                Spacer(Modifier.height(18.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.cfg_novidades),
+                            color = Cores.TextoClaro,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            stringResource(R.string.cfg_novidades_desc),
+                            color = Cores.TextoCinza,
+                            fontSize = 12.sp
+                        )
+                    }
+                    TextButton(onClick = { mostrarNovidades = true }) {
+                        Text(
+                            stringResource(R.string.nov_title),
+                            color = Cores.Ciano,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         },
         confirmButton = {
@@ -437,4 +466,8 @@ fun ConfiguracoesDialog(
             }
         }
     )
+
+    if (mostrarNovidades) {
+        NovidadesDialog(versoes = Changelog.versoes, onFechar = { mostrarNovidades = false })
+    }
 }

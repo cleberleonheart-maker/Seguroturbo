@@ -53,3 +53,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Backup/restauração** das preferências e do histórico (v1.16).
 - [x] **Checagem periódica de atualização** em segundo plano (WorkManager) (v1.16).
 - [x] **Espanhol e francês** nas strings — app em pt/en/es/fr (v1.15–v1.17).
+- [x] **Changelog / Novidades** (novo + correções) mostrado ao atualizar (v1.18).
+- [x] **Auto-update mais robusto**: segue redirecionamentos e abre o navegador como reserva (v1.18).

@@ -200,6 +200,33 @@
     <string name="upd_permitir">Autorisez SeguroTurbo à installer des apps pour continuer</string>
     <string name="upd_erro_download">Impossible de télécharger la mise à jour</string>
     <string name="upd_erro_assinatura">Le fichier téléchargé est invalide (signature différente)</string>
+    <string name="upd_erro_instalar">Impossible d\'ouvrir l\'installateur. Téléchargez-la depuis la page de la version.</string>
     <string name="cfg_assinatura">Signature de l\'app (SHA‑256)</string>
     <string name="cfg_assinatura_desc">Vérifie si l\'APK est authentique (même certificat sur toutes les versions)</string>
+
+    <!-- Changelog / Nouveautés -->
+    <string name="nov_title">Nouveautés</string>
+    <string name="nov_titulo">Nouveautés de la version %1$s</string>
+    <string name="nov_novidades">Nouveau</string>
+    <string name="nov_correcoes">Corrections</string>
+    <string name="nov_fechar">Compris</string>
+    <string name="cfg_novidades">Nouveautés de la version</string>
+    <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
+
+    <string-array name="changelog_1_18_novidades">
+        <item>Écran des nouveautés : une liste de ce qui a été ajouté et corrigé dans chaque version.</item>
+    </string-array>
+    <string-array name="changelog_1_18_correcoes">
+        <item>Correction de l\'erreur « impossible de télécharger la mise à jour » sur certains appareils.</item>
+        <item>Si le téléchargement direct échoue, l\'app ouvre la page de la version dans le navigateur.</item>
+    </string-array>
+    <string-array name="changelog_1_17_novidades">
+        <item>Prise en charge du français (l\'app parle désormais portugais, anglais, espagnol et français).</item>
+    </string-array>
+    <string-array name="changelog_1_17_correcoes" />
+    <string-array name="changelog_1_16_novidades">
+        <item>Sauvegarde et restauration des réglages et de l\'historique dans un fichier.</item>
+        <item>Vérification automatique des nouvelles versions une fois par jour, en arrière-plan.</item>
+    </string-array>
+    <string-array name="changelog_1_16_correcoes" />
 </resources>

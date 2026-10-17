@@ -28,6 +28,13 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.18
+
+- **Changelog / Novidades**: tela que lista o que foi **adicionado** e **corrigido** em
+  cada versão, exibida automaticamente após uma atualização e disponível nas configurações.
+- **Correção do auto-update**: o download do APK agora segue manualmente os
+  redirecionamentos do GitHub e, se ainda falhar, o app abre a página da release no navegador.
+
 ## Novidades da versão 1.17
 
 - **Francês**: o app agora fala **português, inglês, espanhol e francês**.

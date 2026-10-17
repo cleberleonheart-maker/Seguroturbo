@@ -200,6 +200,33 @@
     <string name="upd_permitir">Autoriza a SeguroTurbo a instalar apps para continuar</string>
     <string name="upd_erro_download">No se pudo descargar la actualización</string>
     <string name="upd_erro_assinatura">El archivo descargado no es válido (firma distinta)</string>
+    <string name="upd_erro_instalar">No se pudo abrir el instalador. Descárgala desde la página de la versión.</string>
     <string name="cfg_assinatura">Firma de la app (SHA‑256)</string>
     <string name="cfg_assinatura_desc">Comprueba si el APK es auténtico (mismo certificado en todas las versiones)</string>
+
+    <!-- Changelog / Novedades -->
+    <string name="nov_title">Novedades</string>
+    <string name="nov_titulo">Novedades de la versión %1$s</string>
+    <string name="nov_novidades">Nuevo</string>
+    <string name="nov_correcoes">Correcciones</string>
+    <string name="nov_fechar">Entendido</string>
+    <string name="cfg_novidades">Novedades de la versión</string>
+    <string name="cfg_novidades_desc">Mira lo que cambió en las versiones recientes</string>
+
+    <string-array name="changelog_1_18_novidades">
+        <item>Pantalla de novedades: una lista de lo que se añadió y corrigió en cada versión.</item>
+    </string-array>
+    <string-array name="changelog_1_18_correcoes">
+        <item>Corregido el error «no se pudo descargar la actualización» en algunos dispositivos.</item>
+        <item>Si la descarga directa falla, la app abre la página de la versión en el navegador.</item>
+    </string-array>
+    <string-array name="changelog_1_17_novidades">
+        <item>Soporte del idioma francés (la app ahora habla portugués, inglés, español y francés).</item>
+    </string-array>
+    <string-array name="changelog_1_17_correcoes" />
+    <string-array name="changelog_1_16_novidades">
+        <item>Copia de seguridad y restauración de las preferencias y el historial en un archivo.</item>
+        <item>Comprobación automática de nuevas versiones, una vez al día, en segundo plano.</item>
+    </string-array>
+    <string-array name="changelog_1_16_correcoes" />
 </resources>

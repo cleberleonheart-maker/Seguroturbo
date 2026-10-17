@@ -200,6 +200,33 @@
     <string name="upd_permitir">Allow SeguroTurbo to install apps to continue</string>
     <string name="upd_erro_download">Couldn\'t download the update</string>
     <string name="upd_erro_assinatura">The downloaded file is invalid (signature mismatch)</string>
+    <string name="upd_erro_instalar">Could not open the installer. Download it from the release page.</string>
     <string name="cfg_assinatura">App signature (SHA‑256)</string>
     <string name="cfg_assinatura_desc">Checks whether the APK is authentic (same certificate across versions)</string>
+
+    <!-- Changelog / What's new -->
+    <string name="nov_title">What\'s new</string>
+    <string name="nov_titulo">What\'s new in version %1$s</string>
+    <string name="nov_novidades">New</string>
+    <string name="nov_correcoes">Fixes</string>
+    <string name="nov_fechar">Got it</string>
+    <string name="cfg_novidades">What\'s new</string>
+    <string name="cfg_novidades_desc">See what changed in the recent versions</string>
+
+    <string-array name="changelog_1_18_novidades">
+        <item>A What\'s new screen: a list of what was added and fixed in each version.</item>
+    </string-array>
+    <string-array name="changelog_1_18_correcoes">
+        <item>Fixed the “couldn\'t download the update” error on some devices.</item>
+        <item>If the direct download fails, the app opens the release page in the browser.</item>
+    </string-array>
+    <string-array name="changelog_1_17_novidades">
+        <item>French language support (the app now speaks Portuguese, English, Spanish and French).</item>
+    </string-array>
+    <string-array name="changelog_1_17_correcoes" />
+    <string-array name="changelog_1_16_novidades">
+        <item>Backup and restore of your preferences and history to a file.</item>
+        <item>Automatic check for new versions once a day in the background.</item>
+    </string-array>
+    <string-array name="changelog_1_16_correcoes" />
 </resources>

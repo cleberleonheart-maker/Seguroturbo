@@ -11,6 +11,7 @@ import androidx.core.content.FileProvider
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -32,6 +33,9 @@ object Atualizador {
 
     private const val API =
         "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/releases/latest"
+
+    /** Quantos redirecionamentos seguimos ao baixar o APK (o GitHub usa 302 para o CDN). */
+    private const val MAX_REDIRECIONAMENTOS = 6
 
     /** Versão instalada do app (versionName). */
     @Suppress("DEPRECATION")
@@ -113,6 +117,37 @@ object Atualizador {
     }
 
     /**
+     * Abre uma conexão HTTP seguindo manualmente os redirecionamentos (3xx).
+     * O GitHub responde o link da release com um 302 para um CDN assinado e a
+     * implementação padrão do Android não segue esse salto entre hosts, o que
+     * fazia o download falhar. Aqui seguimos até [MAX_REDIRECIONAMENTOS] saltos.
+     */
+    private fun conectar(url: String): HttpURLConnection {
+        var atual = url
+        var saltos = 0
+        while (true) {
+            val conn = (URL(atual).openConnection() as HttpURLConnection).apply {
+                connectTimeout = 15000
+                readTimeout = 30000
+                instanceFollowRedirects = false
+                setRequestProperty("User-Agent", "SeguroTurbo-Android")
+            }
+            val codigo = conn.responseCode
+            if (codigo in 300..399) {
+                val destino = conn.getHeaderField("Location")
+                conn.disconnect()
+                if (destino.isNullOrBlank() || saltos >= MAX_REDIRECIONAMENTOS) {
+                    throw IOException("Redirecionamento inválido ou em excesso ($codigo)")
+                }
+                atual = URL(URL(atual), destino).toString()
+                saltos++
+                continue
+            }
+            return conn
+        }
+    }
+
+    /**
      * Baixa o APK da atualização para o cache do app, informando o progresso (0–100;
      * -1 quando o tamanho total é desconhecido). Devolve o arquivo ou null em caso de erro.
      * Deve ser chamado fora da thread principal.
@@ -125,12 +160,7 @@ object Atualizador {
         if (url.isBlank()) return null
         var conn: HttpURLConnection? = null
         return try {
-            conn = (URL(url).openConnection() as HttpURLConnection).apply {
-                connectTimeout = 15000
-                readTimeout = 30000
-                instanceFollowRedirects = true
-                setRequestProperty("User-Agent", "SeguroTurbo-Android")
-            }
+            conn = conectar(url)
             if (conn.responseCode !in 200..299) return null
             val total = conn.contentLengthLong.takeIf { it > 0 }
             val dir = File(ctx.cacheDir, "atualizacoes").apply { mkdirs() }

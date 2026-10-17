@@ -23,6 +23,7 @@ object Preferencias {
     private const val K_PERFIL_DESEMPENHO = "perfil_desempenho"
     private const val K_ONBOARDING_VISTO = "onboarding_visto"
     private const val K_ATUALIZACAO_AUTO = "atualizacao_automatica"
+    private const val K_ULTIMA_VERSAO_VISTA = "ultima_versao_vista"
 
     // ---- Tema ----
     fun temaEscuro(ctx: Context): Boolean =
@@ -132,6 +133,14 @@ object Preferencias {
 
     fun definirAtualizacaoAutomatica(ctx: Context, ativo: Boolean) {
         prefs(ctx).edit().putBoolean(K_ATUALIZACAO_AUTO, ativo).apply()
+    }
+
+    // ---- Última versão cujo changelog já foi mostrado (novidades "ao atualizar") ----
+    fun ultimaVersaoVista(ctx: Context): String =
+        prefs(ctx).getString(K_ULTIMA_VERSAO_VISTA, "") ?: ""
+
+    fun definirUltimaVersaoVista(ctx: Context, versao: String) {
+        prefs(ctx).edit().putString(K_ULTIMA_VERSAO_VISTA, versao).apply()
     }
 
     // ---- Backup / restauração ----

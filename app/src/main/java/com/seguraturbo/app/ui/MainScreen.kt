@@ -49,9 +49,12 @@ import com.seguraturbo.app.R
 import com.seguraturbo.app.ui.benchmark.BenchmarkScreen
 import com.seguraturbo.app.ui.components.AtualizacaoDialog
 import com.seguraturbo.app.ui.components.ConfiguracoesDialog
+import com.seguraturbo.app.ui.components.NovidadesDialog
 import com.seguraturbo.app.ui.gameturbo.GameTurboScreen
 import com.seguraturbo.app.ui.seguranca.SegurancaScreen
 import com.seguraturbo.app.ui.theme.Cores
+import com.seguraturbo.app.model.Changelog
+import com.seguraturbo.app.model.VersaoChangelog
 import com.seguraturbo.app.util.Atualizacao
 import com.seguraturbo.app.util.Atualizador
 import com.seguraturbo.app.util.Preferencias
@@ -77,6 +80,7 @@ fun MainScreen(abaInicial: Int = 0) {
     var checando by remember { mutableStateOf(false) }
     var baixando by remember { mutableStateOf(false) }
     var progresso by remember { mutableStateOf(0) }
+    var novidades by remember { mutableStateOf<VersaoChangelog?>(null) }
     val versaoAtual = remember { Atualizador.versaoInstalada(ctx) }
 
     fun verificarAtualizacao(manual: Boolean) {
@@ -101,6 +105,18 @@ fun MainScreen(abaInicial: Int = 0) {
 
     // Checagem silenciosa de novas versões ao abrir o app.
     LaunchedEffect(Unit) { verificarAtualizacao(manual = false) }
+
+    // Mostra o changelog uma vez quando o app é aberto numa versão nova.
+    LaunchedEffect(Unit) {
+        if (Preferencias.ultimaVersaoVista(ctx) != versaoAtual) {
+            novidades = Changelog.para(versaoAtual)
+            Preferencias.definirUltimaVersaoVista(ctx, versaoAtual)
+        }
+    }
+
+    novidades?.let { versao ->
+        NovidadesDialog(versoes = listOf(versao), onFechar = { novidades = null })
+    }
 
     if (mostrarConfig) {
         ConfiguracoesDialog(
@@ -136,14 +152,23 @@ fun MainScreen(abaInicial: Int = 0) {
                             }
                             baixando = false
                             when {
-                                arquivo == null ->
+                                arquivo == null -> {
                                     Toast.makeText(ctx, R.string.upd_erro_download, Toast.LENGTH_LONG).show()
-                                !Atualizador.assinaturaConfere(ctx, arquivo) ->
+                                    Atualizador.abrir(ctx, nova.pagina)
+                                    atualizacao = null
+                                }
+                                !Atualizador.assinaturaConfere(ctx, arquivo) -> {
                                     Toast.makeText(ctx, R.string.upd_erro_assinatura, Toast.LENGTH_LONG).show()
+                                    Atualizador.abrir(ctx, nova.pagina)
+                                    atualizacao = null
+                                }
                                 Atualizador.instalarApk(ctx, arquivo) ->
                                     atualizacao = null
-                                else ->
-                                    Toast.makeText(ctx, R.string.upd_erro_download, Toast.LENGTH_LONG).show()
+                                else -> {
+                                    Toast.makeText(ctx, R.string.upd_erro_instalar, Toast.LENGTH_LONG).show()
+                                    Atualizador.abrir(ctx, nova.pagina)
+                                    atualizacao = null
+                                }
                             }
                         }
                     }

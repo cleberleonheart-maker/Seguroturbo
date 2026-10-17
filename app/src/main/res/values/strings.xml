@@ -200,6 +200,33 @@
     <string name="upd_permitir">Autorize o SeguroTurbo a instalar apps para continuar</string>
     <string name="upd_erro_download">Não foi possível baixar a atualização</string>
     <string name="upd_erro_assinatura">O arquivo baixado não é válido (assinatura diferente)</string>
+    <string name="upd_erro_instalar">Não foi possível abrir o instalador. Baixe pela página da release.</string>
     <string name="cfg_assinatura">Assinatura do app (SHA‑256)</string>
     <string name="cfg_assinatura_desc">Confere se o APK é autêntico (mesmo certificado em todas as versões)</string>
+
+    <!-- Changelog / Novidades -->
+    <string name="nov_title">Novidades</string>
+    <string name="nov_titulo">Novidades da versão %1$s</string>
+    <string name="nov_novidades">Novo</string>
+    <string name="nov_correcoes">Correções</string>
+    <string name="nov_fechar">Entendi</string>
+    <string name="cfg_novidades">Novidades da versão</string>
+    <string name="cfg_novidades_desc">Veja o que mudou nas versões recentes</string>
+
+    <string-array name="changelog_1_18_novidades">
+        <item>Tela de novidades: uma lista com o que foi adicionado e corrigido em cada versão.</item>
+    </string-array>
+    <string-array name="changelog_1_18_correcoes">
+        <item>Corrigido o erro “não foi possível baixar a atualização” em alguns aparelhos.</item>
+        <item>Se o download direto falhar, o app abre a página da release no navegador.</item>
+    </string-array>
+    <string-array name="changelog_1_17_novidades">
+        <item>Suporte ao idioma francês (agora o app fala português, inglês, espanhol e francês).</item>
+    </string-array>
+    <string-array name="changelog_1_17_correcoes" />
+    <string-array name="changelog_1_16_novidades">
+        <item>Backup e restauração das preferências e do histórico em um arquivo.</item>
+        <item>Checagem automática de novas versões, uma vez por dia, em segundo plano.</item>
+    </string-array>
+    <string-array name="changelog_1_16_correcoes" />
 </resources>
