@@ -14,6 +14,7 @@ object Preferencias {
     private const val K_JOGOS_OTIMIZADOS = "jogos_otimizados"
     private const val K_LEMBRETE = "lembrete_ativo"
     private const val K_ULTIMO_SCORE = "ultimo_score"
+    private const val K_VERSAO_IGNORADA = "versao_ignorada"
 
     // ---- Tema ----
     fun temaEscuro(ctx: Context): Boolean =
@@ -56,6 +57,14 @@ object Preferencias {
 
     fun definirUltimoScore(ctx: Context, score: Int) {
         prefs(ctx).edit().putInt(K_ULTIMO_SCORE, score).apply()
+    }
+
+    // ---- Atualizações (versão que o usuário escolheu ignorar) ----
+    fun versaoIgnorada(ctx: Context): String =
+        prefs(ctx).getString(K_VERSAO_IGNORADA, "") ?: ""
+
+    fun definirVersaoIgnorada(ctx: Context, versao: String) {
+        prefs(ctx).edit().putString(K_VERSAO_IGNORADA, versao).apply()
     }
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

@@ -4,6 +4,9 @@
     <!-- Notificações do lembrete de verificação (opcional; o usuário pode negar). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Consulta o GitHub para verificar se há uma versão mais nova do app. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Permite ler os apps com atividade de launcher para acharmos os jogos. -->
     <queries>
         <intent>

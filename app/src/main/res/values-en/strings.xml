@@ -127,4 +127,15 @@
 
     <!-- Geral -->
     <string name="btn_ok">OK</string>
+
+    <!-- Atualizações -->
+    <string name="upd_titulo">New version available</string>
+    <string name="upd_disponivel">Version %1$s available</string>
+    <string name="upd_versao_atual">Installed version: %1$s</string>
+    <string name="upd_baixar">Download</string>
+    <string name="upd_depois">Later</string>
+    <string name="upd_verificar">Updates</string>
+    <string name="upd_verificar_btn">Check</string>
+    <string name="upd_verificando">Checking…</string>
+    <string name="upd_atualizado">You\'re on the latest version</string>
 </resources>

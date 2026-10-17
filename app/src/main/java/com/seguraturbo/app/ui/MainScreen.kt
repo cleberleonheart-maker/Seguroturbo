@@ -41,12 +41,23 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import com.seguraturbo.app.R
 import com.seguraturbo.app.ui.benchmark.BenchmarkScreen
+import com.seguraturbo.app.ui.components.AtualizacaoDialog
 import com.seguraturbo.app.ui.components.ConfiguracoesDialog
 import com.seguraturbo.app.ui.gameturbo.GameTurboScreen
 import com.seguraturbo.app.ui.seguranca.SegurancaScreen
 import com.seguraturbo.app.ui.theme.Cores
+import com.seguraturbo.app.util.Atualizacao
+import com.seguraturbo.app.util.Atualizador
+import com.seguraturbo.app.util.Preferencias
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 enum class TelaNavegacao(val rotuloRes: Int, val iconeRes: Int) {
     SEGURANCA(R.string.nav_seguranca, R.drawable.ic_security),
@@ -60,13 +71,57 @@ fun MainScreen(abaInicial: Int = 0) {
     var mostrarConfig by rememberSaveable { mutableStateOf(false) }
     val telas = TelaNavegacao.values()
 
+    val ctx = LocalContext.current
+    val escopo = rememberCoroutineScope()
+    var atualizacao by remember { mutableStateOf<Atualizacao?>(null) }
+    var checando by remember { mutableStateOf(false) }
+    val versaoAtual = remember { Atualizador.versaoInstalada(ctx) }
+
+    fun verificarAtualizacao(manual: Boolean) {
+        if (checando) return
+        checando = true
+        escopo.launch {
+            val encontrada = withContext(Dispatchers.IO) { Atualizador.verificar(ctx) }
+            checando = false
+            when {
+                encontrada != null && encontrada.versao != Preferencias.versaoIgnorada(ctx) ->
+                    atualizacao = encontrada
+                manual ->
+                    Toast.makeText(ctx, R.string.upd_atualizado, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     // Atalhos do ícone do app podem trocar a aba depois que a tela já está aberta.
     LaunchedEffect(abaInicial) {
         if (abaInicial in telas.indices) indice = abaInicial
     }
 
+    // Checagem silenciosa de novas versões ao abrir o app.
+    LaunchedEffect(Unit) { verificarAtualizacao(manual = false) }
+
     if (mostrarConfig) {
-        ConfiguracoesDialog(onFechar = { mostrarConfig = false })
+        ConfiguracoesDialog(
+            versaoAtual = versaoAtual,
+            checando = checando,
+            onVerificarAtualizacao = { verificarAtualizacao(manual = true) },
+            onFechar = { mostrarConfig = false }
+        )
+    }
+
+    atualizacao?.let { nova ->
+        AtualizacaoDialog(
+            atualizacao = nova,
+            versaoAtual = versaoAtual,
+            onBaixar = {
+                Atualizador.abrir(ctx, nova.apkUrl.ifBlank { nova.pagina })
+                atualizacao = null
+            },
+            onDepois = {
+                Preferencias.definirVersaoIgnorada(ctx, nova.versao)
+                atualizacao = null
+            }
+        )
     }
 
     Scaffold(

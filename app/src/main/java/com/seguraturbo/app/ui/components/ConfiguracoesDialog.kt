@@ -44,11 +44,17 @@ import com.seguraturbo.app.util.Preferencias
 import kotlin.math.abs
 
 /**
- * Diálogo de configurações rápidas: tema claro/escuro e tamanho da fonte.
+ * Diálogo de configurações rápidas: tema claro/escuro, tamanho da fonte,
+ * lembrete de verificação e checagem manual de atualizações.
  * As mudanças são aplicadas na hora e gravadas nas preferências.
  */
 @Composable
-fun ConfiguracoesDialog(onFechar: () -> Unit) {
+fun ConfiguracoesDialog(
+    versaoAtual: String,
+    checando: Boolean,
+    onVerificarAtualizacao: () -> Unit,
+    onFechar: () -> Unit
+) {
     val ctx = LocalContext.current
     var escuro by remember { mutableStateOf(Cores.escuro) }
     var escala by remember { mutableStateOf(Aparencia.escalaFonte) }
@@ -192,6 +198,39 @@ fun ConfiguracoesDialog(onFechar: () -> Unit) {
                             }
                         }
                     )
+                }
+
+                Spacer(Modifier.height(18.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.upd_verificar),
+                            color = Cores.TextoClaro,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            stringResource(R.string.upd_versao_atual, versaoAtual),
+                            color = Cores.TextoCinza,
+                            fontSize = 12.sp
+                        )
+                    }
+                    TextButton(
+                        onClick = onVerificarAtualizacao,
+                        enabled = !checando
+                    ) {
+                        Text(
+                            stringResource(
+                                if (checando) R.string.upd_verificando
+                                else R.string.upd_verificar_btn
+                            ),
+                            color = if (checando) Cores.TextoCinza else Cores.Ciano,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         },
