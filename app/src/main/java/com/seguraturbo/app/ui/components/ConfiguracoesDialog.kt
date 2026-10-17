@@ -39,6 +39,7 @@ import com.seguraturbo.app.R
 import com.seguraturbo.app.ui.theme.Aparencia
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.Agendador
+import com.seguraturbo.app.util.AssinaturaApp
 import com.seguraturbo.app.util.Notificacoes
 import com.seguraturbo.app.util.Preferencias
 import kotlin.math.abs
@@ -59,6 +60,7 @@ fun ConfiguracoesDialog(
     var escuro by remember { mutableStateOf(Cores.escuro) }
     var escala by remember { mutableStateOf(Aparencia.escalaFonte) }
     var lembrete by remember { mutableStateOf(Preferencias.lembreteAtivo(ctx)) }
+    val assinatura by remember { mutableStateOf(AssinaturaApp.sha256(ctx)) }
 
     val pedirNotificacao = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -231,6 +233,27 @@ fun ConfiguracoesDialog(
                             fontWeight = FontWeight.Bold
                         )
                     }
+                }
+
+                if (assinatura != null) {
+                    Spacer(modifier = Modifier.height(18.dp))
+                    Text(
+                        stringResource(R.string.cfg_assinatura),
+                        color = Cores.TextoClaro,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        stringResource(R.string.cfg_assinatura_desc),
+                        color = Cores.TextoCinza,
+                        fontSize = 12.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        assinatura!!,
+                        color = Cores.Ciano,
+                        fontSize = 10.sp
+                    )
                 }
             }
         },

@@ -9,8 +9,6 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       câmera, microfone, SMS, localização etc. (hoje há só um resumo).
 - [ ] **Root/SELinux/bootloader**: ampliar a detecção de root (estado do SELinux,
       integridade do sistema) e explicar cada caso.
-- [ ] **Sideload**: listar apps instalados de fontes externas à loja oficial.
-- [ ] **Assinatura de apps**: mostrar o hash/certificado do APK (verificador de apps).
 - [ ] **Play Integrity**: checar a integridade do dispositivo (quando integrável).
 
 ## Desempenho / Game Turbo
@@ -52,3 +50,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Monitor térmico** da bateria no Game Turbo (v1.12).
 - [x] **Tempo de bloqueio automático** da tela no scan (v1.12).
 - [x] **Exportar histórico em CSV** (v1.12).
+- [x] **Sideload**: apps instalados fora da loja (v1.13).
+- [x] **Assinatura do app** SHA‑256 nas configurações (v1.13).

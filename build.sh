@@ -15,7 +15,7 @@
 set -uo pipefail
 cd "$(dirname "$0")"
 
-VERSAO="1.12"
+VERSAO="1.13"
 DESTINO="${1:-/mnt/chromeos/removable/UsbStorage/SeguroTurbo-APKs}"
 
 limpar_daemons() {

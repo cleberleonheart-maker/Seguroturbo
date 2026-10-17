@@ -140,6 +140,21 @@ object SecurityScanner {
         }
 
         delay(350)
+        val foraDaLoja = withContext(Dispatchers.IO) { appsForaDaLoja(ctx) }
+        if (foraDaLoja.isNotEmpty()) {
+            encontradas += Threat(
+                nome = "${foraDaLoja.size} app(s) instalados fora da loja",
+                tipo = "APPS",
+                risco = "BAIXO",
+                descricao = "Não vieram da Play Store: " +
+                    foraDaLoja.take(3).joinToString(", ") +
+                    (if (foraDaLoja.size > 3) "…" else "") +
+                    ". Instale apps apenas de fontes em que você confia.",
+                peso = 6
+            )
+        }
+
+        delay(350)
         val cache = withContext(Dispatchers.IO) { StorageCleaner.calcularCacheBytes(ctx) }
         if (cache > 0) {
             encontradas += Threat(
@@ -207,6 +222,42 @@ object SecurityScanner {
             .map { runCatching { it.loadLabel(pm).toString() }.getOrDefault(it.packageName) }
             .sorted()
             .toList()
+    }
+
+    /**
+     * Lista apps visíveis (não de sistema) que não foram instalados pela Play
+     * Store — normalmente vieram de sideload/instalação manual. Ignora o próprio
+     * SeguroTurbo, que é distribuído pelo GitHub.
+     */
+    private fun appsForaDaLoja(ctx: Context): List<String> {
+        val pm = ctx.packageManager
+        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+        val resolvidos = try {
+            pm.queryIntentActivities(intent, 0)
+        } catch (e: Exception) {
+            return emptyList()
+        }
+        return resolvidos.asSequence()
+            .mapNotNull { it.activityInfo?.applicationInfo }
+            .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
+            .distinctBy { it.packageName }
+            .filter { it.packageName != ctx.packageName }
+            .filter { instaladorDe(pm, it.packageName) != "com.android.vending" }
+            .map { runCatching { it.loadLabel(pm).toString() }.getOrDefault(it.packageName) }
+            .sorted()
+            .toList()
+    }
+
+    /** Pacote que instalou o app (Play Store, sideload, etc.) ou null se desconhecido. */
+    private fun instaladorDe(pm: PackageManager, pacote: String): String? = try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            pm.getInstallSourceInfo(pacote).installingPackageName
+        } else {
+            @Suppress("DEPRECATION")
+            pm.getInstallerPackageName(pacote)
+        }
+    } catch (e: Exception) {
+        null
     }
 
     @Suppress("DEPRECATION")

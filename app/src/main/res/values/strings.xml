@@ -180,4 +180,6 @@
     <string name="upd_permitir">Autorize o SeguroTurbo a instalar apps para continuar</string>
     <string name="upd_erro_download">Não foi possível baixar a atualização</string>
     <string name="upd_erro_assinatura">O arquivo baixado não é válido (assinatura diferente)</string>
+    <string name="cfg_assinatura">Assinatura do app (SHA‑256)</string>
+    <string name="cfg_assinatura_desc">Confere se o APK é autêntico (mesmo certificado em todas as versões)</string>
 </resources>

@@ -28,6 +28,13 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.13
+
+- **Apps fora da loja** na Segurança: avisa quando há apps instalados sem vir
+  da Play Store (sideload), listando os nomes.
+- **Assinatura do app (SHA‑256)** nas configurações: mostra o certificado do
+  app para você conferir que o APK é autêntico e não foi adulterado.
+
 ## Novidades da versão 1.12
 
 - **Monitor térmico no Game Turbo**: mostra a **temperatura da bateria** em tempo

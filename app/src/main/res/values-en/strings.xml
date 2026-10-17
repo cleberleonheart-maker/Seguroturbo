@@ -180,4 +180,6 @@
     <string name="upd_permitir">Allow SeguroTurbo to install apps to continue</string>
     <string name="upd_erro_download">Couldn\'t download the update</string>
     <string name="upd_erro_assinatura">The downloaded file is invalid (signature mismatch)</string>
+    <string name="cfg_assinatura">App signature (SHA‑256)</string>
+    <string name="cfg_assinatura_desc">Checks whether the APK is authentic (same certificate across versions)</string>
 </resources>
