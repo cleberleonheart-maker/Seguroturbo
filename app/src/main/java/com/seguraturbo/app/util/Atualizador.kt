@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -150,18 +152,18 @@ object Atualizador {
     /**
      * Baixa o APK da atualização para o cache do app, informando o progresso (0–100;
      * -1 quando o tamanho total é desconhecido). Devolve o arquivo ou null em caso de erro.
-     * Deve ser chamado fora da thread principal.
+     * A rede roda em [Dispatchers.IO], então pode ser chamada da thread principal.
      */
     suspend fun baixarApk(
         ctx: Context,
         url: String,
         onProgress: suspend (Int) -> Unit
-    ): File? {
-        if (url.isBlank()) return null
+    ): File? = withContext(Dispatchers.IO) {
+        if (url.isBlank()) return@withContext null
         var conn: HttpURLConnection? = null
-        return try {
+        try {
             conn = conectar(url)
-            if (conn.responseCode !in 200..299) return null
+            if (conn.responseCode !in 200..299) return@withContext null
             val total = conn.contentLengthLong.takeIf { it > 0 }
             val dir = File(ctx.cacheDir, "atualizacoes").apply { mkdirs() }
             val destino = File(dir, "SeguroTurbo-atualizacao.apk")

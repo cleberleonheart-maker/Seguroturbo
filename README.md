@@ -28,6 +28,17 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.21
+
+- **Correção do auto-update**: o download da atualização agora roda fora da thread
+  principal, corrigindo o erro “não foi possível baixar a atualização” no celular.
+
+## Novidades da versão 1.20
+
+- **Barra flutuante no jogo**: relógio, bateria e RAM com atalhos de captura de tela,
+  gravação, Não Perturbe, Wi‑Fi, brilho e timer por cima do jogo.
+- A barra aparece automaticamente ao abrir um jogo pelo Game Turbo.
+
 ## Novidades da versão 1.19
 
 - **Compartilhar o gráfico**: o gráfico de evolução das pontuações do benchmark agora

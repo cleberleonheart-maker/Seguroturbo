@@ -231,6 +231,10 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_21_novidades" />
+    <string-array name="changelog_1_21_correcoes">
+        <item>Correction de l\'erreur « impossible de télécharger la mise à jour » : le téléchargement s\'exécute désormais hors du fil principal.</item>
+    </string-array>
     <string-array name="changelog_1_20_novidades">
         <item>Barre flottante dans le jeu : horloge, batterie et RAM avec des raccourcis de capture d\'écran, d\'enregistrement, Ne pas déranger, Wi‑Fi, luminosité et minuteur.</item>
         <item>La barre apparaît automatiquement quand vous lancez un jeu depuis Game Turbo.</item>

@@ -231,6 +231,10 @@
     <string name="cfg_novidades">Novidades da versão</string>
     <string name="cfg_novidades_desc">Veja o que mudou nas versões recentes</string>
 
+    <string-array name="changelog_1_21_novidades" />
+    <string-array name="changelog_1_21_correcoes">
+        <item>Corrigido o erro “não foi possível baixar a atualização” — o download agora roda fora da thread principal.</item>
+    </string-array>
     <string-array name="changelog_1_20_novidades">
         <item>Barra flutuante no jogo: relógio, bateria e RAM com atalhos de captura de tela, gravação, Não Perturbe, Wi‑Fi, brilho e timer.</item>
         <item>A barra aparece automaticamente ao abrir um jogo pelo Game Turbo.</item>

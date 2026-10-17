@@ -231,6 +231,10 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_21_novidades" />
+    <string-array name="changelog_1_21_correcoes">
+        <item>Fixed the “couldn\'t download the update” error — the download now runs off the main thread.</item>
+    </string-array>
     <string-array name="changelog_1_20_novidades">
         <item>Floating in-game bar: clock, battery and RAM with shortcuts for screenshot, recording, Do Not Disturb, Wi‑Fi, brightness and timer.</item>
         <item>The bar appears automatically when you open a game from Game Turbo.</item>

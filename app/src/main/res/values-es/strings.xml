@@ -231,6 +231,10 @@
     <string name="cfg_novidades">Novedades de la versión</string>
     <string name="cfg_novidades_desc">Mira lo que cambió en las versiones recientes</string>
 
+    <string-array name="changelog_1_21_novidades" />
+    <string-array name="changelog_1_21_correcoes">
+        <item>Corregido el error «no se pudo descargar la actualización»: la descarga ahora se ejecuta fuera del hilo principal.</item>
+    </string-array>
     <string-array name="changelog_1_20_novidades">
         <item>Barra flotante en el juego: reloj, batería y RAM con accesos de captura de pantalla, grabación, No Molestar, Wi‑Fi, brillo y temporizador.</item>
         <item>La barra aparece automáticamente al abrir un juego desde el Game Turbo.</item>
