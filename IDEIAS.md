@@ -26,13 +26,12 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 ## Produto / UX
 
 - [ ] **Checagem periódica de atualização** em segundo plano (WorkManager).
-- [ ] **Mais idiomas** (espanhol, francês).
 - [ ] **Backup/restauração** das preferências e do histórico.
+- [ ] **Mais idiomas**: francês (o espanhol entrou na v1.15).
 
 ## Qualidade / engenharia
 
 - [ ] **Testes instrumentados** (Compose UI) para os fluxos principais.
-- [ ] **Cobertura** de testes no GitHub Actions (o **lint** já roda).
 - [ ] **Baseline Profiles** por módulo, para abertura ainda mais rápida.
 
 ## Feito
@@ -52,3 +51,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Assinatura do app** SHA‑256 nas configurações (v1.13).
 - [x] **Tema automático** (seguir o sistema) (v1.14).
 - [x] **Comparação local** de benchmark: média e ranking (v1.14).
+- [x] **Espanhol** nas strings do app (v1.15).
+- [x] **Cobertura de testes no CI** com JaCoCo (v1.15).

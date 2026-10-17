@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'jacoco'
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -17,8 +18,8 @@ android {
         applicationId "com.seguraturbo.app"
         minSdk 24
         targetSdk 34
-        versionCode 15
-        versionName "1.14"
+        versionCode 16
+        versionName "1.15"
     }
 
     signingConfigs {
@@ -87,4 +88,45 @@ dependencies {
 
     debugImplementation 'androidx.compose.ui:ui-tooling:1.5.4'
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.5.4'
+}
+
+// ---- Cobertura de testes (JaCoCo) ----
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.withType(Test).configureEach {
+    jacoco {
+        includeNoLocationClasses = true
+        excludes = ['jdk.internal.*']
+    }
+}
+
+tasks.register('jacocoTestReport', JacocoReport) {
+    dependsOn 'testDebugUnitTest'
+    group = 'verification'
+    description = 'Gera o relatório de cobertura dos testes unitários (debug).'
+
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+
+    def ignorados = [
+        '**/R.class', '**/R$*.class', '**/BuildConfig.*',
+        '**/Manifest*.*', '**/*Test*.*', '**/*$Companion.class'
+    ]
+
+    classDirectories.setFrom(files(
+        fileTree(dir: "$buildDir/tmp/kotlin-classes/debug", excludes: ignorados),
+        fileTree(dir: "$buildDir/intermediates/javac/debug", excludes: ignorados)
+    ))
+    sourceDirectories.setFrom(files(
+        "$projectDir/src/main/java",
+        "$projectDir/src/main/kotlin"
+    ))
+    executionData.setFrom(fileTree(dir: "$buildDir", includes: [
+        'jacoco/testDebugUnitTest.exec'
+    ]))
 }

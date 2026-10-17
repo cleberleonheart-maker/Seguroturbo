@@ -103,7 +103,8 @@
     <string name="cfg_title">Configurações</string>
     <string name="cfg_dark">Tema</string>
     <string name="cfg_dark_desc">Segue o sistema ou fixa o tema neon claro/escuro</string>
-    <string name="cfg_tema_sistema">Sistema</string>    <string name="cfg_tema_claro">Claro</string>
+    <string name="cfg_tema_sistema">Sistema</string>
+    <string name="cfg_tema_claro">Claro</string>
     <string name="cfg_tema_escuro">Escuro</string>
     <string name="cfg_font">Tamanho da fonte</string>
     <string name="cfg_font_desc">Ajusta o tamanho de todos os textos</string>

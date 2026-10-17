@@ -28,6 +28,13 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.15
+
+- **Espanhol**: o app agora fala português, inglês e espanhol (segue o idioma
+  do sistema).
+- **Cobertura de testes no CI**: o GitHub Actions gera um relatório de cobertura
+  (JaCoCo) junto dos testes unitários.
+
 ## Novidades da versão 1.14
 
 - **Tema automático**: agora dá para **seguir o sistema** (claro/escuro mudam
