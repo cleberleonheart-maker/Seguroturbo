@@ -46,7 +46,10 @@ import com.seguraturbo.app.ui.components.HistoricoSecao
 import com.seguraturbo.app.ui.components.SeloStatus
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.theme.Cores
+import com.seguraturbo.app.service.PermissaoSobreposicao
+import com.seguraturbo.app.service.ServicoBarraJogo
 import com.seguraturbo.app.util.AcoesSistema
+import android.widget.Toast
 
 @Composable
 fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
@@ -98,6 +101,8 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         item { CartaoPerfil(vm) }
 
         item { CartaoNaoPerturbe(vm) }
+
+        item { CartaoBarraJogo(contexto) }
 
         item {
             BotaoNeon(
@@ -153,7 +158,18 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
             }
         } else {
             items(vm.jogos) { jogo ->
-                LinhaJogo(jogo, onAbrir = { AcoesSistema.abrirApp(contexto, jogo.pacote) })
+                LinhaJogo(jogo, onAbrir = {
+                    if (PermissaoSobreposicao.podeDesenhar(contexto)) {
+                        ServicoBarraJogo.iniciar(contexto, jogo.pacote)
+                    } else {
+                        Toast.makeText(
+                            contexto,
+                            R.string.barra_precisa_acesso,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    AcoesSistema.abrirApp(contexto, jogo.pacote)
+                })
             }
         }
 
@@ -243,6 +259,38 @@ private fun CartaoNaoPerturbe(vm: GameTurboViewModel) {
                 )
             }
             Switch(checked = vm.dndAuto, onCheckedChange = { vm.definirDndAuto(it) })
+        }
+    }
+}
+
+@Composable
+private fun CartaoBarraJogo(contexto: android.content.Context) {
+    CartaoFuturista {
+        TituloSecao(stringResource(R.string.barra_titulo))
+        Spacer(Modifier.height(10.dp))
+        Text(
+            stringResource(R.string.barra_desc),
+            color = Cores.TextoCinza,
+            fontSize = 12.sp
+        )
+        Spacer(Modifier.height(12.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            BotaoNeon(
+                texto = stringResource(R.string.barra_mostrar),
+                onClick = {
+                    if (PermissaoSobreposicao.podeDesenhar(contexto)) {
+                        ServicoBarraJogo.iniciar(contexto, null)
+                    } else {
+                        PermissaoSobreposicao.pedir(contexto)
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            )
+            BotaoNeon(
+                texto = stringResource(R.string.barra_ocultar),
+                onClick = { ServicoBarraJogo.parar(contexto) },
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }

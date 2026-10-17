@@ -205,6 +205,23 @@
     <string name="cfg_assinatura">Firma de la app (SHA‑256)</string>
     <string name="cfg_assinatura_desc">Comprueba si el APK es auténtico (mismo certificado en todas las versiones)</string>
 
+    <!-- Barra flotante del Game Turbo -->
+    <string name="barra_titulo">Barra flotante en el juego</string>
+    <string name="barra_desc">Muestra reloj, batería y RAM con accesos de captura, grabación, No Molestar, Wi‑Fi, brillo, temporizador y ajustes sobre el juego. Requiere el permiso “superponer sobre otras apps”.</string>
+    <string name="barra_mostrar">Mostrar barra</string>
+    <string name="barra_ocultar">Ocultar barra</string>
+    <string name="barra_precisa_acesso">Concede “superponer sobre otras apps” para usar la barra flotante</string>
+    <string name="barra_captura_ok">Captura guardada en Pictures/GameTurbo</string>
+    <string name="barra_captura_erro">No se pudo capturar la pantalla</string>
+    <string name="barra_captura_negada">Captura de pantalla no autorizada</string>
+    <string name="barra_gravando">Grabando la pantalla del juego</string>
+    <string name="barra_gravacao_ok">Grabación guardada en Pictures/GameTurbo</string>
+    <string name="barra_gravacao_erro">No se pudo grabar la pantalla</string>
+    <string name="notif_barra_titulo">Barra del Game Turbo activa</string>
+    <string name="notif_barra_texto">La barra flotante está sobre el juego</string>
+    <string name="notif_barra_canal">Barra del juego</string>
+    <string name="notif_barra_canal_desc">Mantiene activa la barra flotante del Game Turbo sobre el juego</string>
+
     <!-- Changelog / Novedades -->
     <string name="nov_title">Novedades</string>
     <string name="nov_titulo">Novedades de la versión %1$s</string>
@@ -214,6 +231,11 @@
     <string name="cfg_novidades">Novedades de la versión</string>
     <string name="cfg_novidades_desc">Mira lo que cambió en las versiones recientes</string>
 
+    <string-array name="changelog_1_20_novidades">
+        <item>Barra flotante en el juego: reloj, batería y RAM con accesos de captura de pantalla, grabación, No Molestar, Wi‑Fi, brillo y temporizador.</item>
+        <item>La barra aparece automáticamente al abrir un juego desde el Game Turbo.</item>
+    </string-array>
+    <string-array name="changelog_1_20_correcoes" />
     <string-array name="changelog_1_19_novidades">
         <item>Compartir como imagen el gráfico de evolución de las puntuaciones del benchmark.</item>
     </string-array>

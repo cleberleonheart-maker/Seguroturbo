@@ -22,6 +22,15 @@ object ModoConcentracao {
         false
     }
 
+    /** Indica se o Não Perturbe está ativo no momento. */
+    fun estaAtivo(ctx: Context): Boolean = try {
+        val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.isNotificationPolicyAccessGranted &&
+                nm.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
+    } catch (e: Exception) {
+        false
+    }
+
     /**
      * Ativa o Não Perturbe e guarda o modo anterior para restaurar depois.
      * Retorna true apenas se conseguiu alterar (isto é, há acesso).

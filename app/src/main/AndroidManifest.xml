@@ -15,6 +15,26 @@
          O usuário ainda precisa conceder o acesso de política de notificação. -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
+    <!-- Permite ler os apps com atividade de launcher para acharmos os jogos. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent>
+    </queries>
+
+    <!-- Barra flutuante do Game Turbo sobre o jogo (o usuário precisa autorizar
+         "sobrepor a outros apps"). -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Serviço em primeiro plano que mantém a barra e a captura de tela ativas. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- Ajusta o brilho da tela pela barra (o usuário concede o acesso). -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <!-- Consulta o estado da rede (Wi‑Fi, VPN e DNS privado) para o scan.
          São permissões normais, sem pedido ao usuário. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -79,6 +99,30 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
+
+        <!-- Barra flutuante do Game Turbo (por cima do jogo). -->
+        <service
+            android:name=".service.ServicoBarraJogo"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="game_overlay_bar" />
+        </service>
+
+        <!-- Captura de tela e gravação de vídeo (projeção de tela). -->
+        <service
+            android:name=".service.ServicoCaptura"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+
+        <!-- Pede o consentimento de captura de tela (transparente). -->
+        <activity
+            android:name=".service.PedirCapturaActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

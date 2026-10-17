@@ -205,6 +205,23 @@
     <string name="cfg_assinatura">App signature (SHA‑256)</string>
     <string name="cfg_assinatura_desc">Checks whether the APK is authentic (same certificate across versions)</string>
 
+    <!-- Game Turbo floating bar -->
+    <string name="barra_titulo">Floating in-game bar</string>
+    <string name="barra_desc">Shows clock, battery and RAM with quick shortcuts for screenshot, recording, Do Not Disturb, Wi‑Fi, brightness, timer and settings over the game. Requires the “display over other apps” permission.</string>
+    <string name="barra_mostrar">Show bar</string>
+    <string name="barra_ocultar">Hide bar</string>
+    <string name="barra_precisa_acesso">Grant “display over other apps” to use the floating bar</string>
+    <string name="barra_captura_ok">Screenshot saved to Pictures/GameTurbo</string>
+    <string name="barra_captura_erro">Could not capture the screen</string>
+    <string name="barra_captura_negada">Screen capture not authorized</string>
+    <string name="barra_gravando">Recording the game screen</string>
+    <string name="barra_gravacao_ok">Recording saved to Pictures/GameTurbo</string>
+    <string name="barra_gravacao_erro">Could not record the screen</string>
+    <string name="notif_barra_titulo">Game Turbo bar active</string>
+    <string name="notif_barra_texto">The floating bar is over the game</string>
+    <string name="notif_barra_canal">Game bar</string>
+    <string name="notif_barra_canal_desc">Keeps the Game Turbo floating bar active over the game</string>
+
     <!-- Changelog / What's new -->
     <string name="nov_title">What\'s new</string>
     <string name="nov_titulo">What\'s new in version %1$s</string>
@@ -214,6 +231,11 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_20_novidades">
+        <item>Floating in-game bar: clock, battery and RAM with shortcuts for screenshot, recording, Do Not Disturb, Wi‑Fi, brightness and timer.</item>
+        <item>The bar appears automatically when you open a game from Game Turbo.</item>
+    </string-array>
+    <string-array name="changelog_1_20_correcoes" />
     <string-array name="changelog_1_19_novidades">
         <item>Share the benchmark score evolution chart as an image.</item>
     </string-array>

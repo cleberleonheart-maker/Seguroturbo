@@ -205,6 +205,23 @@
     <string name="cfg_assinatura">Signature de l\'app (SHA‑256)</string>
     <string name="cfg_assinatura_desc">Vérifie si l\'APK est authentique (même certificat sur toutes les versions)</string>
 
+    <!-- Barre flottante Game Turbo -->
+    <string name="barra_titulo">Barre flottante dans le jeu</string>
+    <string name="barra_desc">Affiche l\'horloge, la batterie et la RAM avec des raccourcis de capture, d\'enregistrement, Ne pas déranger, Wi‑Fi, luminosité, minuteur et réglages par-dessus le jeu. Nécessite la permission « superposer aux autres apps ».</string>
+    <string name="barra_mostrar">Afficher la barre</string>
+    <string name="barra_ocultar">Masquer la barre</string>
+    <string name="barra_precisa_acesso">Accordez « superposer aux autres apps » pour utiliser la barre flottante</string>
+    <string name="barra_captura_ok">Capture enregistrée dans Pictures/GameTurbo</string>
+    <string name="barra_captura_erro">Impossible de capturer l\'écran</string>
+    <string name="barra_captura_negada">Capture d\'écran non autorisée</string>
+    <string name="barra_gravando">Enregistrement de l\'écran du jeu</string>
+    <string name="barra_gravacao_ok">Enregistrement sauvegardé dans Pictures/GameTurbo</string>
+    <string name="barra_gravacao_erro">Impossible d\'enregistrer l\'écran</string>
+    <string name="notif_barra_titulo">Barre Game Turbo active</string>
+    <string name="notif_barra_texto">La barre flottante est au-dessus du jeu</string>
+    <string name="notif_barra_canal">Barre du jeu</string>
+    <string name="notif_barra_canal_desc">Maintient la barre flottante du Game Turbo active au-dessus du jeu</string>
+
     <!-- Changelog / Nouveautés -->
     <string name="nov_title">Nouveautés</string>
     <string name="nov_titulo">Nouveautés de la version %1$s</string>
@@ -214,6 +231,11 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_20_novidades">
+        <item>Barre flottante dans le jeu : horloge, batterie et RAM avec des raccourcis de capture d\'écran, d\'enregistrement, Ne pas déranger, Wi‑Fi, luminosité et minuteur.</item>
+        <item>La barre apparaît automatiquement quand vous lancez un jeu depuis Game Turbo.</item>
+    </string-array>
+    <string-array name="changelog_1_20_correcoes" />
     <string-array name="changelog_1_19_novidades">
         <item>Partager le graphique d\'évolution des scores du benchmark en image.</item>
     </string-array>

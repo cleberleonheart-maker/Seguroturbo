@@ -16,6 +16,7 @@ object Notificacoes {
 
     const val CANAL = "seguraturbo_lembrete"
     const val CANAL_ATUALIZACAO = "seguraturbo_atualizacao"
+    const val CANAL_JOGO = "seguraturbo_jogo"
     private const val ID_LEMBRETE = 1001
     private const val ID_ATUALIZACAO = 1002
 
@@ -45,6 +46,43 @@ object Notificacoes {
                     NotificationManager.IMPORTANCE_DEFAULT
                 ).apply {
                     description = ctx.getString(R.string.notif_canal_atualizacao_desc)
+                }
+                mgr.createNotificationChannel(canal)
+            }
+        }
+    }
+
+    /** Notificação persistente da barra flutuante do Game Turbo. */
+    fun notificacaoJogo(ctx: Context, texto: String): android.app.Notification {
+        criarCanalJogo(ctx)
+        val abrir = Intent(ctx, MainActivity::class.java)
+        val pending = PendingIntent.getActivity(
+            ctx,
+            2,
+            abrir,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        return NotificationCompat.Builder(ctx, CANAL_JOGO)
+            .setSmallIcon(R.drawable.ic_security)
+            .setContentTitle(ctx.getString(R.string.notif_barra_titulo))
+            .setContentText(texto)
+            .setContentIntent(pending)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
+
+    private fun criarCanalJogo(ctx: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val mgr = ctx.getSystemService(NotificationManager::class.java) ?: return
+            if (mgr.getNotificationChannel(CANAL_JOGO) == null) {
+                val canal = NotificationChannel(
+                    CANAL_JOGO,
+                    ctx.getString(R.string.notif_barra_canal),
+                    NotificationManager.IMPORTANCE_LOW
+                ).apply {
+                    description = ctx.getString(R.string.notif_barra_canal_desc)
+                    setShowBadge(false)
                 }
                 mgr.createNotificationChannel(canal)
             }
