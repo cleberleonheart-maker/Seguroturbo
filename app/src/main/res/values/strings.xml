@@ -55,6 +55,15 @@
     <string name="gt_perfil_equilibrado_desc">Padrão — equilíbrio entre desempenho e consumo de bateria.</string>
     <string name="gt_perfil_turbo_desc">Desempenho máximo: liga o Não Perturbe automaticamente junto com o Modo Jogo.</string>
 
+    <!-- Monitor térmico -->
+    <string name="gt_termico_titulo">Monitor térmico</string>
+    <string name="gt_termico_valor">%1$.1f °C</string>
+    <string name="gt_termico_normal">Normal</string>
+    <string name="gt_termico_morno">Morno</string>
+    <string name="gt_termico_aquecido">Aquecido</string>
+    <string name="gt_termico_indisponivel">Indisponível</string>
+    <string name="gt_termico_desc">Temperatura da bateria. Acima de 42 °C o desempenho pode cair.</string>
+
     <!-- Benchmark -->
     <string name="bm_title">Benchmark de Desempenho</string>
     <string name="bm_start">Iniciar Teste</string>
@@ -106,6 +115,8 @@
     <string name="hist_title">Histórico</string>
     <string name="hist_empty">Nenhum registro ainda</string>
     <string name="hist_clear">Limpar</string>
+    <string name="hist_csv">CSV</string>
+    <string name="hist_export">Histórico SeguroTurbo (CSV)</string>
 
     <!-- Compartilhar -->
     <string name="share_image">Imagem</string>
@@ -125,6 +136,7 @@
     <string name="sec_detail_atualizacao">Procure atualizações do sistema em Configurações › Sobre o telefone › Atualização de software.</string>
     <string name="sec_detail_nenhuma">Mantenha o sistema atualizado e revise as permissões dos seus apps periodicamente.</string>
     <string name="sec_detail_rede">Abra as configurações de Wi‑Fi, esqueça a rede aberta e prefira redes com senha. Em redes públicas, use uma VPN e ative o DNS privado.</string>
+    <string name="sec_detail_tela">Abra as configurações de tela e reduza o tempo de bloqueio automático (o ideal é 30 segundos ou menos).</string>
 
     <!-- Conteúdo dos relatórios -->
     <string name="rep_sec_title">Segurança do dispositivo</string>

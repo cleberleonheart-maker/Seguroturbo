@@ -28,6 +28,15 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.12
+
+- **Monitor térmico no Game Turbo**: mostra a **temperatura da bateria** em tempo
+  real (Normal / Morno / Aquecido) e avisa quando passa de 42 °C.
+- **Bloqueio automático da tela na Segurança**: novo alerta quando a tela demora
+  mais de 5 minutos para bloquear sozinha, com atalho para as configurações.
+- **Exportar histórico em CSV**: botão **CSV** no histórico gera um arquivo
+  (abre bem no Excel pt‑BR) e compartilha pelo app que você escolher.
+
 ## Novidades da versão 1.11
 
 - **Checagem de rede na Segurança**: o scan agora detecta quando o **Wi‑Fi conectado

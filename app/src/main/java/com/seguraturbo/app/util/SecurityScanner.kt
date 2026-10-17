@@ -76,6 +76,9 @@ object SecurityScanner {
         }
 
         delay(350)
+        verificarBloqueioAutomatico(ctx)?.let { encontradas += it }
+
+        delay(350)
         val servicosAcessibilidade = withContext(Dispatchers.IO) { servicosAcessibilidadeAtivos(ctx) }
         if (servicosAcessibilidade > 0) {
             encontradas += Threat(
@@ -235,6 +238,31 @@ object SecurityScanner {
         Settings.Global.getInt(ctx.contentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1
     } catch (e: Exception) {
         false
+    }
+
+    /**
+     * Avalia o tempo até a tela bloquear sozinha (SCREEN_OFF_TIMEOUT). Quanto
+     * maior, mais tempo o aparelho fica desprotegido se for deixado de lado.
+     */
+    private fun verificarBloqueioAutomatico(ctx: Context): Threat? = try {
+        val ms = Settings.System.getInt(
+            ctx.contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, 30000
+        )
+        if (ms > 300000) {
+            Threat(
+                nome = "Bloqueio automático demorado",
+                tipo = "TELA",
+                risco = "BAIXO",
+                descricao = "A tela só bloqueia após ${ms / 60000} min sem uso. " +
+                    "Reduza esse tempo para proteger o aparelho.",
+                acao = AcaoConfig.DISPLAY,
+                peso = 6
+            )
+        } else {
+            null
+        }
+    } catch (e: Exception) {
+        null
     }
 
     /**

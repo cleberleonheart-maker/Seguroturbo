@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import com.seguraturbo.app.R
 import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.Formato
+import com.seguraturbo.app.util.RelatorioCsv
 
 /** Cartão com aparência de vidro (glassmorphism) e gradiente sutil. */
 @Composable
@@ -216,6 +218,8 @@ fun HistoricoSecao(
     onLimpar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val contexto = LocalContext.current
+    val tituloCompartilhar = stringResource(R.string.hist_export)
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -224,8 +228,15 @@ fun HistoricoSecao(
         ) {
             TituloSecao(stringResource(R.string.hist_title))
             if (historico.isNotEmpty()) {
-                TextButton(onClick = onLimpar) {
-                    Text(stringResource(R.string.hist_clear), color = Cores.TextoCinza, fontSize = 12.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = {
+                        RelatorioCsv.compartilhar(contexto, historico, tituloCompartilhar)
+                    }) {
+                        Text(stringResource(R.string.hist_csv), color = Cores.Ciano, fontSize = 12.sp)
+                    }
+                    TextButton(onClick = onLimpar) {
+                        Text(stringResource(R.string.hist_clear), color = Cores.TextoCinza, fontSize = 12.sp)
+                    }
                 }
             }
         }

@@ -59,6 +59,7 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
             if (evento == Lifecycle.Event.ON_RESUME) {
                 vm.atualizarBateria()
                 vm.atualizarDnd()
+                vm.atualizarTemperatura()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observador)
@@ -108,6 +109,8 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         }
 
         item { CartaoBateria(vm) }
+
+        item { CartaoTermico(vm) }
 
         if (vm.otimizando || vm.mensagem != null) {
             item {
@@ -240,6 +243,45 @@ private fun CartaoNaoPerturbe(vm: GameTurboViewModel) {
                 )
             }
             Switch(checked = vm.dndAuto, onCheckedChange = { vm.definirDndAuto(it) })
+        }
+    }
+}
+
+@Composable
+private fun CartaoTermico(vm: GameTurboViewModel) {
+    val t = vm.temperatura
+    val cor = when {
+        t == null -> Cores.TextoCinza
+        t >= 42f -> Cores.Vermelho
+        t >= 38f -> Cores.Amarelo
+        else -> Cores.Verde
+    }
+    val estado = when {
+        t == null -> stringResource(R.string.gt_termico_indisponivel)
+        t >= 42f -> stringResource(R.string.gt_termico_aquecido)
+        t >= 38f -> stringResource(R.string.gt_termico_morno)
+        else -> stringResource(R.string.gt_termico_normal)
+    }
+    CartaoFuturista {
+        TituloSecao(stringResource(R.string.gt_termico_titulo))
+        Spacer(Modifier.height(12.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("🌡️", fontSize = 20.sp)
+            Spacer(Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    if (t == null) stringResource(R.string.gt_termico_indisponivel)
+                    else "${stringResource(R.string.gt_termico_valor, t)} · $estado",
+                    color = cor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.gt_termico_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
         }
     }
 }

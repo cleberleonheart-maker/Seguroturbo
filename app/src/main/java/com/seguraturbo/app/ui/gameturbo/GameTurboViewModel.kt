@@ -2,6 +2,9 @@ package com.seguraturbo.app.ui.gameturbo
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
 import android.os.PowerManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,9 +44,12 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     var dndAcesso by mutableStateOf(false)
     /** Perfil de desempenho atual do Game Turbo. */
     var perfil by mutableStateOf(PerfilDesempenho.EQUILIBRADO)
+    /** Temperatura da bateria em °C (null se o sistema não informar). */
+    var temperatura by mutableStateOf<Float?>(null)
 
     init {
         perfil = Preferencias.perfilDesempenho(getApplication<Application>())
+        atualizarTemperatura()
         carregarHistorico()
         // A detecção lê ícones de todos os apps: faz fora da thread principal.
         viewModelScope.launch {
@@ -77,6 +83,20 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         val app = getApplication<Application>()
         dndAuto = Preferencias.dndAuto(app)
         dndAcesso = ModoConcentracao.temAcesso(app)
+    }
+
+    /** Lê a temperatura atual da bateria (°C) pelo broadcast fixo do sistema. */
+    fun atualizarTemperatura() {
+        temperatura = try {
+            val sticky = getApplication<Application>().registerReceiver(
+                null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            )
+            val decimos = sticky?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, Int.MIN_VALUE)
+                ?: Int.MIN_VALUE
+            if (decimos == Int.MIN_VALUE) null else decimos / 10f
+        } catch (e: Exception) {
+            null
+        }
     }
 
     /** Liga/desliga o Não Perturbe automático. Sem acesso, abre as configurações. */

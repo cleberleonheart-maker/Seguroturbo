@@ -55,6 +55,15 @@
     <string name="gt_perfil_equilibrado_desc">Default — balance between performance and battery use.</string>
     <string name="gt_perfil_turbo_desc">Maximum performance: turns on Do Not Disturb automatically with Game Mode.</string>
 
+    <!-- Thermal monitor -->
+    <string name="gt_termico_titulo">Thermal monitor</string>
+    <string name="gt_termico_valor">%1$.1f °C</string>
+    <string name="gt_termico_normal">Normal</string>
+    <string name="gt_termico_morno">Warm</string>
+    <string name="gt_termico_aquecido">Hot</string>
+    <string name="gt_termico_indisponivel">Unavailable</string>
+    <string name="gt_termico_desc">Battery temperature. Above 42 °C performance may drop.</string>
+
     <!-- Benchmark -->
     <string name="bm_title">Performance Benchmark</string>
     <string name="bm_start">Start Test</string>
@@ -106,6 +115,8 @@
     <string name="hist_title">History</string>
     <string name="hist_empty">No records yet</string>
     <string name="hist_clear">Clear</string>
+    <string name="hist_csv">CSV</string>
+    <string name="hist_export">SeguroTurbo history (CSV)</string>
 
     <!-- Compartilhar -->
     <string name="share_image">Image</string>
@@ -125,6 +136,7 @@
     <string name="sec_detail_atualizacao">Look for system updates in Settings › About phone › Software update.</string>
     <string name="sec_detail_nenhuma">Keep the system updated and review your apps\' permissions regularly.</string>
     <string name="sec_detail_rede">Open Wi‑Fi settings, forget the open network and prefer password-protected ones. On public networks, use a VPN and enable Private DNS.</string>
+    <string name="sec_detail_tela">Open display settings and shorten the screen timeout (30 seconds or less is ideal).</string>
 
     <!-- Conteúdo dos relatórios -->
     <string name="rep_sec_title">Device security</string>

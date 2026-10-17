@@ -11,12 +11,10 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       integridade do sistema) e explicar cada caso.
 - [ ] **Sideload**: listar apps instalados de fontes externas à loja oficial.
 - [ ] **Assinatura de apps**: mostrar o hash/certificado do APK (verificador de apps).
-- [ ] **Verificação de senha/bloqueio**: avaliar o tempo de bloqueio automático da tela.
 - [ ] **Play Integrity**: checar a integridade do dispositivo (quando integrável).
 
 ## Desempenho / Game Turbo
 
-- [ ] **Monitor térmico**: temperatura da bateria/térmico com alerta de aquecimento.
 - [ ] **Limpeza de RAM**: encerrar apps escolhidos pelo usuário em segundo plano.
 - [ ] **Bloqueio de tela (screen pinning)** ao iniciar um jogo.
 - [ ] **Silenciar só mídia** durante o jogo (opções finas de áudio).
@@ -25,7 +23,6 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 - [ ] **Teste de rede**: velocidade de download e latência.
 - [ ] **Teste de tela/touch**: resposta ao toque e multitouch.
-- [ ] **Exportar histórico em CSV**.
 - [ ] **Compartilhar o gráfico** de evolução das pontuações.
 - [ ] **Comparação**: média/ranking local com os resultados anteriores.
 
@@ -52,3 +49,6 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Testes unitários** de versões/patch e **lint no CI** (v1.10).
 - [x] **Checagem de Wi‑Fi/VPN/DNS** na Segurança (v1.11).
 - [x] **Perfis de desempenho** Economia/Equilibrado/Turbo (v1.11).
+- [x] **Monitor térmico** da bateria no Game Turbo (v1.12).
+- [x] **Tempo de bloqueio automático** da tela no scan (v1.12).
+- [x] **Exportar histórico em CSV** (v1.12).
