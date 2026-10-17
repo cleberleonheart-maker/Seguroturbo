@@ -91,6 +91,7 @@
     <string name="bm_storage_speed">Stockage</string>
     <string name="bm_storage_speed_value">%1$.0f Mo/s</string>
     <string name="bm_share">Partager le résultat</string>
+    <string name="bm_share_chart">Partager le graphique</string>
     <string name="bm_history_chart">Évolution du score</string>
     <string name="bm_compare_title">Comparaison</string>
     <string name="bm_compare_avg">Moyenne de l\'appareil</string>
@@ -213,6 +214,10 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_19_novidades">
+        <item>Partager le graphique d\'évolution des scores du benchmark en image.</item>
+    </string-array>
+    <string-array name="changelog_1_19_correcoes" />
     <string-array name="changelog_1_18_novidades">
         <item>Écran des nouveautés : une liste de ce qui a été ajouté et corrigé dans chaque version.</item>
     </string-array>

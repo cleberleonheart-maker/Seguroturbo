@@ -91,6 +91,7 @@
     <string name="bm_storage_speed">Armazenamento</string>
     <string name="bm_storage_speed_value">%1$.0f MB/s</string>
     <string name="bm_share">Compartilhar resultado</string>
+    <string name="bm_share_chart">Compartilhar gráfico</string>
     <string name="bm_history_chart">Evolução da pontuação</string>
     <string name="bm_compare_title">Comparação</string>
     <string name="bm_compare_avg">Média do aparelho</string>
@@ -213,6 +214,10 @@
     <string name="cfg_novidades">Novidades da versão</string>
     <string name="cfg_novidades_desc">Veja o que mudou nas versões recentes</string>
 
+    <string-array name="changelog_1_19_novidades">
+        <item>Compartilhar o gráfico de evolução das pontuações do benchmark como imagem.</item>
+    </string-array>
+    <string-array name="changelog_1_19_correcoes" />
     <string-array name="changelog_1_18_novidades">
         <item>Tela de novidades: uma lista com o que foi adicionado e corrigido em cada versão.</item>
     </string-array>

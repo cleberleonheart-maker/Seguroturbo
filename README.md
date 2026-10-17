@@ -28,6 +28,11 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.19
+
+- **Compartilhar o gráfico**: o gráfico de evolução das pontuações do benchmark agora
+  pode ser compartilhado como imagem (com última pontuação, mínimo e máximo).
+
 ## Novidades da versão 1.18
 
 - **Changelog / Novidades**: tela que lista o que foi **adicionado** e **corrigido** em

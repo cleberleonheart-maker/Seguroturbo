@@ -184,6 +184,13 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
                     TituloSecao(stringResource(R.string.bm_history_chart))
                     Spacer(Modifier.height(12.dp))
                     GraficoLinha(valores = vm.pontuacoes, cor = Cores.Ciano)
+                    Spacer(Modifier.height(14.dp))
+                    BotaoNeon(
+                        texto = stringResource(R.string.bm_share_chart),
+                        onClick = { compartilharGrafico(contexto, vm.pontuacoes) },
+                        cor = Cores.Ciano,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -252,6 +259,17 @@ private fun compartilhar(ctx: Context, r: BenchmarkResult, info: DeviceInfo.Info
         val uri = RelatorioImagem.gerar(ctx, titulo, subtitulo, null, linhas) ?: return
         RelatorioImagem.compartilhar(ctx, uri, rotulo)
     }
+}
+
+/** Gera a imagem do gráfico de evolução das pontuações e abre o compartilhamento. */
+private fun compartilharGrafico(ctx: Context, pontuacoes: List<Int>) {
+    val uri = RelatorioImagem.gerarGrafico(
+        ctx,
+        ctx.getString(R.string.rep_bm_title),
+        ctx.getString(R.string.bm_history_chart),
+        pontuacoes
+    ) ?: return
+    RelatorioImagem.compartilhar(ctx, uri, ctx.getString(R.string.bm_share_chart))
 }
 
 @Composable

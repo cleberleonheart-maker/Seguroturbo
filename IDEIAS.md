@@ -21,7 +21,6 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 - [ ] **Teste de rede**: velocidade de download e latência.
 - [ ] **Teste de tela/touch**: resposta ao toque e multitouch.
-- [ ] **Compartilhar o gráfico** de evolução das pontuações.
 ## Produto / UX
 
 - [ ] **Widgets adicionais**: mais atalhos na tela inicial.
@@ -55,3 +54,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Espanhol e francês** nas strings — app em pt/en/es/fr (v1.15–v1.17).
 - [x] **Changelog / Novidades** (novo + correções) mostrado ao atualizar (v1.18).
 - [x] **Auto-update mais robusto**: segue redirecionamentos e abre o navegador como reserva (v1.18).
+- [x] **Compartilhar o gráfico** de evolução das pontuações (v1.19).

@@ -91,6 +91,7 @@
     <string name="bm_storage_speed">Storage</string>
     <string name="bm_storage_speed_value">%1$.0f MB/s</string>
     <string name="bm_share">Share result</string>
+    <string name="bm_share_chart">Share chart</string>
     <string name="bm_history_chart">Score evolution</string>
     <string name="bm_compare_title">Comparison</string>
     <string name="bm_compare_avg">Device average</string>
@@ -213,6 +214,10 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_19_novidades">
+        <item>Share the benchmark score evolution chart as an image.</item>
+    </string-array>
+    <string-array name="changelog_1_19_correcoes" />
     <string-array name="changelog_1_18_novidades">
         <item>A What\'s new screen: a list of what was added and fixed in each version.</item>
     </string-array>
