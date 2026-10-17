@@ -124,7 +124,7 @@ object Atualizador {
      * implementação padrão do Android não segue esse salto entre hosts, o que
      * fazia o download falhar. Aqui seguimos até [MAX_REDIRECIONAMENTOS] saltos.
      */
-    private fun conectar(url: String): HttpURLConnection {
+    private fun conectar(url: String, cabecalhos: Map<String, String> = emptyMap()): HttpURLConnection {
         var atual = url
         var saltos = 0
         while (true) {
@@ -133,6 +133,7 @@ object Atualizador {
                 readTimeout = 30000
                 instanceFollowRedirects = false
                 setRequestProperty("User-Agent", "SeguroTurbo-Android")
+                cabecalhos.forEach { (chave, valor) -> setRequestProperty(chave, valor) }
             }
             val codigo = conn.responseCode
             if (codigo in 300..399) {
@@ -246,16 +247,15 @@ object Atualizador {
         return lista.map { it.toCharsString() }.toSet()
     }
 
+    /**
+     * Baixa o JSON do último release. Passa por [conectar] para seguir os
+     * redirecionamentos que a API do GitHub devolve (ex.: repositório renomeado),
+     * que a implementação padrão do Android não acompanha entre hosts.
+     */
     private fun baixar(): JSONObject? {
         var conn: HttpURLConnection? = null
         return try {
-            conn = (URL(API).openConnection() as HttpURLConnection).apply {
-                connectTimeout = 8000
-                readTimeout = 8000
-                requestMethod = "GET"
-                setRequestProperty("Accept", "application/vnd.github+json")
-                setRequestProperty("User-Agent", "SeguroTurbo-Android")
-            }
+            conn = conectar(API, mapOf("Accept" to "application/vnd.github+json"))
             if (conn.responseCode in 200..299) {
                 JSONObject(conn.inputStream.bufferedReader().use { it.readText() })
             } else {

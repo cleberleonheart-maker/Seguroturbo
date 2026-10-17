@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Notificações do lembrete de verificação (opcional; o usuário pode negar). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -32,8 +33,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
-    <!-- Ajusta o brilho da tela pela barra (o usuário concede o acesso). -->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- Ajusta o brilho da tela pela barra (o usuário concede o acesso pela tela
+         "Modificar configurações do sistema", via ACTION_MANAGE_WRITE_SETTINGS). -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
 
     <!-- Consulta o estado da rede (Wi‑Fi, VPN e DNS privado) para o scan.
          São permissões normais, sem pedido ao usuário. -->
