@@ -1,5 +1,11 @@
 # SeguroTurbo
 
+[![Android CI](https://github.com/cleberleonheart-maker/Seguroturbo/actions/workflows/android.yml/badge.svg)](https://github.com/cleberleonheart-maker/Seguroturbo/actions/workflows/android.yml)
+[![Release](https://img.shields.io/github/v/release/cleberleonheart-maker/Seguroturbo?label=release)](https://github.com/cleberleonheart-maker/Seguroturbo/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/cleberleonheart-maker/Seguroturbo/total?label=downloads)](https://github.com/cleberleonheart-maker/Seguroturbo/releases)
+[![Plataforma](https://img.shields.io/badge/plataforma-Android-3DDC84?logo=android&logoColor=white)](https://www.android.com)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+
 Aplicativo Android que une três módulos em um só app, com tema futurista neon:
 
 1. **Segurança** — verifica de verdade o estado do aparelho (root, bloqueio de tela,

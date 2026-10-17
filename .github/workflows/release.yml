@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag da release (ex.: v1.6)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Permissão do wrapper
+        run: chmod +x gradlew
+
+      - name: Restaurar keystore de assinatura
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > seguraturbo.keystore
+
+      - name: Criar keystore.properties
+        run: |
+          cat > keystore.properties <<EOF
+          storeFile=seguraturbo.keystore
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          EOF
+
+      - name: Definir versão
+        id: ver
+        run: echo "tag=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Compilar (APK release + AAB)
+        run: ./gradlew assembleRelease bundleRelease --no-daemon
+
+      - name: Renomear artefatos
+        run: |
+          mv app/build/outputs/apk/release/app-release.apk "SeguroTurbo-${{ steps.ver.outputs.tag }}.apk"
+          mv app/build/outputs/bundle/release/app-release.aab "SeguroTurbo-${{ steps.ver.outputs.tag }}.aab"
+
+      - name: Publicar release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: SeguroTurbo ${{ steps.ver.outputs.tag }}
+          generate_release_notes: true
+          files: |
+            SeguroTurbo-${{ steps.ver.outputs.tag }}.apk
+            SeguroTurbo-${{ steps.ver.outputs.tag }}.aab
