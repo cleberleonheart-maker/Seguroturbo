@@ -15,7 +15,9 @@ import com.seguraturbo.app.R
 object Notificacoes {
 
     const val CANAL = "seguraturbo_lembrete"
+    const val CANAL_ATUALIZACAO = "seguraturbo_atualizacao"
     private const val ID_LEMBRETE = 1001
+    private const val ID_ATUALIZACAO = 1002
 
     fun criarCanal(ctx: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -30,6 +32,51 @@ object Notificacoes {
                 }
                 mgr.createNotificationChannel(canal)
             }
+        }
+    }
+
+    fun criarCanalAtualizacao(ctx: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val mgr = ctx.getSystemService(NotificationManager::class.java) ?: return
+            if (mgr.getNotificationChannel(CANAL_ATUALIZACAO) == null) {
+                val canal = NotificationChannel(
+                    CANAL_ATUALIZACAO,
+                    ctx.getString(R.string.notif_canal_atualizacao),
+                    NotificationManager.IMPORTANCE_DEFAULT
+                ).apply {
+                    description = ctx.getString(R.string.notif_canal_atualizacao_desc)
+                }
+                mgr.createNotificationChannel(canal)
+            }
+        }
+    }
+
+    /** Avisa que há uma versão nova disponível (checagem em segundo plano). */
+    fun mostrarAtualizacao(ctx: Context, versao: String) {
+        criarCanalAtualizacao(ctx)
+        if (!NotificationManagerCompat.from(ctx).areNotificationsEnabled()) return
+
+        val abrir = Intent(ctx, MainActivity::class.java)
+        val pending = PendingIntent.getActivity(
+            ctx,
+            1,
+            abrir,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notificacao = NotificationCompat.Builder(ctx, CANAL_ATUALIZACAO)
+            .setSmallIcon(R.drawable.ic_security)
+            .setContentTitle(ctx.getString(R.string.upd_titulo))
+            .setContentText(ctx.getString(R.string.upd_disponivel, versao))
+            .setContentIntent(pending)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+
+        try {
+            NotificationManagerCompat.from(ctx).notify(ID_ATUALIZACAO, notificacao)
+        } catch (e: SecurityException) {
+            // Permissão revogada entre a checagem e o envio.
         }
     }
 

@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,13 +37,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.seguraturbo.app.R
 import com.seguraturbo.app.model.TemaModo
 import com.seguraturbo.app.ui.theme.Aparencia
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.Agendador
+import com.seguraturbo.app.util.AgendadorAtualizacao
 import com.seguraturbo.app.util.AssinaturaApp
+import com.seguraturbo.app.util.Backup
 import com.seguraturbo.app.util.Notificacoes
 import com.seguraturbo.app.util.Preferencias
 import kotlin.math.abs
@@ -62,12 +67,65 @@ fun ConfiguracoesDialog(
     var modo by remember { mutableStateOf(Aparencia.temaModo) }
     var escala by remember { mutableStateOf(Aparencia.escalaFonte) }
     var lembrete by remember { mutableStateOf(Preferencias.lembreteAtivo(ctx)) }
+    var atualizacaoAuto by remember { mutableStateOf(Preferencias.atualizacaoAutomatica(ctx)) }
     val assinatura by remember { mutableStateOf(AssinaturaApp.sha256(ctx)) }
     val sistemaEscuro = isSystemInDarkTheme()
 
     val pedirNotificacao = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { /* o lembrete já foi ativado; a permissão apenas libera a notificação */ }
+
+    fun reaplicarPreferencias() {
+        escala = Preferencias.escalaFonte(ctx)
+        Aparencia.escalaFonte = escala
+        modo = Preferencias.temaModo(ctx)
+        Aparencia.temaModo = modo
+        Cores.definirTema(
+            when (modo) {
+                TemaModo.SISTEMA -> sistemaEscuro
+                TemaModo.CLARO -> false
+                TemaModo.ESCURO -> true
+            }
+        )
+        lembrete = Preferencias.lembreteAtivo(ctx)
+        atualizacaoAuto = Preferencias.atualizacaoAutomatica(ctx)
+        Notificacoes.criarCanal(ctx)
+        if (lembrete) Agendador.agendar(ctx) else Agendador.cancelar(ctx)
+        if (atualizacaoAuto) AgendadorAtualizacao.agendar(ctx) else AgendadorAtualizacao.cancelar(ctx)
+    }
+
+    val exportarBackup = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        val ok = runCatching {
+            ctx.contentResolver.openOutputStream(uri)?.use { saida ->
+                saida.write(Backup.montar(ctx).toByteArray())
+            } != null
+        }.getOrDefault(false)
+        Toast.makeText(
+            ctx,
+            if (ok) R.string.backup_ok else R.string.backup_erro,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    val importarBackup = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        val ok = runCatching {
+            ctx.contentResolver.openInputStream(uri)?.use { entrada ->
+                Backup.aplicar(ctx, entrada.readBytes().decodeToString())
+            } ?: false
+        }.getOrDefault(false)
+        if (ok) reaplicarPreferencias()
+        Toast.makeText(
+            ctx,
+            if (ok) R.string.backup_restaurado else R.string.backup_erro,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 
     val opcoes = listOf(
         R.string.cfg_font_small to 0.85f,
@@ -94,7 +152,7 @@ fun ConfiguracoesDialog(
             )
         },
         text = {
-            Column {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text(
                     stringResource(R.string.cfg_dark),
                     color = Cores.TextoClaro,
@@ -271,6 +329,47 @@ fun ConfiguracoesDialog(
                     }
                 }
 
+                Spacer(Modifier.height(18.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.cfg_upd_auto),
+                            color = Cores.TextoClaro,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            stringResource(R.string.cfg_upd_auto_desc),
+                            color = Cores.TextoCinza,
+                            fontSize = 12.sp
+                        )
+                    }
+                    Switch(
+                        checked = atualizacaoAuto,
+                        onCheckedChange = { novo ->
+                            atualizacaoAuto = novo
+                            Preferencias.definirAtualizacaoAutomatica(ctx, novo)
+                            if (novo) {
+                                Notificacoes.criarCanalAtualizacao(ctx)
+                                AgendadorAtualizacao.agendar(ctx)
+                                val precisaPermissao =
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                        ContextCompat.checkSelfPermission(
+                                            ctx, Manifest.permission.POST_NOTIFICATIONS
+                                        ) != PackageManager.PERMISSION_GRANTED
+                                if (precisaPermissao) {
+                                    pedirNotificacao.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                }
+                            } else {
+                                AgendadorAtualizacao.cancelar(ctx)
+                            }
+                        }
+                    )
+                }
+
                 if (assinatura != null) {
                     Spacer(modifier = Modifier.height(18.dp))
                     Text(
@@ -290,6 +389,45 @@ fun ConfiguracoesDialog(
                         color = Cores.Ciano,
                         fontSize = 10.sp
                     )
+                }
+
+                Spacer(Modifier.height(18.dp))
+                Text(
+                    stringResource(R.string.cfg_backup),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.cfg_backup_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+                Spacer(Modifier.height(6.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextButton(
+                        onClick = { exportarBackup.launch("seguraturbo-backup.json") },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            stringResource(R.string.cfg_backup_exportar),
+                            color = Cores.Ciano,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    TextButton(
+                        onClick = { importarBackup.launch(arrayOf("*/*")) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            stringResource(R.string.cfg_backup_importar),
+                            color = Cores.Ciano,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         },

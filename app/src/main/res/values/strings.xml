@@ -113,6 +113,17 @@
     <string name="cfg_font_large">Grande</string>
     <string name="cfg_lembrete">Lembrete de verificação</string>
     <string name="cfg_lembrete_desc">Notifica a cada 7 dias para escanear o aparelho</string>
+    <string name="cfg_upd_auto">Checar atualizações automaticamente</string>
+    <string name="cfg_upd_auto_desc">Verifica uma vez por dia, em segundo plano, se há uma versão nova</string>
+    <string name="cfg_backup">Backup e restauração</string>
+    <string name="cfg_backup_desc">Salva ou restaura suas preferências e o histórico em um arquivo</string>
+    <string name="cfg_backup_exportar">Salvar backup</string>
+    <string name="cfg_backup_importar">Restaurar</string>
+    <string name="backup_ok">Backup salvo com sucesso</string>
+    <string name="backup_restaurado">Backup restaurado</string>
+    <string name="backup_erro">Não foi possível usar esse arquivo</string>
+    <string name="notif_canal_atualizacao">Atualizações</string>
+    <string name="notif_canal_atualizacao_desc">Avisos de novas versões do SeguroTurbo</string>
 
     <!-- Notificação / Widget -->
     <string name="notif_titulo">Hora de verificar o aparelho</string>

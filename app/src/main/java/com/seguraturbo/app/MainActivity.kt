@@ -23,6 +23,7 @@ import com.seguraturbo.app.ui.theme.Aparencia
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.ui.theme.SeguroTurboTheme
 import com.seguraturbo.app.util.Agendador
+import com.seguraturbo.app.util.AgendadorAtualizacao
 import com.seguraturbo.app.util.Notificacoes
 import com.seguraturbo.app.util.Preferencias
 import kotlinx.coroutines.delay
@@ -50,12 +51,18 @@ class MainActivity : ComponentActivity() {
         )
         Aparencia.escalaFonte = Preferencias.escalaFonte(this)
 
-        // Prepara o canal de notificação e mantém o lembrete coerente com a preferência.
+        // Prepara os canais de notificação e mantém os agendamentos coerentes.
         Notificacoes.criarCanal(this)
         if (Preferencias.lembreteAtivo(this)) {
             Agendador.agendar(this)
         } else {
             Agendador.cancelar(this)
+        }
+        if (Preferencias.atualizacaoAutomatica(this)) {
+            Notificacoes.criarCanalAtualizacao(this)
+            AgendadorAtualizacao.agendar(this)
+        } else {
+            AgendadorAtualizacao.cancelar(this)
         }
 
         abaInicial.value = abaDe(intent)

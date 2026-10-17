@@ -22,6 +22,7 @@ object Preferencias {
     private const val K_FILTRO_ANTERIOR = "filtro_anterior"
     private const val K_PERFIL_DESEMPENHO = "perfil_desempenho"
     private const val K_ONBOARDING_VISTO = "onboarding_visto"
+    private const val K_ATUALIZACAO_AUTO = "atualizacao_automatica"
 
     // ---- Tema ----
     fun temaEscuro(ctx: Context): Boolean =
@@ -123,6 +124,48 @@ object Preferencias {
 
     fun definirOnboardingVisto(ctx: Context, visto: Boolean) {
         prefs(ctx).edit().putBoolean(K_ONBOARDING_VISTO, visto).apply()
+    }
+
+    // ---- Checagem automática de atualizações (em segundo plano) ----
+    fun atualizacaoAutomatica(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(K_ATUALIZACAO_AUTO, false)
+
+    fun definirAtualizacaoAutomatica(ctx: Context, ativo: Boolean) {
+        prefs(ctx).edit().putBoolean(K_ATUALIZACAO_AUTO, ativo).apply()
+    }
+
+    // ---- Backup / restauração ----
+    /** Todas as preferências, prontas para serializar em JSON. */
+    internal fun paraJson(ctx: Context): org.json.JSONObject {
+        val obj = org.json.JSONObject()
+        prefs(ctx).all.forEach { (chave, valor) ->
+            when (valor) {
+                is Set<*> -> obj.put(chave, org.json.JSONArray(valor.toList()))
+                else -> obj.put(chave, valor)
+            }
+        }
+        return obj
+    }
+
+    /** Restaura as preferências a partir do JSON (mantém o que não vier no arquivo). */
+    internal fun deJson(ctx: Context, obj: org.json.JSONObject) {
+        val editor = prefs(ctx).edit()
+        obj.keys().forEach { chave ->
+            when (val valor = obj.get(chave)) {
+                is Boolean -> editor.putBoolean(chave, valor)
+                is Int -> editor.putInt(chave, valor)
+                is Long -> editor.putLong(chave, valor)
+                is Float -> editor.putFloat(chave, valor)
+                is Double -> editor.putFloat(chave, valor.toFloat())
+                is String -> editor.putString(chave, valor)
+                is org.json.JSONArray -> {
+                    val conjunto = mutableSetOf<String>()
+                    for (i in 0 until valor.length()) conjunto.add(valor.getString(i))
+                    editor.putStringSet(chave, conjunto)
+                }
+            }
+        }
+        editor.apply()
     }
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

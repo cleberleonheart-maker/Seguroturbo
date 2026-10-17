@@ -25,10 +25,7 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Produto / UX
 
-- [ ] **Checagem periódica de atualização** em segundo plano (WorkManager).
-- [ ] **Backup/restauração** das preferências e do histórico.
 - [ ] **Mais idiomas**: francês (o espanhol entrou na v1.15).
-
 ## Qualidade / engenharia
 
 - [ ] **Testes instrumentados** (Compose UI) para os fluxos principais.
@@ -53,3 +50,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Comparação local** de benchmark: média e ranking (v1.14).
 - [x] **Espanhol** nas strings do app (v1.15).
 - [x] **Cobertura de testes no CI** com JaCoCo (v1.15).
+- [x] **Backup/restauração** das preferências e do histórico (v1.16).
+- [x] **Checagem periódica de atualização** em segundo plano (WorkManager) (v1.16).

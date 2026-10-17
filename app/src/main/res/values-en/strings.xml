@@ -113,6 +113,17 @@
     <string name="cfg_font_large">Large</string>
     <string name="cfg_lembrete">Scan reminder</string>
     <string name="cfg_lembrete_desc">Notifies every 7 days to scan the device</string>
+    <string name="cfg_upd_auto">Check for updates automatically</string>
+    <string name="cfg_upd_auto_desc">Once a day, checks in the background for a new version</string>
+    <string name="cfg_backup">Backup and restore</string>
+    <string name="cfg_backup_desc">Save or restore your settings and history to a file</string>
+    <string name="cfg_backup_exportar">Save backup</string>
+    <string name="cfg_backup_importar">Restore</string>
+    <string name="backup_ok">Backup saved successfully</string>
+    <string name="backup_restaurado">Backup restored</string>
+    <string name="backup_erro">Could not use that file</string>
+    <string name="notif_canal_atualizacao">Updates</string>
+    <string name="notif_canal_atualizacao_desc">Notifications about new SeguroTurbo versions</string>
 
     <!-- Notificação / Widget -->
     <string name="notif_titulo">Time to check your device</string>

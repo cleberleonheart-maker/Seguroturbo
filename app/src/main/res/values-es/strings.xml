@@ -113,6 +113,17 @@
     <string name="cfg_font_large">Grande</string>
     <string name="cfg_lembrete">Recordatorio de revisión</string>
     <string name="cfg_lembrete_desc">Notifica cada 7 días para escanear el dispositivo</string>
+    <string name="cfg_upd_auto">Buscar actualizaciones automáticamente</string>
+    <string name="cfg_upd_auto_desc">Una vez al día, comprueba en segundo plano si hay una versión nueva</string>
+    <string name="cfg_backup">Copia de seguridad y restauración</string>
+    <string name="cfg_backup_desc">Guarda o restaura tus ajustes y el historial en un archivo</string>
+    <string name="cfg_backup_exportar">Guardar copia</string>
+    <string name="cfg_backup_importar">Restaurar</string>
+    <string name="backup_ok">Copia guardada correctamente</string>
+    <string name="backup_restaurado">Copia restaurada</string>
+    <string name="backup_erro">No se pudo usar ese archivo</string>
+    <string name="notif_canal_atualizacao">Actualizaciones</string>
+    <string name="notif_canal_atualizacao_desc">Avisos de nuevas versiones de SeguroTurbo</string>
 
     <!-- Notificación / Widget -->
     <string name="notif_titulo">Hora de revisar el dispositivo</string>

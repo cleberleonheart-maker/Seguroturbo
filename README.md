@@ -28,6 +28,13 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.16
+
+- **Backup e restauração**: salva as preferências e o histórico em um arquivo
+  JSON e restaura quando quiser (tudo local, sem nuvem).
+- **Checagem automática de atualizações**: uma vez por dia, o app verifica em
+  segundo plano (WorkManager) se há versão nova e avisa por notificação.
+
 ## Novidades da versão 1.15
 
 - **Espanhol**: o app agora fala português, inglês e espanhol (segue o idioma
