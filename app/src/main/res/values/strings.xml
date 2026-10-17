@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">SeguroTurbo</string>
+    <string name="splash_slogan">Segurança • Desempenho • Benchmark</string>
+
+    <!-- Navegação -->
+    <string name="nav_seguranca">Segurança</string>
+    <string name="nav_game_turbo">Game Turbo</string>
+    <string name="nav_benchmark">Benchmark</string>
+
+    <!-- Segurança -->
+    <string name="sec_title">Segurança do Dispositivo</string>
+    <string name="sec_subtitle">Sistema de proteção avançada</string>
+    <string name="sec_scan_button">Escanear Agora</string>
+    <string name="sec_clean_button">Limpar Lixo</string>
+    <string name="sec_status_scanning">Escaneando sistema…</string>
+    <string name="sec_status_ready">Pronto para escanear</string>
+    <string name="sec_status_secure">Dispositivo seguro</string>
+    <string name="sec_status_alerts">%1$d alerta(s) encontrado(s)</string>
+    <string name="sec_alerts_title">Alertas de segurança</string>
+    <string name="sec_clean_title">Limpeza de arquivos</string>
+    <string name="sec_clean_progress">Limpando… %1$d%%</string>
+    <string name="sec_no_threats">Nenhum problema encontrado. Sistema protegido.</string>
+    <string name="sec_score_title">Pontuação de segurança</string>
+    <string name="sec_score_value">%1$d/100</string>
+    <string name="sec_fix">Corrigir</string>
+    <string name="sec_fix_clean">Limpar</string>
+    <string name="sec_share">Compartilhar relatório</string>
+
+    <!-- Game Turbo -->
+    <string name="gt_title">Game Turbo</string>
+    <string name="gt_game_mode">Modo Jogo</string>
+    <string name="gt_game_mode_on">Modo Jogo ATIVADO</string>
+    <string name="gt_game_mode_off">Modo Jogo desativado</string>
+    <string name="gt_mode_desc">Recursos do sistema priorizados para jogos</string>
+    <string name="gt_optimize">Otimizar Jogos</string>
+    <string name="gt_optimizing">Otimizando… %1$d%%</string>
+    <string name="gt_optimized">OTIMIZADO</string>
+    <string name="gt_games_title">Jogos instalados</string>
+    <string name="gt_no_games">Nenhum jogo detectado no dispositivo</string>
+    <string name="gt_battery_title">Otimização de bateria</string>
+    <string name="gt_battery_ok">Isento da otimização de bateria</string>
+    <string name="gt_battery_warn">Otimização de bateria ativa</string>
+    <string name="gt_battery_desc">Sem a limitação do sistema, os jogos rendem mais.</string>
+    <string name="gt_battery_btn">Ajustar</string>
+
+    <!-- Benchmark -->
+    <string name="bm_title">Benchmark de Desempenho</string>
+    <string name="bm_start">Iniciar Teste</string>
+    <string name="bm_testing">Testando…</string>
+    <string name="bm_testing_progress">Testando… %1$d%%</string>
+    <string name="bm_total_score">PONTUAÇÃO TOTAL</string>
+    <string name="bm_results">Resultados detalhados</string>
+    <string name="bm_cpu">CPU</string>
+    <string name="bm_gpu">GPU</string>
+    <string name="bm_mem">MEM (RAM)</string>
+    <string name="bm_ux">UX (Armazenamento)</string>
+    <string name="bm_device_info">Informações do dispositivo</string>
+    <string name="bm_loading">Carregando…</string>
+    <string name="bm_model">Modelo</string>
+    <string name="bm_chipset">Chipset</string>
+    <string name="bm_cores">Núcleos de CPU</string>
+    <string name="bm_ram">Memória RAM</string>
+    <string name="bm_ram_value">%1$d MB (%2$d MB livres)</string>
+    <string name="bm_storage">Armazenamento</string>
+    <string name="bm_storage_value">%1$.1f GB livres de %2$.1f GB</string>
+    <string name="bm_system">Sistema</string>
+    <string name="bm_hw_title">Medições de hardware</string>
+    <string name="bm_gpu_fps">GPU (OpenGL)</string>
+    <string name="bm_gpu_fps_value">%1$d FPS</string>
+    <string name="bm_storage_speed">Armazenamento</string>
+    <string name="bm_storage_speed_value">%1$.0f MB/s</string>
+    <string name="bm_share">Compartilhar resultado</string>
+    <string name="bm_history_chart">Evolução da pontuação</string>
+
+    <!-- Configurações -->
+    <string name="cfg_title">Configurações</string>
+    <string name="cfg_dark">Tema escuro</string>
+    <string name="cfg_dark_desc">Alterna entre o tema neon escuro e o claro</string>
+    <string name="cfg_font">Tamanho da fonte</string>
+    <string name="cfg_font_desc">Ajusta o tamanho de todos os textos</string>
+    <string name="cfg_font_small">Pequena</string>
+    <string name="cfg_font_normal">Normal</string>
+    <string name="cfg_font_large">Grande</string>
+    <string name="cfg_lembrete">Lembrete de verificação</string>
+    <string name="cfg_lembrete_desc">Notifica a cada 7 dias para escanear o aparelho</string>
+
+    <!-- Notificação / Widget -->
+    <string name="notif_titulo">Hora de verificar o aparelho</string>
+    <string name="notif_texto">Abra o SeguroTurbo e faça uma nova varredura de segurança.</string>
+    <string name="widget_acao">Toque para abrir</string>
+    <string name="widget_sem_dados">Sem dados</string>
+
+    <!-- Componentes / Histórico -->
+    <string name="hist_title">Histórico</string>
+    <string name="hist_empty">Nenhum registro ainda</string>
+    <string name="hist_clear">Limpar</string>
+
+    <!-- Compartilhar -->
+    <string name="share_image">Imagem</string>
+    <string name="share_pdf">PDF</string>
+
+    <!-- Detalhes do alerta -->
+    <string name="sec_detail_what">O que significa</string>
+    <string name="sec_detail_fix">Como corrigir</string>
+    <string name="sec_detail_close">Fechar</string>
+    <string name="sec_threat_open">Toque para ver detalhes</string>
+    <string name="sec_detail_seguranca">Ative um bloqueio de tela (PIN, senha ou biometria) em Configurações › Segurança.</string>
+    <string name="sec_detail_fontes">Desative "Instalar apps desconhecidos" para os apps que não precisam, em Configurações › Apps › Acesso especial.</string>
+    <string name="sec_detail_acesso">Revise os serviços de acessibilidade ativos e desative os que você não reconhece, em Configurações › Acessibilidade.</string>
+    <string name="sec_detail_dev">Desative as Opções do desenvolvedor quando não estiver usando, em Configurações › Sistema.</string>
+    <string name="sec_detail_cache">Toque em "Limpar" para liberar os arquivos temporários acumulados.</string>
+    <string name="sec_detail_bateria">Isole o SeguroTurbo da otimização de bateria para receber o lembrete no horário.</string>
+    <string name="sec_detail_nenhuma">Mantenha o sistema atualizado e revise as permissões dos seus apps periodicamente.</string>
+
+    <!-- Conteúdo dos relatórios -->
+    <string name="rep_sec_title">Segurança do dispositivo</string>
+    <string name="rep_sec_subtitle">Relatório gerado pelo SeguroTurbo</string>
+    <string name="rep_bm_title">Benchmark de desempenho</string>
+    <string name="rep_bm_subtitle">Pontuação total</string>
+    <string name="rep_alertas">Alertas encontrados</string>
+    <string name="rep_situacao">Situação</string>
+    <string name="rep_tudo_certo">Tudo certo</string>
+    <string name="rep_aparelho">Aparelho</string>
+    <string name="rep_chipset">Chipset</string>
+    <string name="rep_total">Total</string>
+    <string name="rep_armazenamento">Armazenamento</string>
+
+    <!-- Geral -->
+    <string name="btn_ok">OK</string>
+</resources>

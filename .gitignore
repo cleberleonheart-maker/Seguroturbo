@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Android / artefatos de build
+*.apk
+*.aab
+*.ap_
+*.dex
+release/
+captures/
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Configuração local (caminhos da máquina)
+local.properties
+
+# Segredos de assinatura (NÃO versionar)
+*.keystore
+*.jks
+keystore.properties
+CREDENCIAIS-KEYSTORE.txt

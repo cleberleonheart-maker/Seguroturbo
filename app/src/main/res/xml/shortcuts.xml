@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Atalhos de toque longo no ícone do app (App Shortcuts, Android 7.1+). -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:shortcutId="seguranca"
+        android:enabled="true"
+        android:icon="@drawable/ic_security"
+        android:shortcutShortLabel="@string/nav_seguranca"
+        android:shortcutLongLabel="@string/sec_title">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.seguraturbo.app"
+            android:targetClass="com.seguraturbo.app.MainActivity">
+            <extra
+                android:name="tela"
+                android:value="seguranca" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="game_turbo"
+        android:enabled="true"
+        android:icon="@drawable/ic_game_turbo"
+        android:shortcutShortLabel="@string/nav_game_turbo"
+        android:shortcutLongLabel="@string/gt_title">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.seguraturbo.app"
+            android:targetClass="com.seguraturbo.app.MainActivity">
+            <extra
+                android:name="tela"
+                android:value="game_turbo" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="benchmark"
+        android:enabled="true"
+        android:icon="@drawable/ic_benchmark"
+        android:shortcutShortLabel="@string/nav_benchmark"
+        android:shortcutLongLabel="@string/bm_title">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.seguraturbo.app"
+            android:targetClass="com.seguraturbo.app.MainActivity">
+            <extra
+                android:name="tela"
+                android:value="benchmark" />
+        </intent>
+    </shortcut>
+
+</shortcuts>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fundo profundo (espaço sideral) -->
+    <color name="bg_deep">#05070A</color>
+
+    <!-- Cores neon usadas no tema XML -->
+    <color name="neon_cyan">#00F2FF</color>
+    <color name="neon_purple">#BC13FE</color>
+    <color name="neon_magenta">#FF0055</color>
+
+    <!-- Ícone do app -->
+    <color name="ic_launcher_background">#05070A</color>
+</resources>

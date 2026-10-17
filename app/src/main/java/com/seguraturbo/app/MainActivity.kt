@@ -1,0 +1,80 @@
+package com.seguraturbo.app
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import com.seguraturbo.app.ui.MainScreen
+import com.seguraturbo.app.ui.splash.SplashScreen
+import com.seguraturbo.app.ui.theme.Aparencia
+import com.seguraturbo.app.ui.theme.Cores
+import com.seguraturbo.app.ui.theme.SeguroTurboTheme
+import com.seguraturbo.app.util.Agendador
+import com.seguraturbo.app.util.Notificacoes
+import com.seguraturbo.app.util.Preferencias
+import kotlinx.coroutines.delay
+
+class MainActivity : ComponentActivity() {
+
+    /** Aba a abrir (0 = Segurança). Pode ser alterada por atalhos via onNewIntent. */
+    private val abaInicial = mutableStateOf(0)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Aplica o tema e o tamanho da fonte salvos antes de desenhar.
+        Cores.definirTema(Preferencias.temaEscuro(this))
+        Aparencia.escalaFonte = Preferencias.escalaFonte(this)
+
+        // Prepara o canal de notificação e mantém o lembrete coerente com a preferência.
+        Notificacoes.criarCanal(this)
+        if (Preferencias.lembreteAtivo(this)) {
+            Agendador.agendar(this)
+        } else {
+            Agendador.cancelar(this)
+        }
+
+        abaInicial.value = abaDe(intent)
+
+        setContent {
+            SeguroTurboTheme {
+                var mostrarSplash by rememberSaveable { mutableStateOf(true) }
+                LaunchedEffect(Unit) {
+                    delay(1600)
+                    mostrarSplash = false
+                }
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Crossfade(targetState = mostrarSplash, label = "splash") { splash ->
+                        if (splash) SplashScreen() else MainScreen(abaInicial = abaInicial.value)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        abaInicial.value = abaDe(intent)
+    }
+
+    /** Converte o extra "tela" dos atalhos na aba correspondente. */
+    private fun abaDe(intent: Intent?): Int = when (intent?.getStringExtra("tela")) {
+        "game_turbo" -> 1
+        "benchmark" -> 2
+        else -> 0
+    }
+}
