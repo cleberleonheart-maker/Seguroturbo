@@ -75,6 +75,8 @@ fun MainScreen(abaInicial: Int = 0) {
     val escopo = rememberCoroutineScope()
     var atualizacao by remember { mutableStateOf<Atualizacao?>(null) }
     var checando by remember { mutableStateOf(false) }
+    var baixando by remember { mutableStateOf(false) }
+    var progresso by remember { mutableStateOf(0) }
     val versaoAtual = remember { Atualizador.versaoInstalada(ctx) }
 
     fun verificarAtualizacao(manual: Boolean) {
@@ -113,9 +115,39 @@ fun MainScreen(abaInicial: Int = 0) {
         AtualizacaoDialog(
             atualizacao = nova,
             versaoAtual = versaoAtual,
-            onBaixar = {
-                Atualizador.abrir(ctx, nova.apkUrl.ifBlank { nova.pagina })
-                atualizacao = null
+            instalavel = nova.apkUrl.isNotBlank(),
+            baixando = baixando,
+            progresso = progresso,
+            onInstalar = {
+                if (!baixando) {
+                    if (nova.apkUrl.isBlank()) {
+                        // Release sem APK: cai para a página de download.
+                        Atualizador.abrir(ctx, nova.pagina)
+                        atualizacao = null
+                    } else if (!Atualizador.podeInstalar(ctx)) {
+                        Toast.makeText(ctx, R.string.upd_permitir, Toast.LENGTH_LONG).show()
+                        Atualizador.pedirPermissaoInstalacao(ctx)
+                    } else {
+                        baixando = true
+                        progresso = -1
+                        escopo.launch {
+                            val arquivo = Atualizador.baixarApk(ctx, nova.apkUrl) { p ->
+                                withContext(Dispatchers.Main) { progresso = p }
+                            }
+                            baixando = false
+                            when {
+                                arquivo == null ->
+                                    Toast.makeText(ctx, R.string.upd_erro_download, Toast.LENGTH_LONG).show()
+                                !Atualizador.assinaturaConfere(ctx, arquivo) ->
+                                    Toast.makeText(ctx, R.string.upd_erro_assinatura, Toast.LENGTH_LONG).show()
+                                Atualizador.instalarApk(ctx, arquivo) ->
+                                    atualizacao = null
+                                else ->
+                                    Toast.makeText(ctx, R.string.upd_erro_download, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
             },
             onDepois = {
                 Preferencias.definirVersaoIgnorada(ctx, nova.versao)

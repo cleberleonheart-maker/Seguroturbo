@@ -28,6 +28,14 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.9
+
+- **Atualização dentro do app (auto-update)**: o verificador agora **baixa o APK da
+  release e abre o instalador do sistema**, sem passar pelo navegador. Mostra o
+  **progresso do download**, confere a **assinatura** do arquivo (mesmo certificado do
+  app) antes de instalar e, quando necessário, pede a autorização de "instalar apps
+  desconhecidos".
+
 ## Novidades da versão 1.8
 
 - **Não Perturbe automático (Game Turbo)**: nova opção que, com o acesso concedido,

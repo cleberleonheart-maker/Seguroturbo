@@ -142,4 +142,11 @@
     <string name="upd_verificar_btn">Verificar</string>
     <string name="upd_verificando">Verificando…</string>
     <string name="upd_atualizado">Você já está na versão mais recente</string>
+    <string name="upd_instalar">Baixar e instalar</string>
+    <string name="upd_abrir_navegador">Abrir no navegador</string>
+    <string name="upd_baixando">Baixando… %1$d%%</string>
+    <string name="upd_baixando_indeterminado">Baixando…</string>
+    <string name="upd_permitir">Autorize o SeguroTurbo a instalar apps para continuar</string>
+    <string name="upd_erro_download">Não foi possível baixar a atualização</string>
+    <string name="upd_erro_assinatura">O arquivo baixado não é válido (assinatura diferente)</string>
 </resources>

@@ -50,3 +50,4 @@ está implementado, exceto o que estiver marcado como **feito**.
 - [x] **Update checker** (v1.7): avisa quando há release nova no GitHub.
 - [x] **Não Perturbe automático** no Game Turbo (v1.8).
 - [x] **Patch de segurança** e **Google Play Protect** no scan (v1.8).
+- [x] **Auto-update no app** (v1.9): baixa e instala a nova versão sem abrir o navegador.
