@@ -19,15 +19,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seguraturbo.app.R
 import com.seguraturbo.app.model.AcaoConfig
@@ -44,6 +48,19 @@ import com.seguraturbo.app.util.AcoesSistema
 @Composable
 fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
     val contexto = LocalContext.current
+
+    // Ao voltar das configurações, revalida bateria e acesso ao Não Perturbe.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observador = LifecycleEventObserver { _, evento ->
+            if (evento == Lifecycle.Event.ON_RESUME) {
+                vm.atualizarBateria()
+                vm.atualizarDnd()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observador)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observador) }
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -73,6 +90,8 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
                 }
             }
         }
+
+        item { CartaoNaoPerturbe(vm) }
 
         item {
             BotaoNeon(
@@ -134,6 +153,29 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
             CartaoFuturista {
                 HistoricoSecao(vm.historico, onLimpar = { vm.limparHistorico() })
             }
+        }
+    }
+}
+
+@Composable
+private fun CartaoNaoPerturbe(vm: GameTurboViewModel) {
+    CartaoFuturista {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.gt_dnd_title),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    if (vm.dndAuto && !vm.dndAcesso) stringResource(R.string.gt_dnd_need_access)
+                    else stringResource(R.string.gt_dnd_desc),
+                    color = if (vm.dndAuto && !vm.dndAcesso) Cores.Amarelo else Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
+            Switch(checked = vm.dndAuto, onCheckedChange = { vm.definirDndAuto(it) })
         }
     }
 }

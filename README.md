@@ -28,6 +28,25 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.8
+
+- **Não Perturbe automático (Game Turbo)**: nova opção que, com o acesso concedido,
+  **silencia as notificações ao ativar o Modo Jogo** e restaura o modo anterior ao
+  desligá-lo.
+- **Checagens novas na segurança**:
+  - **Patch de segurança**: alerta quando as últimas correções do sistema têm mais de
+    6 meses (ou quando a data é desconhecida).
+  - **Google Play Protect**: avisa quando a Play Store não está instalada ou a
+    verificação de apps está desativada.
+- **Documentação**: seção de **ideias futuras** em [`IDEIAS.md`](IDEIAS.md).
+
+## Novidades da versão 1.7
+
+- **Verificador de atualizações**: o app consulta a **última release publicada no GitHub**
+  e avisa quando há uma versão mais nova, mostrando as notas e um botão para baixar.
+- **Seção "Atualizações"** nas configurações, com a **versão instalada** e uma
+  **checagem manual** ("Verificar"). A versão dispensada com "Depois" fica guardada.
+
 ## Novidades da versão 1.6
 
 - **Relatório em PDF**: além da imagem, agora dá para **exportar o resultado em PDF (A4)**

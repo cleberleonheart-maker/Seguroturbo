@@ -88,6 +88,7 @@ private fun recomendacao(acao: AcaoConfig): String = stringResource(
         AcaoConfig.OPCOES_DESENVOLVEDOR -> R.string.sec_detail_dev
         AcaoConfig.CACHE -> R.string.sec_detail_cache
         AcaoConfig.BATERIA -> R.string.sec_detail_bateria
+        AcaoConfig.ATUALIZACAO_SISTEMA -> R.string.sec_detail_atualizacao
         AcaoConfig.NENHUMA -> R.string.sec_detail_nenhuma
     }
 )

@@ -12,6 +12,7 @@ import com.seguraturbo.app.model.Game
 import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.util.HistoricoStore
 import com.seguraturbo.app.util.JogosDetector
+import com.seguraturbo.app.util.ModoConcentracao
 import com.seguraturbo.app.util.Preferencias
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,6 +34,10 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     var historico by mutableStateOf<List<HistoricoEntrada>>(emptyList())
     /** true = o app está isento da otimização de bateria do sistema. */
     var bateriaIsenta by mutableStateOf(false)
+    /** true = o usuário quer ativar o Não Perturbe junto com o Modo Jogo. */
+    var dndAuto by mutableStateOf(false)
+    /** true = o app tem acesso para alterar o modo Não Perturbe. */
+    var dndAcesso by mutableStateOf(false)
 
     init {
         carregarHistorico()
@@ -45,6 +50,7 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
             jogos = detectados.map { it.copy(otimizado = it.pacote in otimizados) }
         }
         atualizarBateria()
+        atualizarDnd()
     }
 
     private fun carregarHistorico() {
@@ -62,10 +68,38 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Consulta a preferência e o acesso ao modo Não Perturbe. */
+    fun atualizarDnd() {
+        val app = getApplication<Application>()
+        dndAuto = Preferencias.dndAuto(app)
+        dndAcesso = ModoConcentracao.temAcesso(app)
+    }
+
+    /** Liga/desliga o Não Perturbe automático. Sem acesso, abre as configurações. */
+    fun definirDndAuto(ativo: Boolean) {
+        val app = getApplication<Application>()
+        dndAuto = ativo
+        Preferencias.definirDndAuto(app, ativo)
+        if (ativo && !ModoConcentracao.temAcesso(app)) {
+            mensagem = null
+            ModoConcentracao.pedirAcesso(app)
+        }
+    }
+
     /** Recebe o valor real do Switch (evita dessincronizar em toques rápidos). */
     fun definirModoJogo(ativo: Boolean) {
         if (ativo == modoJogo) return
         modoJogo = ativo
+        if (dndAuto) {
+            if (ativo) {
+                if (!ModoConcentracao.ativar(getApplication<Application>())) {
+                    dndAcesso = false
+                    ModoConcentracao.pedirAcesso(getApplication<Application>())
+                }
+            } else {
+                ModoConcentracao.restaurar(getApplication<Application>())
+            }
+        }
         HistoricoStore.adicionar(
             getApplication<Application>(),
             HistoricoEntrada(

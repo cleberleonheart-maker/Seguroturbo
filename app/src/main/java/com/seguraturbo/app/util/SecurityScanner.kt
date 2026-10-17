@@ -23,6 +23,8 @@ import java.io.File
  *  - serviços de acessibilidade ativos
  *  - instalação de fontes desconhecidas
  *  - opções de desenvolvedor
+ *  - patch de segurança do sistema (data das últimas correções)
+ *  - Google Play Protect / verificação de apps
  *  - apps com permissões sensíveis
  *  - cache/temporários acumulados
  *
@@ -109,6 +111,12 @@ object SecurityScanner {
                 peso = 8
             )
         }
+
+        delay(350)
+        verificarPatchSeguranca()?.let { encontradas += it }
+
+        delay(350)
+        verificarPlayProtect(ctx)?.let { encontradas += it }
 
         delay(350)
         val appsSensiveis = withContext(Dispatchers.IO) { appsComPermissoesSensiveis(ctx) }
@@ -221,6 +229,95 @@ object SecurityScanner {
 
     private fun opcoesDesenvolvedor(ctx: Context): Boolean = try {
         Settings.Global.getInt(ctx.contentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1
+    } catch (e: Exception) {
+        false
+    }
+
+    /**
+     * Verifica a data do último patch de segurança do sistema (Android). Um patch
+     * com mais de 6 meses indica que o aparelho pode estar exposto a falhas já
+     * corrigidas em versões mais novas.
+     */
+    private fun verificarPatchSeguranca(): Threat? {
+        val patch = Build.VERSION.SECURITY_PATCH?.trim().orEmpty()
+        if (patch.isEmpty()) {
+            return Threat(
+                nome = "Nível de patch de segurança desconhecido",
+                tipo = "SISTEMA",
+                risco = "MÉDIO",
+                descricao = "O sistema não informa a data das últimas correções de segurança.",
+                acao = AcaoConfig.ATUALIZACAO_SISTEMA,
+                peso = 12
+            )
+        }
+        val meses = mesesDesde(patch) ?: return null
+        if (meses <= 6) return null
+        return Threat(
+            nome = "Sistema desatualizado",
+            tipo = "SISTEMA",
+            risco = "MÉDIO",
+            descricao = "Últimas correções de segurança de $patch (~$meses meses atrás). " +
+                "Procure atualizações do sistema.",
+            acao = AcaoConfig.ATUALIZACAO_SISTEMA,
+            peso = 12
+        )
+    }
+
+    /** Número de meses (aprox.) desde uma data no formato "yyyy-MM-dd". */
+    private fun mesesDesde(dataIso: String): Int? {
+        return try {
+            val fmt = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+            fmt.timeZone = java.util.TimeZone.getTimeZone("UTC")
+            val quando = fmt.parse(dataIso)?.time
+            if (quando == null) {
+                null
+            } else {
+                ((System.currentTimeMillis() - quando) / (1000L * 60 * 60 * 24 * 30))
+                    .toInt().coerceAtLeast(0)
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
+     * Confere se o Google Play Protect está disponível. Não existe API pública
+     * para ler o resultado do Protect, então verificamos a presença da Play Store
+     * e a verificação de pacotes (package verifier) do sistema.
+     */
+    private fun verificarPlayProtect(ctx: Context): Threat? {
+        if (!temApp(ctx, "com.android.vending")) {
+            return Threat(
+                nome = "Google Play Protect indisponível",
+                tipo = "PRIVACIDADE",
+                risco = "MÉDIO",
+                descricao = "A Play Store não está instalada, então os apps não passam " +
+                    "pela verificação automática do Google Play Protect.",
+                peso = 10
+            )
+        }
+        val verificador = try {
+            Settings.Global.getInt(ctx.contentResolver, "package_verifier_enable", 1)
+        } catch (e: Exception) {
+            1
+        }
+        if (verificador == 0) {
+            return Threat(
+                nome = "Verificação de apps desativada",
+                tipo = "PRIVACIDADE",
+                risco = "MÉDIO",
+                descricao = "A verificação de apps (usada pelo Google Play Protect) está " +
+                    "desligada no sistema.",
+                acao = AcaoConfig.SEGURANCA,
+                peso = 10
+            )
+        }
+        return null
+    }
+
+    private fun temApp(ctx: Context, pacote: String): Boolean = try {
+        ctx.packageManager.getApplicationInfo(pacote, 0)
+        true
     } catch (e: Exception) {
         false
     }

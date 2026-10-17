@@ -7,6 +7,10 @@
     <!-- Consulta o GitHub para verificar se há uma versão mais nova do app. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Permite ativar o modo Não Perturbe junto com o Modo Jogo (Game Turbo).
+         O usuário ainda precisa conceder o acesso de política de notificação. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
     <!-- Permite ler os apps com atividade de launcher para acharmos os jogos. -->
     <queries>
         <intent>

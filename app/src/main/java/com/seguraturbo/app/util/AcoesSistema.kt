@@ -22,6 +22,7 @@ object AcoesSistema {
             AcaoConfig.ACESSIBILIDADE -> Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             AcaoConfig.SEGURANCA -> Intent(Settings.ACTION_SECURITY_SETTINGS)
             AcaoConfig.BATERIA -> Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            AcaoConfig.ATUALIZACAO_SISTEMA -> Intent(Settings.ACTION_DEVICE_INFO_SETTINGS)
             AcaoConfig.CACHE, AcaoConfig.NENHUMA -> return false
         }
         return tentarAbrir(ctx, intent)

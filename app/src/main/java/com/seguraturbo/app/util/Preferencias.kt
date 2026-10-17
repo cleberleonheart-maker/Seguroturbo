@@ -15,6 +15,8 @@ object Preferencias {
     private const val K_LEMBRETE = "lembrete_ativo"
     private const val K_ULTIMO_SCORE = "ultimo_score"
     private const val K_VERSAO_IGNORADA = "versao_ignorada"
+    private const val K_DND_AUTO = "dnd_auto"
+    private const val K_FILTRO_ANTERIOR = "filtro_anterior"
 
     // ---- Tema ----
     fun temaEscuro(ctx: Context): Boolean =
@@ -65,6 +67,22 @@ object Preferencias {
 
     fun definirVersaoIgnorada(ctx: Context, versao: String) {
         prefs(ctx).edit().putString(K_VERSAO_IGNORADA, versao).apply()
+    }
+
+    // ---- Não Perturbe automático no Game Turbo ----
+    fun dndAuto(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(K_DND_AUTO, false)
+
+    fun definirDndAuto(ctx: Context, ativo: Boolean) {
+        prefs(ctx).edit().putBoolean(K_DND_AUTO, ativo).apply()
+    }
+
+    /** Modo de interrupção do sistema antes de o SeguroTurbo ativar o Não Perturbe. */
+    fun filtroAnterior(ctx: Context): Int =
+        prefs(ctx).getInt(K_FILTRO_ANTERIOR, 1) // 1 = INTERRUPTION_FILTER_ALL
+
+    fun definirFiltroAnterior(ctx: Context, filtro: Int) {
+        prefs(ctx).edit().putInt(K_FILTRO_ANTERIOR, filtro).apply()
     }
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

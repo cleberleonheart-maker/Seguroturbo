@@ -25,5 +25,6 @@ enum class AcaoConfig {
     ACESSIBILIDADE,
     SEGURANCA,
     CACHE,
-    BATERIA
+    BATERIA,
+    ATUALIZACAO_SISTEMA
 }

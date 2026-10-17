@@ -42,6 +42,9 @@
     <string name="gt_battery_warn">Battery optimization active</string>
     <string name="gt_battery_desc">Without the system limit, games run faster.</string>
     <string name="gt_battery_btn">Adjust</string>
+    <string name="gt_dnd_title">Automatic Do Not Disturb</string>
+    <string name="gt_dnd_desc">Silences notifications while Game Mode is on</string>
+    <string name="gt_dnd_need_access">Grant Do Not Disturb access in settings</string>
 
     <!-- Benchmark -->
     <string name="bm_title">Performance Benchmark</string>
@@ -110,6 +113,7 @@
     <string name="sec_detail_dev">Turn off Developer options when not in use, in Settings › System.</string>
     <string name="sec_detail_cache">Tap "Clean" to free the accumulated temporary files.</string>
     <string name="sec_detail_bateria">Exempt SeguroTurbo from battery optimization to receive the reminder on time.</string>
+    <string name="sec_detail_atualizacao">Look for system updates in Settings › About phone › Software update.</string>
     <string name="sec_detail_nenhuma">Keep the system updated and review your apps\' permissions regularly.</string>
 
     <!-- Conteúdo dos relatórios -->

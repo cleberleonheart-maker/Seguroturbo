@@ -42,6 +42,9 @@
     <string name="gt_battery_warn">Otimização de bateria ativa</string>
     <string name="gt_battery_desc">Sem a limitação do sistema, os jogos rendem mais.</string>
     <string name="gt_battery_btn">Ajustar</string>
+    <string name="gt_dnd_title">Não Perturbe automático</string>
+    <string name="gt_dnd_desc">Silencia as notificações enquanto o Modo Jogo está ativo</string>
+    <string name="gt_dnd_need_access">Conceda o acesso ao Não Perturbe nas configurações</string>
 
     <!-- Benchmark -->
     <string name="bm_title">Benchmark de Desempenho</string>
@@ -110,6 +113,7 @@
     <string name="sec_detail_dev">Desative as Opções do desenvolvedor quando não estiver usando, em Configurações › Sistema.</string>
     <string name="sec_detail_cache">Toque em "Limpar" para liberar os arquivos temporários acumulados.</string>
     <string name="sec_detail_bateria">Isole o SeguroTurbo da otimização de bateria para receber o lembrete no horário.</string>
+    <string name="sec_detail_atualizacao">Procure atualizações do sistema em Configurações › Sobre o telefone › Atualização de software.</string>
     <string name="sec_detail_nenhuma">Mantenha o sistema atualizado e revise as permissões dos seus apps periodicamente.</string>
 
     <!-- Conteúdo dos relatórios -->
