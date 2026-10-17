@@ -132,6 +132,15 @@
     <!-- Geral -->
     <string name="btn_ok">OK</string>
 
+    <!-- Onboarding -->
+    <string name="onboarding_subtitulo">Segurança • Desempenho • Benchmark</string>
+    <string name="onboarding_seg">Varredura real do aparelho (root, bloqueio de tela, patch de segurança, Play Protect) com pontuação 0–100 e botão para corrigir.</string>
+    <string name="onboarding_gt">Modo Jogo, lista dos jogos instalados, otimização de bateria e Não Perturbe automático.</string>
+    <string name="onboarding_bm">Mede CPU, GPU (OpenGL) e armazenamento, com histórico em gráfico e compartilhamento em imagem ou PDF.</string>
+    <string name="onboarding_perm_titulo">Permissões (só quando você usar)</string>
+    <string name="onboarding_perm_desc">Notificações no lembrete de verificação, instalar apps na atualização e Não Perturbe no Modo Jogo. Nada é usado sem o seu toque.</string>
+    <string name="onboarding_comecar">Começar</string>
+
     <!-- Atualizações -->
     <string name="upd_titulo">Nova versão disponível</string>
     <string name="upd_disponivel">Versão %1$s disponível</string>

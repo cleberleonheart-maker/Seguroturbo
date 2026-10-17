@@ -29,5 +29,8 @@ jobs:
       - name: Testes unitários
         run: ./gradlew test --no-daemon
 
+      - name: Análise estática (lint)
+        run: ./gradlew lintDebug --no-daemon
+
       - name: Build debug
         run: ./gradlew assembleDebug --no-daemon

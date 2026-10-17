@@ -17,6 +17,7 @@ object Preferencias {
     private const val K_VERSAO_IGNORADA = "versao_ignorada"
     private const val K_DND_AUTO = "dnd_auto"
     private const val K_FILTRO_ANTERIOR = "filtro_anterior"
+    private const val K_ONBOARDING_VISTO = "onboarding_visto"
 
     // ---- Tema ----
     fun temaEscuro(ctx: Context): Boolean =
@@ -83,6 +84,14 @@ object Preferencias {
 
     fun definirFiltroAnterior(ctx: Context, filtro: Int) {
         prefs(ctx).edit().putInt(K_FILTRO_ANTERIOR, filtro).apply()
+    }
+
+    // ---- Onboarding (tela de boas-vindas exibida só no primeiro uso) ----
+    fun onboardingVisto(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(K_ONBOARDING_VISTO, false)
+
+    fun definirOnboardingVisto(ctx: Context, visto: Boolean) {
+        prefs(ctx).edit().putBoolean(K_ONBOARDING_VISTO, visto).apply()
     }
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

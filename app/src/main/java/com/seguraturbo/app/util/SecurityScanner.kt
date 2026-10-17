@@ -264,7 +264,7 @@ object SecurityScanner {
     }
 
     /** Número de meses (aprox.) desde uma data no formato "yyyy-MM-dd". */
-    private fun mesesDesde(dataIso: String): Int? {
+    internal fun mesesDesde(dataIso: String): Int? {
         return try {
             val fmt = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
             fmt.timeZone = java.util.TimeZone.getTimeZone("UTC")

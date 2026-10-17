@@ -132,6 +132,15 @@
     <!-- Geral -->
     <string name="btn_ok">OK</string>
 
+    <!-- Onboarding -->
+    <string name="onboarding_subtitulo">Security • Performance • Benchmark</string>
+    <string name="onboarding_seg">Real device scan (root, screen lock, security patch, Play Protect) with a 0–100 score and a fix button.</string>
+    <string name="onboarding_gt">Game Mode, list of installed games, battery optimization and automatic Do Not Disturb.</string>
+    <string name="onboarding_bm">Measures CPU, GPU (OpenGL) and storage, with a score history chart and sharing as image or PDF.</string>
+    <string name="onboarding_perm_titulo">Permissions (only when you use them)</string>
+    <string name="onboarding_perm_desc">Notifications for the scan reminder, install apps for updates and Do Not Disturb in Game Mode. Nothing is used without your tap.</string>
+    <string name="onboarding_comecar">Get started</string>
+
     <!-- Atualizações -->
     <string name="upd_titulo">New version available</string>
     <string name="upd_disponivel">Version %1$s available</string>

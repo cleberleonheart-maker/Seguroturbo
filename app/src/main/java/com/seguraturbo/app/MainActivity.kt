@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.seguraturbo.app.ui.MainScreen
+import com.seguraturbo.app.ui.onboarding.OnboardingScreen
 import com.seguraturbo.app.ui.splash.SplashScreen
 import com.seguraturbo.app.ui.theme.Aparencia
 import com.seguraturbo.app.ui.theme.Cores
@@ -48,17 +49,35 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SeguroTurboTheme {
+                val contexto = this@MainActivity
                 var mostrarSplash by rememberSaveable { mutableStateOf(true) }
+                var mostrarOnboarding by rememberSaveable {
+                    mutableStateOf(!Preferencias.onboardingVisto(contexto))
+                }
                 LaunchedEffect(Unit) {
                     delay(1600)
                     mostrarSplash = false
+                }
+                val tela = when {
+                    mostrarSplash -> "splash"
+                    mostrarOnboarding -> "onboarding"
+                    else -> "app"
                 }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Crossfade(targetState = mostrarSplash, label = "splash") { splash ->
-                        if (splash) SplashScreen() else MainScreen(abaInicial = abaInicial.value)
+                    Crossfade(targetState = tela, label = "fluxo") { atual ->
+                        when (atual) {
+                            "splash" -> SplashScreen()
+                            "onboarding" -> OnboardingScreen(
+                                onConcluir = {
+                                    Preferencias.definirOnboardingVisto(contexto, true)
+                                    mostrarOnboarding = false
+                                }
+                            )
+                            else -> MainScreen(abaInicial = abaInicial.value)
+                        }
                     }
                 }
             }

@@ -33,7 +33,7 @@ está implementado, exceto o que estiver marcado como **feito**.
 
 ## Produto / UX
 
-- [ ] **Onboarding** no primeiro uso, explicando os três módulos e pedindo permissões.
+- [x] **Onboarding** no primeiro uso, explicando os três módulos e pedindo permissões.
 - [ ] **Tema automático** (seguir o sistema) além do claro/escuro manual.
 - [ ] **Checagem periódica de atualização** em segundo plano (WorkManager).
 - [ ] **Mais idiomas** (espanhol, francês).
@@ -42,7 +42,7 @@ está implementado, exceto o que estiver marcado como **feito**.
 ## Qualidade / engenharia
 
 - [ ] **Testes instrumentados** (Compose UI) para os fluxos principais.
-- [ ] **Lint + cobertura** no GitHub Actions.
+- [ ] **Cobertura** de testes no GitHub Actions (o **lint** já roda).
 - [ ] **Baseline Profiles** por módulo, para abertura ainda mais rápida.
 
 ## Feito
@@ -51,3 +51,5 @@ está implementado, exceto o que estiver marcado como **feito**.
 - [x] **Não Perturbe automático** no Game Turbo (v1.8).
 - [x] **Patch de segurança** e **Google Play Protect** no scan (v1.8).
 - [x] **Auto-update no app** (v1.9): baixa e instala a nova versão sem abrir o navegador.
+- [x] **Onboarding** no primeiro uso (v1.10).
+- [x] **Testes unitários** de versões/patch e **lint no CI** (v1.10).

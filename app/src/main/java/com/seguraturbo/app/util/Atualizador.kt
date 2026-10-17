@@ -237,7 +237,7 @@ object Atualizador {
     }
 
     /** Compara duas versões "x.y.z" numericamente. >0 se [a] for mais nova que [b]. */
-    private fun comparar(a: String, b: String): Int {
+    internal fun comparar(a: String, b: String): Int {
         val pa = a.split('.', '-', '+').map { it.toIntOrNull() ?: 0 }
         val pb = b.split('.', '-', '+').map { it.toIntOrNull() ?: 0 }
         for (i in 0 until maxOf(pa.size, pb.size)) {

@@ -28,6 +28,14 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.10
+
+- **Tela de boas-vindas (onboarding)**: no primeiro uso o app apresenta os três
+  módulos (Segurança, Game Turbo e Benchmark) e explica que as permissões são pedidas
+  **somente quando cada recurso é usado**. Aparece uma única vez, após a abertura.
+- **Qualidade**: testes unitários novos para a **comparação de versões** (updates) e
+  para o **cálculo da idade do patch de segurança**, e **lint** passou a rodar no CI.
+
 ## Novidades da versão 1.9
 
 - **Atualização dentro do app (auto-update)**: o verificador agora **baixa o APK da
