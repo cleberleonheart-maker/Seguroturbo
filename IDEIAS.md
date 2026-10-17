@@ -1,11 +1,10 @@
 # Ideias futuras
 
-Lista de ideias para o SeguroTurbo, agrupadas por tema. Serve de backlog: nada aqui
-está implementado, exceto o que estiver marcado como **feito**.
+Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que ainda
+**falta fazer**; o que já foi implementado está listado na seção **Feito**, no fim.
 
 ## Segurança (mais checagens reais)
 
-- [x] **Wi-Fi**: detectar rede aberta (sem senha), VPN ativa e DNS configurado.
 - [ ] **Auditoria de permissões**: tela detalhada de quais apps têm acesso a
       câmera, microfone, SMS, localização etc. (hoje há só um resumo).
 - [ ] **Root/SELinux/bootloader**: ampliar a detecção de root (estado do SELinux,
@@ -17,7 +16,6 @@ está implementado, exceto o que estiver marcado como **feito**.
 
 ## Desempenho / Game Turbo
 
-- [x] **Perfis de desempenho**: Economia / Equilibrado / Turbo.
 - [ ] **Monitor térmico**: temperatura da bateria/térmico com alerta de aquecimento.
 - [ ] **Limpeza de RAM**: encerrar apps escolhidos pelo usuário em segundo plano.
 - [ ] **Bloqueio de tela (screen pinning)** ao iniciar um jogo.
@@ -33,7 +31,6 @@ está implementado, exceto o que estiver marcado como **feito**.
 
 ## Produto / UX
 
-- [x] **Onboarding** no primeiro uso, explicando os três módulos e pedindo permissões.
 - [ ] **Tema automático** (seguir o sistema) além do claro/escuro manual.
 - [ ] **Checagem periódica de atualização** em segundo plano (WorkManager).
 - [ ] **Mais idiomas** (espanhol, francês).
