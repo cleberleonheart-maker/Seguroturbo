@@ -84,13 +84,13 @@
     <string name="toque_toques">%1$d taps in %2$d s</string>
     <string name="toque_por_segundo">Taps per second</string>
     <string name="toque_resposta">Average response</string>
+    <string name="toque_resposta_valor">%1$.0f ms</string>
     <string name="toque_multitouch">Multitouch (fingers)</string>
     <string name="toque_refazer">Retry</string>
     <string name="toque_fechar">Close</string>
 
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
-    <string name="gt_game_mode">Game Mode</string>
     <string name="gt_game_mode_on">Game Mode ON</string>
     <string name="gt_game_mode_off">Game Mode off</string>
     <string name="gt_mode_desc">System resources prioritized for games</string>
@@ -250,7 +250,6 @@
     <string name="upd_titulo">New version available</string>
     <string name="upd_disponivel">Version %1$s available</string>
     <string name="upd_versao_atual">Installed version: %1$s</string>
-    <string name="upd_baixar">Download</string>
     <string name="upd_depois">Later</string>
     <string name="upd_verificar">Updates</string>
     <string name="upd_verificar_btn">Check</string>
@@ -293,6 +292,11 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_27_1_novidades" />
+    <string-array name="changelog_1_27_1_correcoes">
+        <item>Touch test response unit now follows the device language.</item>
+        <item>Removed unused strings, slightly shrinking the APK.</item>
+    </string-array>
     <string-array name="changelog_1_27_novidades">
         <item>Instrumented tests (Compose UI) for the main flows, running on device/emulator.</item>
     </string-array>

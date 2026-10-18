@@ -84,13 +84,13 @@
     <string name="toque_toques">%1$d touchers en %2$d s</string>
     <string name="toque_por_segundo">Touchers par seconde</string>
     <string name="toque_resposta">Réponse moyenne</string>
+    <string name="toque_resposta_valor">%1$.0f ms</string>
     <string name="toque_multitouch">Multitouch (doigts)</string>
     <string name="toque_refazer">Refaire</string>
     <string name="toque_fechar">Fermer</string>
 
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
-    <string name="gt_game_mode">Mode Jeu</string>
     <string name="gt_game_mode_on">Mode Jeu ACTIVÉ</string>
     <string name="gt_game_mode_off">Mode Jeu désactivé</string>
     <string name="gt_mode_desc">Ressources du système priorisées pour les jeux</string>
@@ -250,7 +250,6 @@
     <string name="upd_titulo">Nouvelle version disponible</string>
     <string name="upd_disponivel">Version %1$s disponible</string>
     <string name="upd_versao_atual">Version installée : %1$s</string>
-    <string name="upd_baixar">Télécharger</string>
     <string name="upd_depois">Plus tard</string>
     <string name="upd_verificar">Mises à jour</string>
     <string name="upd_verificar_btn">Vérifier</string>
@@ -293,6 +292,11 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_27_1_novidades" />
+    <string-array name="changelog_1_27_1_correcoes">
+        <item>L\'unité de réponse du test tactile suit maintenant la langue de l\'appareil.</item>
+        <item>Textes inutilisés supprimés, réduisant légèrement la taille de l\'APK.</item>
+    </string-array>
     <string-array name="changelog_1_27_novidades">
         <item>Tests instrumentés (Compose UI) des flux principaux, exécutés sur appareil/émulateur.</item>
     </string-array>

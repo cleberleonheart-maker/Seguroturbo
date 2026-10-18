@@ -164,7 +164,7 @@ fun TesteToqueDialog(
                         )
                         LinhaResultado(
                             stringResource(R.string.toque_resposta),
-                            String.format(java.util.Locale.getDefault(), "%.0f ms", r.respostaMediaMs)
+                            stringResource(R.string.toque_resposta_valor, r.respostaMediaMs)
                         )
                         LinhaResultado(
                             stringResource(R.string.toque_multitouch),

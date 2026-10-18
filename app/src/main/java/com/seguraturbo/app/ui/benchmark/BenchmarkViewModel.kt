@@ -114,7 +114,8 @@ class BenchmarkViewModel(app: Application) : AndroidViewModel(app) {
         carregarHistorico()
     }
 
-    fun limparHistorico() {        HistoricoStore.limpar(getApplication<Application>())
+    fun limparHistorico() {
+        HistoricoStore.limpar(getApplication<Application>())
         BenchmarkStore.limpar(getApplication<Application>())
         pontuacoes = emptyList()
         carregarHistorico()
