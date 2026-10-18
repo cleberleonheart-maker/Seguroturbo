@@ -34,6 +34,7 @@ import com.seguraturbo.app.ui.components.GraficoLinha
 import com.seguraturbo.app.ui.components.HistoricoSecao
 import com.seguraturbo.app.ui.components.LinhaInfo
 import com.seguraturbo.app.ui.components.TituloSecao
+import com.seguraturbo.app.ui.components.TesteToqueDialog
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.DeviceInfo
 import com.seguraturbo.app.util.Comparacao
@@ -148,6 +149,8 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
 
         item { CartaoRede(vm) }
 
+        item { CartaoToque(vm) }
+
         if (vm.pontuacoes.isNotEmpty()) {
             val comparacao = Comparacao.resumo(vm.pontuacoes, vm.resultado?.total)
             item {
@@ -202,6 +205,33 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
                 HistoricoSecao(vm.historico, onLimpar = { vm.limparHistorico() })
             }
         }
+    }
+
+    if (vm.mostrarTesteToque) {
+        TesteToqueDialog(
+            onFechar = { vm.mostrarTesteToque = false },
+            onConcluido = { vm.registrouTesteToque(it) }
+        )
+    }
+}
+
+@Composable
+private fun CartaoToque(vm: BenchmarkViewModel) {
+    CartaoFuturista {
+        TituloSecao(stringResource(R.string.toque_titulo))
+        Spacer(Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.toque_desc),
+            color = Cores.TextoCinza,
+            fontSize = 12.sp
+        )
+        Spacer(Modifier.height(12.dp))
+        BotaoNeon(
+            texto = stringResource(R.string.toque_abrir),
+            onClick = { vm.mostrarTesteToque = true },
+            cor = Cores.Verde,
+            modifier = Modifier.fillMaxWidth().height(44.dp)
+        )
     }
 }
 

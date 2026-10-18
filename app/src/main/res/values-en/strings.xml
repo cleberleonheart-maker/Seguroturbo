@@ -72,6 +72,22 @@
     <string name="rede_falhou">Couldn\'t measure. Check your connection.</string>
     <string name="rede_aviso">Values vary with the network and time; use as a reference only.</string>
 
+    <!-- Screen/touch test -->
+    <string name="toque_titulo">Screen/touch test</string>
+    <string name="toque_desc">Measures touch response and multitouch.</string>
+    <string name="toque_abrir">Start test</string>
+    <string name="toque_instrucao">Tap as fast as you can in the area below for %1$d s.</string>
+    <string name="toque_iniciar">Start</string>
+    <string name="toque_toque_aqui">Tap here!</string>
+    <string name="toque_contando">Tap now! (%1$d s)</string>
+    <string name="toque_toques_parcial">%1$d taps</string>
+    <string name="toque_toques">%1$d taps in %2$d s</string>
+    <string name="toque_por_segundo">Taps per second</string>
+    <string name="toque_resposta">Average response</string>
+    <string name="toque_multitouch">Multitouch (fingers)</string>
+    <string name="toque_refazer">Retry</string>
+    <string name="toque_fechar">Close</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Game Mode</string>
@@ -277,6 +293,10 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_26_novidades">
+        <item>Screen/touch test: measures touch response, taps per second and multitouch.</item>
+    </string-array>
+    <string-array name="changelog_1_26_correcoes" />
     <string-array name="changelog_1_25_novidades">
         <item>Network test in the Benchmark: measures your connection\'s latency and download speed.</item>
     </string-array>

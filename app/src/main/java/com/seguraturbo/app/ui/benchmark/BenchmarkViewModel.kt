@@ -13,6 +13,7 @@ import com.seguraturbo.app.util.BenchmarkRede
 import com.seguraturbo.app.util.BenchmarkStore
 import com.seguraturbo.app.util.DeviceInfo
 import com.seguraturbo.app.util.HistoricoStore
+import com.seguraturbo.app.util.TesteToque
 import kotlinx.coroutines.launch
 
 /**
@@ -31,6 +32,9 @@ class BenchmarkViewModel(app: Application) : AndroidViewModel(app) {
     /** Estado do teste de rede. */
     var testandoRede by mutableStateOf(false)
     var rede by mutableStateOf<BenchmarkRede.Resultado?>(null)
+
+    /** true = o diálogo do teste de toque está aberto. */
+    var mostrarTesteToque by mutableStateOf(false)
 
     init {
         info = DeviceInfo.coletar(getApplication<Application>())
@@ -92,6 +96,22 @@ class BenchmarkViewModel(app: Application) : AndroidViewModel(app) {
                 carregarHistorico()
             }
         }
+    }
+
+    /** Guarda no histórico o resultado de um teste de toque. */
+    fun registrouTesteToque(r: TesteToque.Resultado) {
+        HistoricoStore.adicionar(
+            getApplication<Application>(),
+            HistoricoEntrada(
+                tipo = HistoricoEntrada.Tipo.BENCHMARK,
+                data = System.currentTimeMillis(),
+                titulo = String.format(
+                    java.util.Locale.getDefault(), "Toque: %.1f/s", r.toquesPorSegundo
+                ),
+                detalhe = "${r.toques} toques · multitouch ${r.maxPontos} dedos"
+            )
+        )
+        carregarHistorico()
     }
 
     fun limparHistorico() {        HistoricoStore.limpar(getApplication<Application>())

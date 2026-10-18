@@ -72,6 +72,22 @@
     <string name="rede_falhou">No se pudo medir. Revisa la conexión.</string>
     <string name="rede_aviso">Los valores varían según la red y el momento; úsalos solo como referencia.</string>
 
+    <!-- Test de pantalla/táctil -->
+    <string name="toque_titulo">Test de pantalla/táctil</string>
+    <string name="toque_desc">Mide la respuesta al toque y el multitáctil.</string>
+    <string name="toque_abrir">Iniciar test</string>
+    <string name="toque_instrucao">Toca lo más rápido que puedas en el área de abajo durante %1$d s.</string>
+    <string name="toque_iniciar">Empezar</string>
+    <string name="toque_toque_aqui">¡Toca aquí!</string>
+    <string name="toque_contando">¡Toca ahora! (%1$d s)</string>
+    <string name="toque_toques_parcial">%1$d toques</string>
+    <string name="toque_toques">%1$d toques en %2$d s</string>
+    <string name="toque_por_segundo">Toques por segundo</string>
+    <string name="toque_resposta">Respuesta media</string>
+    <string name="toque_multitouch">Multitáctil (dedos)</string>
+    <string name="toque_refazer">Repetir</string>
+    <string name="toque_fechar">Cerrar</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Modo Juego</string>
@@ -277,6 +293,10 @@
     <string name="cfg_novidades">Novedades de la versión</string>
     <string name="cfg_novidades_desc">Mira lo que cambió en las versiones recientes</string>
 
+    <string-array name="changelog_1_26_novidades">
+        <item>Test de pantalla/táctil: mide la respuesta al toque, los toques por segundo y el multitáctil.</item>
+    </string-array>
+    <string-array name="changelog_1_26_correcoes" />
     <string-array name="changelog_1_25_novidades">
         <item>Test de red en el Benchmark: mide la latencia y la velocidad de descarga de tu conexión.</item>
     </string-array>
