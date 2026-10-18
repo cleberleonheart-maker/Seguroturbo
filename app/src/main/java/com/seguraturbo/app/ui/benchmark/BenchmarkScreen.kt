@@ -146,6 +146,8 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
             }
         }
 
+        item { CartaoRede(vm) }
+
         if (vm.pontuacoes.isNotEmpty()) {
             val comparacao = Comparacao.resumo(vm.pontuacoes, vm.resultado?.total)
             item {
@@ -204,8 +206,62 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
 }
 
 @Composable
-private fun CartaoDispositivo(info: DeviceInfo.Info?) {
+private fun CartaoRede(vm: BenchmarkViewModel) {
+    val resultado = vm.rede
     CartaoFuturista {
+        TituloSecao(stringResource(R.string.rede_titulo))
+        Spacer(Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.rede_desc),
+            color = Cores.TextoCinza,
+            fontSize = 12.sp
+        )
+        Spacer(Modifier.height(12.dp))
+        BotaoNeon(
+            texto = stringResource(
+                if (vm.testandoRede) R.string.rede_btn_testando else R.string.rede_btn
+            ),
+            onClick = { vm.testarRede() },
+            habilitado = !vm.testandoRede,
+            cor = Cores.Roxo,
+            modifier = Modifier.fillMaxWidth().height(44.dp)
+        )
+        if (!vm.testandoRede) {
+            resultado?.let { r ->
+                Spacer(Modifier.height(12.dp))
+                r.latenciaMs?.let {
+                    LinhaInfo(
+                        stringResource(R.string.rede_latencia),
+                        stringResource(R.string.rede_latencia_valor, it)
+                    )
+                }
+                r.downloadMbps?.let {
+                    LinhaInfo(
+                        stringResource(R.string.rede_download),
+                        stringResource(R.string.rede_download_valor, it)
+                    )
+                }
+                if (!r.temDados) {
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        stringResource(R.string.rede_falhou),
+                        color = Cores.Amarelo,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.rede_aviso),
+            color = Cores.TextoCinza,
+            fontSize = 10.sp
+        )
+    }
+}
+
+@Composable
+private fun CartaoDispositivo(info: DeviceInfo.Info?) {    CartaoFuturista {
         TituloSecao(stringResource(R.string.bm_device_info))
         Spacer(Modifier.height(10.dp))
         if (info == null) {

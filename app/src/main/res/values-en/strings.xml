@@ -60,6 +60,18 @@
     <string name="ram_vazio">No app available to close.</string>
     <string name="ram_aviso">Android may reopen apps when needed and won\'t close apps with a foreground service. The memory gain is temporary.</string>
 
+    <!-- Network test -->
+    <string name="rede_titulo">Network test</string>
+    <string name="rede_desc">Measures your connection\'s latency and download speed.</string>
+    <string name="rede_btn">Test network</string>
+    <string name="rede_btn_testando">Measuring…</string>
+    <string name="rede_latencia">Latency</string>
+    <string name="rede_latencia_valor">%1$d ms</string>
+    <string name="rede_download">Download</string>
+    <string name="rede_download_valor">%1$.1f Mbps</string>
+    <string name="rede_falhou">Couldn\'t measure. Check your connection.</string>
+    <string name="rede_aviso">Values vary with the network and time; use as a reference only.</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Game Mode</string>
@@ -265,6 +277,10 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_25_novidades">
+        <item>Network test in the Benchmark: measures your connection\'s latency and download speed.</item>
+    </string-array>
+    <string-array name="changelog_1_25_correcoes" />
     <string-array name="changelog_1_24_novidades">
         <item>RAM cleanup: choose which apps to close (background processes) to free up memory, with a RAM usage indicator.</item>
     </string-array>

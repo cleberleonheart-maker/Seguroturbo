@@ -20,7 +20,7 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Benchmark
 
-- [ ] **Teste de rede**: velocidade de download e latência.
+- [x] **Teste de rede** (v1.25): velocidade de download e latência.
 - [ ] **Teste de tela/touch**: resposta ao toque e multitouch.
 ## Produto / UX
 
@@ -60,3 +60,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Auditoria de permissões** por app (câmera, microfone, etc.) (v1.22).
 - [x] **Integridade do sistema**: root, SELinux e bootloader (v1.23).
 - [x] **Limpeza de RAM**: encerrar apps escolhidos (v1.24).
+- [x] **Teste de rede**: latência e download (v1.25).

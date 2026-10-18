@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.seguraturbo.app.model.BenchmarkResult
 import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.util.BenchmarkEngine
+import com.seguraturbo.app.util.BenchmarkRede
 import com.seguraturbo.app.util.BenchmarkStore
 import com.seguraturbo.app.util.DeviceInfo
 import com.seguraturbo.app.util.HistoricoStore
@@ -26,6 +27,10 @@ class BenchmarkViewModel(app: Application) : AndroidViewModel(app) {
     var info by mutableStateOf<DeviceInfo.Info?>(null)
     var historico by mutableStateOf<List<HistoricoEntrada>>(emptyList())
     var pontuacoes by mutableStateOf<List<Int>>(emptyList())
+
+    /** Estado do teste de rede. */
+    var testandoRede by mutableStateOf(false)
+    var rede by mutableStateOf<BenchmarkRede.Resultado?>(null)
 
     init {
         info = DeviceInfo.coletar(getApplication<Application>())
@@ -62,8 +67,34 @@ class BenchmarkViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun limparHistorico() {
-        HistoricoStore.limpar(getApplication<Application>())
+    /** Mede latência e velocidade de download (rede real). */
+    fun testarRede() {
+        if (testandoRede) return
+        viewModelScope.launch {
+            testandoRede = true
+            rede = null
+            val r = BenchmarkRede.executar()
+            rede = r
+            testandoRede = false
+            if (r.temDados) {
+                val download = r.downloadMbps?.let {
+                    String.format(java.util.Locale.getDefault(), "%.1f", it)
+                } ?: "?"
+                HistoricoStore.adicionar(
+                    getApplication<Application>(),
+                    HistoricoEntrada(
+                        tipo = HistoricoEntrada.Tipo.BENCHMARK,
+                        data = System.currentTimeMillis(),
+                        titulo = "Rede: $download Mbps",
+                        detalhe = "Latência ${r.latenciaMs ?: "?"} ms"
+                    )
+                )
+                carregarHistorico()
+            }
+        }
+    }
+
+    fun limparHistorico() {        HistoricoStore.limpar(getApplication<Application>())
         BenchmarkStore.limpar(getApplication<Application>())
         pontuacoes = emptyList()
         carregarHistorico()

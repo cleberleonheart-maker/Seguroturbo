@@ -60,6 +60,18 @@
     <string name="ram_vazio">Nenhum app disponível para encerrar.</string>
     <string name="ram_aviso">O Android pode reabrir apps quando precisar e não encerra apps com serviço em primeiro plano. O ganho de memória é temporário.</string>
 
+    <!-- Teste de rede -->
+    <string name="rede_titulo">Teste de rede</string>
+    <string name="rede_desc">Mede a latência e a velocidade de download da sua conexão.</string>
+    <string name="rede_btn">Medir rede</string>
+    <string name="rede_btn_testando">Medindo…</string>
+    <string name="rede_latencia">Latência</string>
+    <string name="rede_latencia_valor">%1$d ms</string>
+    <string name="rede_download">Download</string>
+    <string name="rede_download_valor">%1$.1f Mbps</string>
+    <string name="rede_falhou">Não foi possível medir. Verifique a conexão.</string>
+    <string name="rede_aviso">Os valores variam conforme a rede e o momento; use apenas como referência.</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Modo Jogo</string>
@@ -265,6 +277,10 @@
     <string name="cfg_novidades">Novidades da versão</string>
     <string name="cfg_novidades_desc">Veja o que mudou nas versões recentes</string>
 
+    <string-array name="changelog_1_25_novidades">
+        <item>Teste de rede no Benchmark: mede a latência e a velocidade de download da sua conexão.</item>
+    </string-array>
+    <string-array name="changelog_1_25_correcoes" />
     <string-array name="changelog_1_24_novidades">
         <item>Limpeza de RAM: escolha quais apps encerrar (em segundo plano) para liberar memória, com indicador de uso de RAM.</item>
     </string-array>
