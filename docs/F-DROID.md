@@ -16,16 +16,29 @@ e exige uma licença livre. O projeto já está preparado:
 
 Duas opções:
 
-### Opção A — formulário (mais simples)
+### Opção A — pedido de empacotamento (RFP) — mais simples
 
-1. Acesse <https://f-droid.org/en/docs/Inclusion_Policy/>
-2. Use o formulário de submissão: <https://f-droid.org/packages/#suggest>
-3. Informe a URL do repositório: `https://github.com/cleberleonheart-maker/Seguroturbo`
-4. Descreva o app em poucas frases (cole o `short_description.txt`)
+1. Acesse a fila de submissões: <https://gitlab.com/fdroid/rfp/issues>
+2. Clique em **New issue** (precisa de conta no GitLab)
+3. No título use: `New App: com.seguraturbo.app`
+4. No corpo, cole:
 
-O F-Droid cria um pedido de inclusão e um voluntário revisa.
+```
+App name: SeguroTurbo
+Source code: https://github.com/cleberleonheart-maker/Seguroturbo
+License: GPL-3.0-only
+Version: 1.27.1 (versionCode 29)
 
-### Opção B — merge request no fdroiddata (mais rápido)
+SeguroTurbo is a security, privacy and performance app for Android:
+permission audit, system integrity check (root/SELinux/bootloader),
+RAM cleanup, Game Turbo and real benchmarks (CPU/GPU/network/touch).
+Open source, no tracking, no ads, no data collection.
+Metadata (fastlane) is already in the repo.
+```
+
+5. Responda eventualmente às perguntas dos revisores.
+
+### Opção B — merge request no fdroiddata (mais rápido e recomendado)
 
 1. Crie conta no GitLab e faça fork de <https://gitlab.com/fdroid/fdroiddata>
 2. Crie `metadata/com.seguraturbo.app.yml` no fork com:
@@ -68,10 +81,14 @@ UpdateCheckMode: Tags
 - Atualizações: quando você criar uma tag `vX.Y` no GitHub com o `versionCode` incrementado
   no `app/build.gradle`, o F-Droid detecta automaticamente (`UpdateCheckMode: Tags`)
 
-## 4. Ícone
+## 4. Ícone e screenshots
 
-O F-Droid extrai o ícone do APK automaticamente. Se quiser um ícone de 512×512 px
-para a listagem, adicione `fastlane/metadata/android/en-US/images/icon.png`.
+O F-Droid extrai o ícone do APK automaticamente. O guia oficial recomenda também:
+
+- `fastlane/metadata/android/en-US/images/icon.png` (512×512 px)
+- `fastlane/metadata/android/en-US/images/phoneScreenshots/1.png` (capturas de tela)
+
+Screenshots aumentam muito a chance de aceitação — vale tirar 3–4 do app rodando.
 
 ## 5. Página de doação
 
