@@ -47,6 +47,19 @@
     <string name="perm_sensores">Sensores</string>
     <string name="perm_calendario">Calendario</string>
 
+    <!-- Limpieza de RAM -->
+    <string name="ram_titulo">Limpieza de RAM</string>
+    <string name="ram_desc">Cierra apps en segundo plano para liberar memoria.</string>
+    <string name="ram_livre">%1$d MB libres de %2$d MB</string>
+    <string name="ram_uso">En uso: %1$d%%</string>
+    <string name="ram_abrir">Limpiar RAM</string>
+    <string name="ram_selecione">Elige las apps para cerrar:</string>
+    <string name="ram_liberar">Cerrar (%1$d)</string>
+    <string name="ram_fechar">Cerrar</string>
+    <string name="ram_carregando">Cargando apps…</string>
+    <string name="ram_vazio">Ninguna app disponible para cerrar.</string>
+    <string name="ram_aviso">Android puede reabrir apps cuando lo necesite y no cierra apps con servicio en primer plano. La ganancia de memoria es temporal.</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Modo Juego</string>
@@ -252,6 +265,10 @@
     <string name="cfg_novidades">Novedades de la versión</string>
     <string name="cfg_novidades_desc">Mira lo que cambió en las versiones recientes</string>
 
+    <string-array name="changelog_1_24_novidades">
+        <item>Limpieza de RAM: elige qué apps cerrar (segundo plano) para liberar memoria, con indicador de uso de RAM.</item>
+    </string-array>
+    <string-array name="changelog_1_24_correcoes" />
     <string-array name="changelog_1_23_novidades">
         <item>Detección de integridad ampliada: root, estado de SELinux (Enforcing/Permissive) e indicios de bootloader desbloqueado, con explicación de cada caso.</item>
     </string-array>

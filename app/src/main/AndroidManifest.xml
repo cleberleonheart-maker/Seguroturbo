@@ -53,6 +53,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    <!-- Permite encerrar os processos em segundo plano dos apps escolhidos pelo
+         usuário na "Limpeza de RAM". É uma permissão normal, sem prompt. -->
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"

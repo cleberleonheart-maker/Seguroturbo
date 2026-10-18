@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.seguraturbo.app.model.Game
 import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.model.PerfilDesempenho
+import com.seguraturbo.app.util.GerenciadorRam
 import com.seguraturbo.app.util.HistoricoStore
 import com.seguraturbo.app.util.JogosDetector
 import com.seguraturbo.app.util.ModoConcentracao
@@ -47,6 +48,12 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     /** Temperatura da bateria em °C (null se o sistema não informar). */
     var temperatura by mutableStateOf<Float?>(null)
 
+    /** Memória do aparelho (total/livre em MB) para o cartão de limpeza de RAM. */
+    var memoria by mutableStateOf(GerenciadorRam.Memoria(0L, 0L))
+
+    /** true = o diálogo de limpeza de RAM está aberto. */
+    var mostrarLimpezaRam by mutableStateOf(false)
+
     init {
         perfil = Preferencias.perfilDesempenho(getApplication<Application>())
         atualizarTemperatura()
@@ -61,10 +68,36 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         }
         atualizarBateria()
         atualizarDnd()
+        atualizarRam()
     }
 
     private fun carregarHistorico() {
         historico = HistoricoStore.listar(getApplication<Application>())
+    }
+
+    /** Atualiza a memória total/livre exibida na limpeza de RAM. */
+    fun atualizarRam() {
+        memoria = GerenciadorRam.memoria(getApplication<Application>())
+    }
+
+    /** Registra no histórico/estado o resultado de uma limpeza de RAM. */
+    fun memoriasEncerradas(quantidade: Int) {
+        atualizarRam()
+        if (quantidade > 0) {
+            mensagem = "$quantidade app(s) encerrado(s)"
+            HistoricoStore.adicionar(
+                getApplication<Application>(),
+                HistoricoEntrada(
+                    tipo = HistoricoEntrada.Tipo.TURBO,
+                    data = System.currentTimeMillis(),
+                    titulo = "Limpeza de RAM",
+                    detalhe = "$quantidade app(s) em segundo plano encerrado(s)"
+                )
+            )
+            carregarHistorico()
+        } else {
+            mensagem = null
+        }
     }
 
     /** Consulta se o app está isento da otimização de bateria (Doze). */

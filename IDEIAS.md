@@ -13,7 +13,8 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Desempenho / Game Turbo
 
-- [ ] **Limpeza de RAM**: encerrar apps escolhidos pelo usuário em segundo plano.
+- [x] **Limpeza de RAM** (v1.24): encerrar apps escolhidos pelo usuário em segundo
+      plano, com indicador de uso de memória.
 - [ ] **Bloqueio de tela (screen pinning)** ao iniciar um jogo.
 - [ ] **Silenciar só mídia** durante o jogo (opções finas de áudio).
 
@@ -58,3 +59,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Barra flutuante** do Game Turbo sobre o jogo (v1.20).
 - [x] **Auditoria de permissões** por app (câmera, microfone, etc.) (v1.22).
 - [x] **Integridade do sistema**: root, SELinux e bootloader (v1.23).
+- [x] **Limpeza de RAM**: encerrar apps escolhidos (v1.24).

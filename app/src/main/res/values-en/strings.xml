@@ -47,6 +47,19 @@
     <string name="perm_sensores">Sensors</string>
     <string name="perm_calendario">Calendar</string>
 
+    <!-- RAM cleanup -->
+    <string name="ram_titulo">RAM cleanup</string>
+    <string name="ram_desc">Close background apps to free up memory.</string>
+    <string name="ram_livre">%1$d MB free of %2$d MB</string>
+    <string name="ram_uso">In use: %1$d%%</string>
+    <string name="ram_abrir">Clean RAM</string>
+    <string name="ram_selecione">Choose the apps to close:</string>
+    <string name="ram_liberar">Close (%1$d)</string>
+    <string name="ram_fechar">Close</string>
+    <string name="ram_carregando">Loading apps…</string>
+    <string name="ram_vazio">No app available to close.</string>
+    <string name="ram_aviso">Android may reopen apps when needed and won\'t close apps with a foreground service. The memory gain is temporary.</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Game Mode</string>
@@ -252,6 +265,10 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_24_novidades">
+        <item>RAM cleanup: choose which apps to close (background processes) to free up memory, with a RAM usage indicator.</item>
+    </string-array>
+    <string-array name="changelog_1_24_correcoes" />
     <string-array name="changelog_1_23_novidades">
         <item>Expanded integrity detection: root, SELinux status (Enforcing/Permissive) and signs of an unlocked bootloader, with an explanation for each case.</item>
     </string-array>

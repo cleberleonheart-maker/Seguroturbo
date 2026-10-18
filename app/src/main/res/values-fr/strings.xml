@@ -47,6 +47,19 @@
     <string name="perm_sensores">Capteurs</string>
     <string name="perm_calendario">Calendrier</string>
 
+    <!-- Nettoyage de la RAM -->
+    <string name="ram_titulo">Nettoyage de la RAM</string>
+    <string name="ram_desc">Fermez les apps en arrière-plan pour libérer de la mémoire.</string>
+    <string name="ram_livre">%1$d Mo libres sur %2$d Mo</string>
+    <string name="ram_uso">Utilisée : %1$d%%</string>
+    <string name="ram_abrir">Nettoyer la RAM</string>
+    <string name="ram_selecione">Choisissez les apps à fermer :</string>
+    <string name="ram_liberar">Fermer (%1$d)</string>
+    <string name="ram_fechar">Fermer</string>
+    <string name="ram_carregando">Chargement des apps…</string>
+    <string name="ram_vazio">Aucune app disponible à fermer.</string>
+    <string name="ram_aviso">Android peut rouvrir les apps au besoin et ne ferme pas les apps avec un service au premier plan. Le gain de mémoire est temporaire.</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Mode Jeu</string>
@@ -252,6 +265,10 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_24_novidades">
+        <item>Nettoyage de la RAM : choisissez les apps à fermer (arrière-plan) pour libérer de la mémoire, avec un indicateur d\'utilisation de la RAM.</item>
+    </string-array>
+    <string-array name="changelog_1_24_correcoes" />
     <string-array name="changelog_1_23_novidades">
         <item>Détection d\'intégrité étendue : root, état de SELinux (Enforcing/Permissive) et indices de bootloader déverrouillé, avec une explication pour chaque cas.</item>
     </string-array>

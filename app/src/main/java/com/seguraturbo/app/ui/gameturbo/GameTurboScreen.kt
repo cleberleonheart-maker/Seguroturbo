@@ -43,6 +43,7 @@ import com.seguraturbo.app.ui.components.BarraProgressoNeon
 import com.seguraturbo.app.ui.components.BotaoNeon
 import com.seguraturbo.app.ui.components.CartaoFuturista
 import com.seguraturbo.app.ui.components.HistoricoSecao
+import com.seguraturbo.app.ui.components.LimpezaRamDialog
 import com.seguraturbo.app.ui.components.SeloStatus
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.theme.Cores
@@ -63,6 +64,7 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
                 vm.atualizarBateria()
                 vm.atualizarDnd()
                 vm.atualizarTemperatura()
+                vm.atualizarRam()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observador)
@@ -116,6 +118,8 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         item { CartaoBateria(vm) }
 
         item { CartaoTermico(vm) }
+
+        item { CartaoRam(vm) }
 
         if (vm.otimizando || vm.mensagem != null) {
             item {
@@ -178,6 +182,16 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
                 HistoricoSecao(vm.historico, onLimpar = { vm.limparHistorico() })
             }
         }
+    }
+
+    if (vm.mostrarLimpezaRam) {
+        LimpezaRamDialog(
+            onFechar = { vm.mostrarLimpezaRam = false },
+            onLiberou = { quantidade ->
+                vm.mostrarLimpezaRam = false
+                vm.memoriasEncerradas(quantidade)
+            }
+        )
     }
 }
 
@@ -335,8 +349,52 @@ private fun CartaoTermico(vm: GameTurboViewModel) {
 }
 
 @Composable
-private fun CartaoBateria(vm: GameTurboViewModel) {
-    val contexto = LocalContext.current
+private fun CartaoRam(vm: GameTurboViewModel) {
+    val m = vm.memoria
+    val cor = when {
+        m.percentualUsado >= 85 -> Cores.Vermelho
+        m.percentualUsado >= 70 -> Cores.Amarelo
+        else -> Cores.Verde
+    }
+    CartaoFuturista {
+        TituloSecao(stringResource(R.string.ram_titulo))
+        Spacer(Modifier.height(10.dp))
+        Text(
+            stringResource(R.string.ram_desc),
+            color = Cores.TextoCinza,
+            fontSize = 12.sp
+        )
+        Spacer(Modifier.height(12.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("🧠", fontSize = 20.sp)
+            Spacer(Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.ram_livre, m.livreMb, m.totalMb),
+                    color = cor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.ram_uso, m.percentualUsado),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        BarraProgressoNeon(progresso = m.percentualUsado / 100f)
+        Spacer(Modifier.height(12.dp))
+        BotaoNeon(
+            texto = stringResource(R.string.ram_abrir),
+            onClick = { vm.mostrarLimpezaRam = true },
+            modifier = Modifier.fillMaxWidth().height(44.dp)
+        )
+    }
+}
+
+@Composable
+private fun CartaoBateria(vm: GameTurboViewModel) {    val contexto = LocalContext.current
     val cor = if (vm.bateriaIsenta) Cores.Verde else Cores.Amarelo
     CartaoFuturista {
         TituloSecao(stringResource(R.string.gt_battery_title))
