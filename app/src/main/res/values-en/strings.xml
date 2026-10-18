@@ -26,6 +26,27 @@
     <string name="sec_fix_clean">Clean</string>
     <string name="sec_share">Share report</string>
 
+    <!-- Permission audit -->
+    <string name="perm_titulo">Permission audit</string>
+    <string name="perm_desc">See which apps can use the camera, microphone, location, SMS, contacts and more.</string>
+    <string name="perm_abrir">View details</string>
+    <string name="perm_resumo">Summary by permission</string>
+    <string name="perm_apps">Apps with access</string>
+    <string name="perm_carregando">Analyzing app permissions…</string>
+    <string name="perm_vazio">No app has sensitive permissions granted.</string>
+    <string name="perm_fechar">Close</string>
+    <string name="perm_contagem">%1$d app(s)</string>
+    <string name="perm_aviso">For privacy, Android only shows visible apps (Android 11+ rule). Review anything you don\'t recognize in the system Settings.</string>
+    <string name="perm_camera">Camera</string>
+    <string name="perm_microfone">Microphone</string>
+    <string name="perm_localizacao">Location</string>
+    <string name="perm_sms">SMS</string>
+    <string name="perm_contatos">Contacts</string>
+    <string name="perm_chamadas">Calls</string>
+    <string name="perm_telefone">Phone</string>
+    <string name="perm_sensores">Sensors</string>
+    <string name="perm_calendario">Calendar</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Game Mode</string>
@@ -231,6 +252,10 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_22_novidades">
+        <item>Permission audit: see which apps have access to the camera, microphone, location, SMS, contacts and more.</item>
+    </string-array>
+    <string-array name="changelog_1_22_correcoes" />
     <string-array name="changelog_1_21_novidades" />
     <string-array name="changelog_1_21_correcoes">
         <item>Fixed the “couldn\'t download the update” error — the download now runs off the main thread.</item>

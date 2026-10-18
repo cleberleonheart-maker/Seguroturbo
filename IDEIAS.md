@@ -5,8 +5,8 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Segurança (mais checagens reais)
 
-- [ ] **Auditoria de permissões**: tela detalhada de quais apps têm acesso a
-      câmera, microfone, SMS, localização etc. (hoje há só um resumo).
+- [x] **Auditoria de permissões** (v1.22): tela detalhada de quais apps têm acesso a
+      câmera, microfone, SMS, localização etc.
 - [ ] **Root/SELinux/bootloader**: ampliar a detecção de root (estado do SELinux,
       integridade do sistema) e explicar cada caso.
 - [ ] **Play Integrity**: checar a integridade do dispositivo (quando integrável).
@@ -55,3 +55,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Changelog / Novidades** (novo + correções) mostrado ao atualizar (v1.18).
 - [x] **Auto-update mais robusto**: segue redirecionamentos e abre o navegador como reserva (v1.18).
 - [x] **Compartilhar o gráfico** de evolução das pontuações (v1.19).
+- [x] **Barra flutuante** do Game Turbo sobre o jogo (v1.20).
+- [x] **Auditoria de permissões** por app (câmera, microfone, etc.) (v1.22).

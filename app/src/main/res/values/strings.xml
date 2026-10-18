@@ -26,6 +26,27 @@
     <string name="sec_fix_clean">Limpar</string>
     <string name="sec_share">Compartilhar relatório</string>
 
+    <!-- Auditoria de permissões -->
+    <string name="perm_titulo">Auditoria de permissões</string>
+    <string name="perm_desc">Veja quais apps podem usar câmera, microfone, localização, SMS, contatos e mais.</string>
+    <string name="perm_abrir">Ver detalhes</string>
+    <string name="perm_resumo">Resumo por permissão</string>
+    <string name="perm_apps">Apps com acesso</string>
+    <string name="perm_carregando">Analisando as permissões dos apps…</string>
+    <string name="perm_vazio">Nenhum app com permissões sensíveis concedidas.</string>
+    <string name="perm_fechar">Fechar</string>
+    <string name="perm_contagem">%1$d app(s)</string>
+    <string name="perm_aviso">Por privacidade, o Android mostra apenas os apps visíveis (regra do Android 11+). Revise o que você não reconhece nas Configurações do sistema.</string>
+    <string name="perm_camera">Câmera</string>
+    <string name="perm_microfone">Microfone</string>
+    <string name="perm_localizacao">Localização</string>
+    <string name="perm_sms">SMS</string>
+    <string name="perm_contatos">Contatos</string>
+    <string name="perm_chamadas">Chamadas</string>
+    <string name="perm_telefone">Telefone</string>
+    <string name="perm_sensores">Sensores</string>
+    <string name="perm_calendario">Calendário</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Modo Jogo</string>
@@ -231,6 +252,10 @@
     <string name="cfg_novidades">Novidades da versão</string>
     <string name="cfg_novidades_desc">Veja o que mudou nas versões recentes</string>
 
+    <string-array name="changelog_1_22_novidades">
+        <item>Auditoria de permissões: veja quais apps têm acesso a câmera, microfone, localização, SMS, contatos e mais.</item>
+    </string-array>
+    <string-array name="changelog_1_22_correcoes" />
     <string-array name="changelog_1_21_novidades" />
     <string-array name="changelog_1_21_correcoes">
         <item>Corrigido o erro “não foi possível baixar a atualização” — o download agora roda fora da thread principal.</item>

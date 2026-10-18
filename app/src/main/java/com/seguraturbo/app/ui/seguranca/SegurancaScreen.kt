@@ -45,6 +45,7 @@ import com.seguraturbo.app.ui.components.BotaoNeon
 import com.seguraturbo.app.ui.components.CartaoFuturista
 import com.seguraturbo.app.ui.components.DetalheAmeacaDialog
 import com.seguraturbo.app.ui.components.HistoricoSecao
+import com.seguraturbo.app.ui.components.PermissoesDialog
 import com.seguraturbo.app.ui.components.SeloStatus
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.theme.Cores
@@ -56,6 +57,7 @@ import com.seguraturbo.app.util.RelatorioPdf
 fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
     val contexto = LocalContext.current
     var selecionada by remember { mutableStateOf<Threat?>(null) }
+    var mostrarPermissoes by remember { mutableStateOf(false) }
     val transicao = rememberInfiniteTransition(label = "pulso")
     val pulso by transicao.animateFloat(
         initialValue = 0.35f,
@@ -88,6 +90,8 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
                 )
             }
         }
+
+        item { CartaoAuditoriaPermissoes { mostrarPermissoes = true } }
 
         if (vm.limpando || vm.mensagemLimpeza != null) {
             item {
@@ -195,6 +199,10 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
             onFechar = { selecionada = null }
         )
     }
+
+    if (mostrarPermissoes) {
+        PermissoesDialog(onFechar = { mostrarPermissoes = false })
+    }
 }
 
 /** Gera o relatório (imagem ou PDF) do resultado do scan e abre o compartilhamento. */
@@ -291,6 +299,25 @@ private fun CartaoStatus(vm: SegurancaViewModel, pulso: Float) {
             Spacer(Modifier.height(14.dp))
             BarraProgressoNeon(progresso = pulso)
         }
+    }
+}
+
+@Composable
+private fun CartaoAuditoriaPermissoes(onAbrir: () -> Unit) {
+    CartaoFuturista {
+        TituloSecao(stringResource(R.string.perm_titulo))
+        Spacer(Modifier.height(10.dp))
+        Text(
+            stringResource(R.string.perm_desc),
+            color = Cores.TextoCinza,
+            fontSize = 12.sp
+        )
+        Spacer(Modifier.height(12.dp))
+        BotaoNeon(
+            texto = stringResource(R.string.perm_abrir),
+            onClick = onAbrir,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 

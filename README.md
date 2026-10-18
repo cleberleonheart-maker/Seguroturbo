@@ -28,6 +28,12 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.22
+
+- **Auditoria de permissões**: nova seção na Segurança que mostra quais apps
+  visíveis têm acesso concedido a câmera, microfone, localização, SMS, contatos,
+  chamadas, telefone, sensores e calendário — com um resumo por permissão.
+
 ## Novidades da versão 1.21
 
 - **Correção do auto-update**: o download da atualização agora roda fora da thread

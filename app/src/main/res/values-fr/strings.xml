@@ -26,6 +26,27 @@
     <string name="sec_fix_clean">Nettoyer</string>
     <string name="sec_share">Partager le rapport</string>
 
+    <!-- Audit des autorisations -->
+    <string name="perm_titulo">Audit des autorisations</string>
+    <string name="perm_desc">Voyez quelles apps peuvent utiliser l\'appareil photo, le micro, la localisation, les SMS, les contacts, etc.</string>
+    <string name="perm_abrir">Voir les détails</string>
+    <string name="perm_resumo">Résumé par autorisation</string>
+    <string name="perm_apps">Apps avec accès</string>
+    <string name="perm_carregando">Analyse des autorisations des apps…</string>
+    <string name="perm_vazio">Aucune app n\'a d\'autorisation sensible accordée.</string>
+    <string name="perm_fechar">Fermer</string>
+    <string name="perm_contagem">%1$d app(s)</string>
+    <string name="perm_aviso">Pour la confidentialité, Android n\'affiche que les apps visibles (règle Android 11+). Vérifiez ce que vous ne reconnaissez pas dans les réglages du système.</string>
+    <string name="perm_camera">Appareil photo</string>
+    <string name="perm_microfone">Microphone</string>
+    <string name="perm_localizacao">Localisation</string>
+    <string name="perm_sms">SMS</string>
+    <string name="perm_contatos">Contacts</string>
+    <string name="perm_chamadas">Appels</string>
+    <string name="perm_telefone">Téléphone</string>
+    <string name="perm_sensores">Capteurs</string>
+    <string name="perm_calendario">Calendrier</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Mode Jeu</string>
@@ -231,6 +252,10 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_22_novidades">
+        <item>Audit des autorisations : voyez quelles apps ont accès à l\'appareil photo, au micro, à la localisation, aux SMS, aux contacts, etc.</item>
+    </string-array>
+    <string-array name="changelog_1_22_correcoes" />
     <string-array name="changelog_1_21_novidades" />
     <string-array name="changelog_1_21_correcoes">
         <item>Correction de l\'erreur « impossible de télécharger la mise à jour » : le téléchargement s\'exécute désormais hors du fil principal.</item>

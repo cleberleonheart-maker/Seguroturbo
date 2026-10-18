@@ -26,6 +26,27 @@
     <string name="sec_fix_clean">Limpiar</string>
     <string name="sec_share">Compartir informe</string>
 
+    <!-- Auditoría de permisos -->
+    <string name="perm_titulo">Auditoría de permisos</string>
+    <string name="perm_desc">Ve qué apps pueden usar la cámara, el micrófono, la ubicación, SMS, contactos y más.</string>
+    <string name="perm_abrir">Ver detalles</string>
+    <string name="perm_resumo">Resumen por permiso</string>
+    <string name="perm_apps">Apps con acceso</string>
+    <string name="perm_carregando">Analizando los permisos de las apps…</string>
+    <string name="perm_vazio">Ninguna app tiene permisos sensibles concedidos.</string>
+    <string name="perm_fechar">Cerrar</string>
+    <string name="perm_contagem">%1$d app(s)</string>
+    <string name="perm_aviso">Por privacidad, Android solo muestra las apps visibles (regla de Android 11+). Revisa lo que no reconozcas en los Ajustes del sistema.</string>
+    <string name="perm_camera">Cámara</string>
+    <string name="perm_microfone">Micrófono</string>
+    <string name="perm_localizacao">Ubicación</string>
+    <string name="perm_sms">SMS</string>
+    <string name="perm_contatos">Contactos</string>
+    <string name="perm_chamadas">Llamadas</string>
+    <string name="perm_telefone">Teléfono</string>
+    <string name="perm_sensores">Sensores</string>
+    <string name="perm_calendario">Calendario</string>
+
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
     <string name="gt_game_mode">Modo Juego</string>
@@ -231,6 +252,10 @@
     <string name="cfg_novidades">Novedades de la versión</string>
     <string name="cfg_novidades_desc">Mira lo que cambió en las versiones recientes</string>
 
+    <string-array name="changelog_1_22_novidades">
+        <item>Auditoría de permisos: ve qué apps tienen acceso a la cámara, el micrófono, la ubicación, SMS, contactos y más.</item>
+    </string-array>
+    <string-array name="changelog_1_22_correcoes" />
     <string-array name="changelog_1_21_novidades" />
     <string-array name="changelog_1_21_correcoes">
         <item>Corregido el error «no se pudo descargar la actualización»: la descarga ahora se ejecuta fuera del hilo principal.</item>
