@@ -1,0 +1,3 @@
+- Correction : ajout de distributionSha256Sum au Gradle Wrapper pour la vérification de la distribution.
+- Infrastructure : ajout de FUNDING.yml au dépôt.
+- Préparation F-Droid : ajustements des métadonnées et des ressources.

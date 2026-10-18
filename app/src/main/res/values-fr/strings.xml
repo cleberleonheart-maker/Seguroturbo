@@ -297,6 +297,12 @@
         <item>L\'unité de réponse du test tactile suit maintenant la langue de l\'appareil.</item>
         <item>Textes inutilisés supprimés, réduisant légèrement la taille de l\'APK.</item>
     </string-array>
+    <string-array name="changelog_1_27_2_novidades" />
+    <string-array name="changelog_1_27_2_correcoes">
+        <item>Gradle Wrapper com distributionSha256Sum para maior segurança.</item>
+        <item>Pequenos ajustes para preparação do F-Droid.</item>
+    </string-array>
+
     <string-array name="changelog_1_27_novidades">
         <item>Tests instrumentés (Compose UI) des flux principaux, exécutés sur appareil/émulateur.</item>
     </string-array>

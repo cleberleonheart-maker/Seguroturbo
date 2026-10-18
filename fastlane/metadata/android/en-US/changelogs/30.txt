@@ -1,0 +1,3 @@
+- Fix: add distributionSha256Sum to Gradle Wrapper for verified distribution checks.
+- Infra: add FUNDING.yml to repository.
+- F-Droid prep: metadata and assets tweaks.
