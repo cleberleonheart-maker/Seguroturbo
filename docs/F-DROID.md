@@ -7,6 +7,9 @@ e exige uma licença livre. O projeto já está preparado:
 - `LICENSE` — GPL-3.0 (exigência obrigatória)
 - `fastlane/metadata/android/` — descrições e changelogs em pt-BR, en-US, es-ES e fr-FR
 
+**Submissão atual:** issue aberta no RFP —
+<https://gitlab.com/fdroid/rfp/-/work_items/4599> (aguardando revisão).
+
 ## 1. Pré-requisitos
 
 - Conta no [GitLab](https://gitlab.com) (é onde o F-Droid hospeda os metadados)
