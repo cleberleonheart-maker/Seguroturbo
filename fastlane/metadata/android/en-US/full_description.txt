@@ -1,0 +1,17 @@
+SeguroTurbo is a security, privacy and performance app for Android, focused on transparency: it shows what your device really does, with no miracle promises.
+
+WHAT IT DOES:
+
+• Permission audit — lists the apps that access camera, microphone, location, SMS, contacts and other sensitive data, and explains how to revoke each one.
+
+• System integrity — detects root (su binaries, Magisk and superuser apps), SELinux in Permissive mode and test-keys builds, which indicate an unlocked bootloader.
+
+• Game Turbo — performance profile (battery saver, balanced, performance), do-not-disturb during matches, floating bar with battery, RAM and temperature, and RAM cleanup with app selection.
+
+• Benchmark — real CPU, GPU, memory and UX test, network test (latency and download speed) and screen/touch test (taps per second, average response and multitouch).
+
+• Updates — checks for new releases straight from GitHub and installs with signature verification.
+
+Why no "magic booster": modern Android manages memory on its own; SeguroTurbo shows real information and leaves the decision to you.
+
+Open source (GPL-3.0), no tracking, no ads, no data collection. Multilingual: Portuguese, English, Spanish and French. Light and dark themes.

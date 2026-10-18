@@ -1,0 +1,1 @@
+Polish fixes: touch test response unit now localized, unused strings removed (smaller APK).

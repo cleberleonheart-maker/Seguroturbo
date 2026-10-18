@@ -1,0 +1,1 @@
+Correcciones: unidad del test táctil localizada y textos no usados eliminados (APK más pequeño).

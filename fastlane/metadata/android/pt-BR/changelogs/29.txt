@@ -1,0 +1,1 @@
+Correções de polish: unidade do teste de toque localizada e remoção de textos não usados (APK menor).

@@ -360,4 +360,21 @@ Gradle → Run (▶).
 
 ## Licença
 
-Projeto de exemplo educacional. Use e modifique livremente.
+[GPL-3.0](LICENSE) — você pode usar, modificar e redistribuir livremente, desde que
+mantenha a mesma licença.
+
+## Doação
+
+Se o app te ajudou, considere contribuir (links a preencher pelo mantenedor):
+
+- **Pix**: `__CHAVE_PIX__`
+- **PayPal**: `__LINK_PAYPAL__`
+
+## Publicação no F-Droid
+
+O projeto está preparado para o F-Droid:
+
+- `LICENSE` com a GPL-3.0 (exigência do F-Droid)
+- Metadados `fastlane/metadata/android/` (pt-BR, en-US, es-ES, fr-FR)
+
+O passo a passo de submissão está em [docs/F-DROID.md](docs/F-DROID.md).

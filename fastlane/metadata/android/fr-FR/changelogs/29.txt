@@ -1,0 +1,1 @@
+Corrections : unité du test tactile localisée et textes inutilisés supprimés (APK plus léger).
