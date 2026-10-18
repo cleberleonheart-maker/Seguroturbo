@@ -252,6 +252,10 @@
     <string name="cfg_novidades">What\'s new</string>
     <string name="cfg_novidades_desc">See what changed in the recent versions</string>
 
+    <string-array name="changelog_1_23_novidades">
+        <item>Expanded integrity detection: root, SELinux status (Enforcing/Permissive) and signs of an unlocked bootloader, with an explanation for each case.</item>
+    </string-array>
+    <string-array name="changelog_1_23_correcoes" />
     <string-array name="changelog_1_22_novidades">
         <item>Permission audit: see which apps have access to the camera, microphone, location, SMS, contacts and more.</item>
     </string-array>

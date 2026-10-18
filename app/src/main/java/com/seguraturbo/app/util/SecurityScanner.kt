@@ -14,7 +14,6 @@ import com.seguraturbo.app.model.Threat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import java.io.File
 
 /**
  * Scanner de segurança com verificações REAIS do dispositivo:
@@ -53,15 +52,7 @@ object SecurityScanner {
         val encontradas = mutableListOf<Threat>()
 
         delay(350)
-        if (estaRooteado()) {
-            encontradas += Threat(
-                nome = "Acesso root detectado",
-                tipo = "SISTEMA",
-                risco = "ALTO",
-                descricao = "O dispositivo aparenta estar rooteado, o que reduz a proteção do sistema.",
-                peso = 30
-            )
-        }
+        verificarIntegridade(ctx).forEach { encontradas += it }
 
         delay(350)
         if (!temBloqueioDeTela(ctx)) {
@@ -172,20 +163,55 @@ object SecurityScanner {
         return Resultado(encontradas, score)
     }
 
-    /** Verifica se há indícios de root no aparelho. */
-    fun estaRooteado(): Boolean {
-        val caminhos = listOf(
-            "/system/app/Superuser.apk",
-            "/sbin/su",
-            "/system/bin/su",
-            "/system/xbin/su",
-            "/data/local/xbin/su",
-            "/data/local/bin/su",
-            "/system/sd/xbin/su",
-            "/system/bin/failsafe/su"
-        )
-        if (caminhos.any { File(it).exists() }) return true
-        return Build.TAGS?.contains("test-keys") == true
+    /**
+     * Avalia a integridade do sistema (root, SELinux e bootloader) e monta os
+     * alertas correspondentes. Cada caso é explicado no texto do alerta.
+     */
+    private fun verificarIntegridade(ctx: Context): List<Threat> {
+        val diag = try {
+            IntegridadeSistema.coletar(ctx)
+        } catch (e: Exception) {
+            return emptyList()
+        }
+        val ameacas = mutableListOf<Threat>()
+
+        if (diag.rooteado) {
+            ameacas += Threat(
+                nome = "Acesso root detectado",
+                tipo = "SISTEMA",
+                risco = "ALTO",
+                descricao = "Foram encontrados indícios de root (superusuário). Isso reduz a " +
+                    "proteção do sistema: apps maliciosos podem obter controle total do " +
+                    "aparelho. Se você não rooteou o aparelho, é sinal de alerta.",
+                peso = 30
+            )
+        }
+
+        if (diag.selinux == IntegridadeSistema.Selinux.PERMISSIVE) {
+            ameacas += Threat(
+                nome = "SELinux em modo permissivo",
+                tipo = "SISTEMA",
+                risco = "ALTO",
+                descricao = "O SELinux está no modo permissivo (registra mas não bloqueia " +
+                    "ações indevidas) em vez do modo \"Enforcing\". Isso enfraquece o " +
+                    "isolamento entre os apps e é típico de sistemas modificados.",
+                peso = 20
+            )
+        }
+
+        if (diag.bootloaderSuspeito) {
+            ameacas += Threat(
+                nome = "Integridade do sistema duvidosa",
+                tipo = "SISTEMA",
+                risco = "MÉDIO",
+                descricao = "Foram encontrados sinais de build de teste (test-keys/dev-keys " +
+                    "ou userdebug/eng). O bootloader pode estar desbloqueado ou o sistema " +
+                    "modificado, permitindo alterar o software de forma não oficial.",
+                peso = 15
+            )
+        }
+
+        return ameacas
     }
 
     private fun temBloqueioDeTela(ctx: Context): Boolean = try {

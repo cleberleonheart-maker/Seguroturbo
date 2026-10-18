@@ -252,6 +252,10 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_23_novidades">
+        <item>Détection d\'intégrité étendue : root, état de SELinux (Enforcing/Permissive) et indices de bootloader déverrouillé, avec une explication pour chaque cas.</item>
+    </string-array>
+    <string-array name="changelog_1_23_correcoes" />
     <string-array name="changelog_1_22_novidades">
         <item>Audit des autorisations : voyez quelles apps ont accès à l\'appareil photo, au micro, à la localisation, aux SMS, aux contacts, etc.</item>
     </string-array>

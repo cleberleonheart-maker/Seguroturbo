@@ -252,6 +252,10 @@
     <string name="cfg_novidades">Novidades da versão</string>
     <string name="cfg_novidades_desc">Veja o que mudou nas versões recentes</string>
 
+    <string-array name="changelog_1_23_novidades">
+        <item>Detecção de integridade ampliada: root, estado do SELinux (Enforcing/Permissive) e indícios de bootloader desbloqueado, com explicação de cada caso.</item>
+    </string-array>
+    <string-array name="changelog_1_23_correcoes" />
     <string-array name="changelog_1_22_novidades">
         <item>Auditoria de permissões: veja quais apps têm acesso a câmera, microfone, localização, SMS, contatos e mais.</item>
     </string-array>

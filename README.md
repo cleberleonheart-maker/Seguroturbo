@@ -28,6 +28,12 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.23
+
+- **Integridade do sistema ampliada**: a varredura agora detecta indícios de root,
+  o estado do **SELinux** (Enforcing/Permissive) e sinais de **bootloader
+  desbloqueado/build de teste** (test-keys, userdebug/eng) — explicando cada caso.
+
 ## Novidades da versão 1.22
 
 - **Auditoria de permissões**: nova seção na Segurança que mostra quais apps

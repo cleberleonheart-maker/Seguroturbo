@@ -16,12 +16,22 @@
          O usuário ainda precisa conceder o acesso de política de notificação. -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
-    <!-- Permite ler os apps com atividade de launcher para acharmos os jogos. -->
+    <!-- Permite ler os apps com atividade de launcher para acharmos os jogos e
+         consultar pacotes conhecidos de root na checagem de integridade. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent>
+        <package android:name="com.topjohnwu.magisk" />
+        <package android:name="com.noshufou.android.su" />
+        <package android:name="com.noshufou.android.su.elite" />
+        <package android:name="eu.chainfire.supersu" />
+        <package android:name="com.koushikdutta.superuser" />
+        <package android:name="com.thirdparty.superuser" />
+        <package android:name="com.yellowes.su" />
+        <package android:name="com.kingroot.kinguser" />
+        <package android:name="com.zhiqupk.root.global" />
     </queries>
 
     <!-- Barra flutuante do Game Turbo sobre o jogo (o usuário precisa autorizar
@@ -42,14 +52,6 @@
          São permissões normais, sem pedido ao usuário. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-    <!-- Permite ler os apps com atividade de launcher para acharmos os jogos. -->
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.MAIN"/>
-            <category android:name="android.intent.category.LAUNCHER"/>
-        </intent>
-    </queries>
 
     <application
         android:allowBackup="false"

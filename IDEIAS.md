@@ -7,8 +7,8 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 - [x] **Auditoria de permissões** (v1.22): tela detalhada de quais apps têm acesso a
       câmera, microfone, SMS, localização etc.
-- [ ] **Root/SELinux/bootloader**: ampliar a detecção de root (estado do SELinux,
-      integridade do sistema) e explicar cada caso.
+- [x] **Root/SELinux/bootloader** (v1.23): detecção ampliada de root, estado do SELinux
+      (Enforcing/Permissive) e indícios de bootloader desbloqueado, com explicações.
 - [ ] **Play Integrity**: checar a integridade do dispositivo (quando integrável).
 
 ## Desempenho / Game Turbo
@@ -57,3 +57,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Compartilhar o gráfico** de evolução das pontuações (v1.19).
 - [x] **Barra flutuante** do Game Turbo sobre o jogo (v1.20).
 - [x] **Auditoria de permissões** por app (câmera, microfone, etc.) (v1.22).
+- [x] **Integridade do sistema**: root, SELinux e bootloader (v1.23).
