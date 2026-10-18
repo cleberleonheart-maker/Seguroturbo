@@ -28,6 +28,12 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.27
+
+- **Testes instrumentados (Compose UI)**: testes automatizados dos fluxos
+  principais (navegação, Segurança, Benchmark) rodando em aparelho/emulador
+  (`./gradlew connectedDebugAndroidTest`).
+
 ## Novidades da versão 1.26
 
 - **Teste de tela/touch**: no Benchmark, mede a resposta ao toque, os toques por

@@ -28,7 +28,7 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Qualidade / engenharia
 
-- [ ] **Testes instrumentados** (Compose UI) para os fluxos principais.
+- [x] **Testes instrumentados** (Compose UI) para os fluxos principais (v1.27).
 - [ ] **Baseline Profiles** por módulo, para abertura ainda mais rápida.
 
 ## Feito
@@ -62,3 +62,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Limpeza de RAM**: encerrar apps escolhidos (v1.24).
 - [x] **Teste de rede**: latência e download (v1.25).
 - [x] **Teste de tela/touch**: resposta ao toque e multitouch (v1.26).
+- [x] **Testes instrumentados** (Compose UI) dos fluxos principais (v1.27).

@@ -293,6 +293,10 @@
     <string name="cfg_novidades">Nouveautés de la version</string>
     <string name="cfg_novidades_desc">Voyez ce qui a changé dans les versions récentes</string>
 
+    <string-array name="changelog_1_27_novidades">
+        <item>Tests instrumentés (Compose UI) des flux principaux, exécutés sur appareil/émulateur.</item>
+    </string-array>
+    <string-array name="changelog_1_27_correcoes" />
     <string-array name="changelog_1_26_novidades">
         <item>Test écran/tactile : mesure la réponse au toucher, les touchers par seconde et le multitouch.</item>
     </string-array>

@@ -293,6 +293,10 @@
     <string name="cfg_novidades">Novedades de la versión</string>
     <string name="cfg_novidades_desc">Mira lo que cambió en las versiones recientes</string>
 
+    <string-array name="changelog_1_27_novidades">
+        <item>Tests instrumentados (Compose UI) de los flujos principales, ejecutados en dispositivo/emulador.</item>
+    </string-array>
+    <string-array name="changelog_1_27_correcoes" />
     <string-array name="changelog_1_26_novidades">
         <item>Test de pantalla/táctil: mide la respuesta al toque, los toques por segundo y el multitáctil.</item>
     </string-array>
