@@ -7,9 +7,14 @@ e exige uma licença livre. O projeto já está preparado:
 - `LICENSE` — GPL-3.0 (exigência obrigatória)
 - `fastlane/metadata/android/` — descrições e changelogs em pt-BR, en-US, es-ES e fr-FR
 
-**Submissão atual:** issue aberta no RFP —
-<https://gitlab.com/fdroid/rfp/-/work_items/4599> (aguardando revisão de um
-mantenedor). O aviso automático `insecure-gradlew` já foi resolvido na v1.27.2
+**Submissão atual:**
+
+- Issue no RFP — <https://gitlab.com/fdroid/rfp/-/work_items/4599>
+- Merge request no `fdroiddata` —
+  <https://gitlab.com/fdroid/fdroiddata/-/merge_requests/53157> (aguardando
+  revisão de um mantenedor; link também comentado na issue do RFP)
+
+O aviso automático `insecure-gradlew` já foi resolvido na v1.27.2
 (`distributionSha256Sum` no Gradle Wrapper).
 
 Os metadados prontos para o `fdroiddata` estão em
@@ -53,6 +58,10 @@ Metadata (fastlane) is already in the repo.
 2. Crie `metadata/com.seguraturbo.app.yml` no fork com o conteúdo de
    [`fdroid/com.seguraturbo.app.yml`](../fdroid/com.seguraturbo.app.yml).
 3. Abra um merge request em <https://gitlab.com/fdroid/fdroiddata/-/merge_requests>
+
+> **Status:** MR aberto em
+> <https://gitlab.com/fdroid/fdroiddata/-/merge_requests/53157>
+> (fork `cleberleonheart-maker/fdroiddata`, branch `add-seguraturbo` → `master`).
 
 > **Atenção:** a cada release nova, atualize no YAML o `versionName`,
 > `versionCode`, `commit` (hash do tag, ex.: `git rev-parse v1.29`),
