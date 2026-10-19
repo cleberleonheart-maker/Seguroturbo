@@ -1,0 +1,42 @@
+Categories:
+  - Security
+License: GPL-3.0-only
+AuthorName: cleberleonheart-maker
+SourceCode: https://github.com/cleberleonheart-maker/Seguroturbo
+IssueTracker: https://github.com/cleberleonheart-maker/Seguroturbo/issues
+Changelog: https://github.com/cleberleonheart-maker/Seguroturbo/releases
+
+AutoName: SeguroTurbo
+Summary: Auditoria de permissões, integridade do sistema, Game Turbo e benchmark
+Description: |-
+  SeguroTurbo reúne segurança, privacidade e desempenho num só app para Android,
+  com foco em transparência: mostra o que o aparelho realmente faz, sem promessas
+  milagrosas.
+
+  • Auditoria de permissões — lista os apps que acessam câmera, microfone,
+  localização, SMS, contatos e outros dados sensíveis, e explica como revogar.
+  • Integridade do sistema — detecta root, SELinux em modo Permissive e builds de
+  teste, que indicam bootloader desbloqueado.
+  • Game Turbo — perfil de desempenho, Não Perturbe durante a partida, barra
+  flutuante com bateria/RAM/temperatura, limpeza de RAM, bloqueio de tela ao
+  abrir o jogo e silenciamento só da mídia.
+  • Benchmark — testes reais de CPU, GPU, memória e UX, além de rede (latência e
+  download) e tela/toque (toques por segundo e multitouch).
+
+  Código aberto (GPL-3.0), sem rastreamento, sem anúncios e sem coleta de dados.
+  Multilíngue: português, inglês, espanhol e francês. Temas claro e escuro.
+
+RepoType: git
+Repo: https://github.com/cleberleonheart-maker/Seguroturbo.git
+
+Builds:
+  - versionName: '1.29'
+    versionCode: 32
+    commit: 08cdf069b7065ff68474e46f02e643c8444a3606
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 1.29
+CurrentVersionCode: 32

@@ -8,7 +8,13 @@ e exige uma licença livre. O projeto já está preparado:
 - `fastlane/metadata/android/` — descrições e changelogs em pt-BR, en-US, es-ES e fr-FR
 
 **Submissão atual:** issue aberta no RFP —
-<https://gitlab.com/fdroid/rfp/-/work_items/4599> (aguardando revisão).
+<https://gitlab.com/fdroid/rfp/-/work_items/4599> (aguardando revisão de um
+mantenedor). O aviso automático `insecure-gradlew` já foi resolvido na v1.27.2
+(`distributionSha256Sum` no Gradle Wrapper).
+
+Os metadados prontos para o `fdroiddata` estão em
+[`fdroid/com.seguraturbo.app.yml`](../fdroid/com.seguraturbo.app.yml) (última
+versão: 1.29, versionCode 32).
 
 ## 1. Pré-requisitos
 
@@ -30,7 +36,7 @@ Duas opções:
 App name: SeguroTurbo
 Source code: https://github.com/cleberleonheart-maker/Seguroturbo
 License: GPL-3.0-only
-Version: 1.27.1 (versionCode 29)
+Version: 1.29 (versionCode 32)
 
 SeguroTurbo is a security, privacy and performance app for Android:
 permission audit, system integrity check (root/SELinux/bootloader),
@@ -44,38 +50,14 @@ Metadata (fastlane) is already in the repo.
 ### Opção B — merge request no fdroiddata (mais rápido e recomendado)
 
 1. Crie conta no GitLab e faça fork de <https://gitlab.com/fdroid/fdroiddata>
-2. Crie `metadata/com.seguraturbo.app.yml` no fork com:
-
-```yaml
-Categories:
-    - Security
-License: GPL-3.0-only
-Author: cleberleonheart-maker
-SourceCode: https://github.com/cleberleonheart-maker/Seguroturbo
-IssueTracker: https://github.com/cleberleonheart-maker/Seguroturbo/issues
-Changelog: https://github.com/cleberleonheart-maker/Seguroturbo/releases
-
-AutoName: SeguroTurbo
-
-RepoType: git
-Repo: https://github.com/cleberleonheart-maker/Seguroturbo.git
-
-Builds:
-    - versionName: 1.27.1
-      versionCode: 29
-      commit: v1.27.1
-      subdir: app
-      gradle:
-          - yes
-
-AutoUpdateMode: VersionTag
-UpdateCheckMode: Tags
-```
-
+2. Crie `metadata/com.seguraturbo.app.yml` no fork com o conteúdo de
+   [`fdroid/com.seguraturbo.app.yml`](../fdroid/com.seguraturbo.app.yml).
 3. Abra um merge request em <https://gitlab.com/fdroid/fdroiddata/-/merge_requests>
 
-> **Atenção:** use o commit/tag `v1.27.1` correspondente ao versionCode 29. Ao publicar
-> uma versão nova, incremente o `versionCode` no `app/build.gradle` e crie a tag.
+> **Atenção:** a cada release nova, atualize no YAML o `versionName`,
+> `versionCode`, `commit` (hash do tag, ex.: `git rev-parse v1.29`),
+> `CurrentVersion` e `CurrentVersionCode` — sempre batendo com o
+> `versionCode`/`versionName` do `app/build.gradle`.
 
 ## 3. Depois da aprovação
 
