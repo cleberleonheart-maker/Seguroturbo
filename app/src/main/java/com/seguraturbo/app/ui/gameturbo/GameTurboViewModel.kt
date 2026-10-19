@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.seguraturbo.app.model.Game
 import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.model.PerfilDesempenho
+import com.seguraturbo.app.util.BloqueioTela
 import com.seguraturbo.app.util.GerenciadorRam
 import com.seguraturbo.app.util.HistoricoStore
 import com.seguraturbo.app.util.JogosDetector
@@ -43,6 +44,10 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     var dndAuto by mutableStateOf(false)
     /** true = o app tem acesso para alterar o modo Não Perturbe. */
     var dndAcesso by mutableStateOf(false)
+    /** true = fixar a tela (screen pinning) ao abrir um jogo. */
+    var travaTelaJogo by mutableStateOf(false)
+    /** true = o bloqueio de tela está ligado nas configurações do sistema. */
+    var travaTelaSistema by mutableStateOf(true)
     /** Perfil de desempenho atual do Game Turbo. */
     var perfil by mutableStateOf(PerfilDesempenho.EQUILIBRADO)
     /** Temperatura da bateria em °C (null se o sistema não informar). */
@@ -69,6 +74,8 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         atualizarBateria()
         atualizarDnd()
         atualizarRam()
+        travaTelaJogo = Preferencias.travaTelaJogo(getApplication<Application>())
+        atualizarTravaTela()
     }
 
     private fun carregarHistorico() {
@@ -130,6 +137,18 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         } catch (e: Exception) {
             null
         }
+    }
+
+    /** Consulta se o screen pinning está habilitado nas configurações. */
+    fun atualizarTravaTela() {
+        travaTelaSistema = BloqueioTela.ativadoNoSistema(getApplication<Application>())
+    }
+
+    /** Liga/desliga o bloqueio de tela (screen pinning) ao abrir um jogo. */
+    fun definirTravaTelaJogo(ativo: Boolean) {
+        travaTelaJogo = ativo
+        Preferencias.definirTravaTelaJogo(getApplication<Application>(), ativo)
+        atualizarTravaTela()
     }
 
     /** Liga/desliga o Não Perturbe automático. Sem acesso, abre as configurações. */

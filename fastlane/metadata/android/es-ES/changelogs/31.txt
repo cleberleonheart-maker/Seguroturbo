@@ -1,0 +1,1 @@
+- Fijado de pantalla: fija el juego en pantalla al abrirlo, evitando toques accidentales.

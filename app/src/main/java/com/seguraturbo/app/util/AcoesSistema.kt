@@ -1,5 +1,6 @@
 package com.seguraturbo.app.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -30,10 +31,17 @@ object AcoesSistema {
         return tentarAbrir(ctx, intent)
     }
 
-    /** Abre o app/jogo pelo pacote. Retorna true se conseguiu abrir. */
-    fun abrirApp(ctx: Context, pacote: String): Boolean {
+    /**
+     * Abre o app/jogo pelo pacote. Retorna true se conseguiu abrir.
+     *
+     * Com [noMesmoTask] = true, tenta abrir na mesma tarefa do chamador (sem
+     * `FLAG_ACTIVITY_NEW_TASK`), o que faz a atividade entrar na pilha atual —
+     * necessário para o bloqueio de tela (screen pinning) cobrir o jogo. Se o
+     * contexto não for uma Activity, o sistema exige a flag, então ela é mantida.
+     */
+    fun abrirApp(ctx: Context, pacote: String, noMesmoTask: Boolean = false): Boolean {
         val intent = ctx.packageManager.getLaunchIntentForPackage(pacote) ?: return false
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (!noMesmoTask || ctx !is Activity) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         return try {
             ContextCompat.startActivity(ctx, intent, null)
             true

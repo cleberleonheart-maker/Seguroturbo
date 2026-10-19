@@ -19,6 +19,7 @@ object Preferencias {
     private const val K_ULTIMO_SCORE = "ultimo_score"
     private const val K_VERSAO_IGNORADA = "versao_ignorada"
     private const val K_DND_AUTO = "dnd_auto"
+    private const val K_TRAVA_TELA_JOGO = "trava_tela_jogo"
     private const val K_FILTRO_ANTERIOR = "filtro_anterior"
     private const val K_PERFIL_DESEMPENHO = "perfil_desempenho"
     private const val K_ONBOARDING_VISTO = "onboarding_visto"
@@ -98,6 +99,14 @@ object Preferencias {
 
     fun definirDndAuto(ctx: Context, ativo: Boolean) {
         prefs(ctx).edit().putBoolean(K_DND_AUTO, ativo).apply()
+    }
+
+    // ---- Bloqueio de tela (screen pinning) ao abrir um jogo ----
+    fun travaTelaJogo(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(K_TRAVA_TELA_JOGO, false)
+
+    fun definirTravaTelaJogo(ctx: Context, ativo: Boolean) {
+        prefs(ctx).edit().putBoolean(K_TRAVA_TELA_JOGO, ativo).apply()
     }
 
     /** Modo de interrupção do sistema antes de o SeguroTurbo ativar o Não Perturbe. */

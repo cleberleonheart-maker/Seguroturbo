@@ -356,4 +356,12 @@
         <item>Checagem automática de novas versões, uma vez por dia, em segundo plano.</item>
     </string-array>
     <string-array name="changelog_1_16_correcoes" />
+
+    <string name="trava_titulo">Bloquear tela ao abrir jogo</string>
+    <string name="trava_desc">Fixa o jogo na tela (screen pinning). Para sair, toque e segure Voltar + Recentes.</string>
+    <string name="trava_sistema_desativado">Bloqueio de tela desativado nas configurações do sistema. Ative para usar esta opção.</string>
+    <string-array name="changelog_1_28_novidades">
+        <item>Bloqueio de tela (screen pinning): fixe o jogo na tela ao abri-lo, evitando toques acidentais; para sair, toque e segure Voltar + Recentes.</item>
+    </string-array>
+    <string-array name="changelog_1_28_correcoes" />
 </resources>

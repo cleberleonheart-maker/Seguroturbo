@@ -356,4 +356,12 @@
         <item>Automatic check for new versions once a day in the background.</item>
     </string-array>
     <string-array name="changelog_1_16_correcoes" />
+
+    <string name="trava_titulo">Lock screen when opening a game</string>
+    <string name="trava_desc">Pins the game to the screen (screen pinning). To exit, touch and hold Back + Recents</string>
+    <string name="trava_sistema_desativado">Screen pinning is disabled in system settings. Enable it to use this option.</string>
+    <string-array name="changelog_1_28_novidades">
+        <item>Screen pinning: pin the game to the screen when you open it, avoiding accidental taps; to exit, touch and hold Back + Recents.</item>
+    </string-array>
+    <string-array name="changelog_1_28_correcoes" />
 </resources>

@@ -356,4 +356,12 @@
         <item>Vérification automatique des nouvelles versions une fois par jour, en arrière-plan.</item>
     </string-array>
     <string-array name="changelog_1_16_correcoes" />
+
+    <string name="trava_titulo">Verrouiller l\'écran à l\'ouverture d\'un jeu</string>
+    <string name="trava_desc">Épingle le jeu à l\'écran (screen pinning). Pour quitter, maintenez Retour + Récents</string>
+    <string name="trava_sistema_desativado">L\'épinglage d\'écran est désactivé dans les paramètres système. Activez-le pour utiliser cette option.</string>
+    <string-array name="changelog_1_28_novidades">
+        <item>Épinglage d\'écran : épinglez le jeu à l\'écran à son ouverture, évitant les appuis accidentels ; pour quitter, maintenez Retour + Récents.</item>
+    </string-array>
+    <string-array name="changelog_1_28_correcoes" />
 </resources>

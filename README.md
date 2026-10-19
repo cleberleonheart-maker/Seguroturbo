@@ -28,6 +28,14 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.28
+
+- **Bloqueio de tela (screen pinning) no Game Turbo**: ao abrir um jogo com a
+  opção ligada, a tela fica fixa no jogo para evitar toques acidentais; para
+  sair, toque e segure **Voltar + Recentes**. Se o bloqueio de tela estiver
+  desligado nas configurações do sistema, o app avisa e mostra o atalho para
+  ativá-lo.
+
 ## Novidades da versão 1.27.1
 
 - Correções de polish: unidade do teste de toque localizada e remoção de textos

@@ -50,6 +50,8 @@ import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.service.PermissaoSobreposicao
 import com.seguraturbo.app.service.ServicoBarraJogo
 import com.seguraturbo.app.util.AcoesSistema
+import com.seguraturbo.app.util.BloqueioTela
+import android.app.Activity
 import android.widget.Toast
 
 @Composable
@@ -105,6 +107,7 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         item { CartaoNaoPerturbe(vm) }
 
         item { CartaoBarraJogo(contexto) }
+        item { CartaoTravaTela(vm) }
 
         item {
             BotaoNeon(
@@ -163,7 +166,10 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         } else {
             items(vm.jogos) { jogo ->
                 LinhaJogo(jogo, onAbrir = {
+                    val fixar = vm.travaTelaJogo && vm.travaTelaSistema && contexto is Activity
+                    if (fixar) BloqueioTela.fixar(contexto as Activity)
                     if (PermissaoSobreposicao.podeDesenhar(contexto)) {
+
                         ServicoBarraJogo.iniciar(contexto, jogo.pacote)
                     } else {
                         Toast.makeText(
@@ -172,7 +178,8 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    AcoesSistema.abrirApp(contexto, jogo.pacote)
+                    val abriu = AcoesSistema.abrirApp(contexto, jogo.pacote, noMesmoTask = fixar)
+                    if (!abriu && fixar) BloqueioTela.desfixar(contexto as Activity)
                 })
             }
         }
@@ -464,6 +471,33 @@ private fun LinhaJogo(jogo: Game, onAbrir: () -> Unit) {
             }
             Spacer(Modifier.width(10.dp))
             Text("▶", color = Cores.Ciano, fontSize = 16.sp)
+        }
+    }
+}
+
+@Composable
+private fun CartaoTravaTela(vm: GameTurboViewModel) {
+    CartaoFuturista {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.trava_titulo),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                val avisar = vm.travaTelaJogo && !vm.travaTelaSistema
+                Text(
+                    if (avisar) stringResource(R.string.trava_sistema_desativado)
+                    else stringResource(R.string.trava_desc),
+                    color = if (avisar) Cores.Amarelo else Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
+            Switch(
+                checked = vm.travaTelaJogo,
+                onCheckedChange = { vm.definirTravaTelaJogo(it) }
+            )
         }
     }
 }

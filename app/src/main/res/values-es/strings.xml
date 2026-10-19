@@ -356,4 +356,12 @@
         <item>Comprobación automática de nuevas versiones, una vez al día, en segundo plano.</item>
     </string-array>
     <string-array name="changelog_1_16_correcoes" />
+
+    <string name="trava_titulo">Bloquear pantalla al abrir un juego</string>
+    <string name="trava_desc">Fija el juego en pantalla (screen pinning). Para salir, mantén pulsado Atrás + Recientes</string>
+    <string name="trava_sistema_desativado">El fijado de pantalla está desactivado en los ajustes del sistema. Actívalo para usar esta opción.</string>
+    <string-array name="changelog_1_28_novidades">
+        <item>Fijado de pantalla: fija el juego en pantalla al abrirlo, evitando toques accidentales; para salir, mantén pulsado Atrás + Recientes.</item>
+    </string-array>
+    <string-array name="changelog_1_28_correcoes" />
 </resources>

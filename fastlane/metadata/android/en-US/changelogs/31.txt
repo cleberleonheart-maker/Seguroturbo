@@ -1,0 +1,1 @@
+- Screen pinning: pin the game to the screen when you open it, avoiding accidental taps.

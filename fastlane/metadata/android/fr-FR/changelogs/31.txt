@@ -1,0 +1,1 @@
+- Épinglage d'écran : épinglez le jeu à l'écran à son ouverture, évitant les appuis accidentels.
