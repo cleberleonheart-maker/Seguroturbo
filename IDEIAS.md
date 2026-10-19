@@ -16,7 +16,8 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Limpeza de RAM** (v1.24): encerrar apps escolhidos pelo usuário em segundo
       plano, com indicador de uso de memória.
 - [x] **Bloqueio de tela (screen pinning)** ao iniciar um jogo (v1.28).
-- [ ] **Silenciar só mídia** durante o jogo (opções finas de áudio).
+- [x] **Silenciar só mídia** durante o jogo (v1.29): baixa o volume de músicas e
+      vídeos no Modo Jogo, sem afetar chamadas, alarmes e notificações.
 
 ## Benchmark
 
@@ -64,3 +65,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Teste de tela/touch**: resposta ao toque e multitouch (v1.26).
 - [x] **Testes instrumentados** (Compose UI) dos fluxos principais (v1.27).
 - [x] **Bloqueio de tela** (screen pinning) ao iniciar um jogo (v1.28).
+- [x] **Silenciar só mídia** no Modo Jogo (v1.29).

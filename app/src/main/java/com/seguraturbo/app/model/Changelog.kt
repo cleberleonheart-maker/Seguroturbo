@@ -17,6 +17,7 @@ object Changelog {
 
     /** Versões mais recentes primeiro. */
     val versoes: List<VersaoChangelog> = listOf(
+        VersaoChangelog("1.29", R.array.changelog_1_29_novidades, R.array.changelog_1_29_correcoes),
         VersaoChangelog("1.28", R.array.changelog_1_28_novidades, R.array.changelog_1_28_correcoes),
         VersaoChangelog("1.27.2", R.array.changelog_1_27_2_novidades, R.array.changelog_1_27_2_correcoes),
         VersaoChangelog("1.27.1", R.array.changelog_1_27_1_novidades, R.array.changelog_1_27_1_correcoes),

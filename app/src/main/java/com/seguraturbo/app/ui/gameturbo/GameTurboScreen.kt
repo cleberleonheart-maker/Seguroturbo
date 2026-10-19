@@ -108,6 +108,7 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
 
         item { CartaoBarraJogo(contexto) }
         item { CartaoTravaTela(vm) }
+        item { CartaoSilenciarMidia(vm) }
 
         item {
             BotaoNeon(
@@ -497,6 +498,31 @@ private fun CartaoTravaTela(vm: GameTurboViewModel) {
             Switch(
                 checked = vm.travaTelaJogo,
                 onCheckedChange = { vm.definirTravaTelaJogo(it) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CartaoSilenciarMidia(vm: GameTurboViewModel) {
+    CartaoFuturista {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.som_titulo),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.som_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
+            Switch(
+                checked = vm.silenciarMidia,
+                onCheckedChange = { vm.definirSilenciarMidia(it) }
             )
         }
     }

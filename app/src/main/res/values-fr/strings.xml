@@ -364,4 +364,10 @@
         <item>Épinglage d\'écran : épinglez le jeu à l\'écran à son ouverture, évitant les appuis accidentels ; pour quitter, maintenez Retour + Récents.</item>
     </string-array>
     <string-array name="changelog_1_28_correcoes" />
+    <string name="som_titulo">Couper uniquement les médias en jeu</string>
+    <string name="som_desc">Baisse le volume de la musique et des vidéos (flux multimédia) en Mode Jeu ; sonneries, alarmes et appels restent audibles</string>
+    <string-array name="changelog_1_29_novidades">
+        <item>Couper uniquement les médias : dans Game Turbo, baisse le volume de la musique et des vidéos pendant le Mode Jeu, sans affecter appels, alarmes et notifications.</item>
+    </string-array>
+    <string-array name="changelog_1_29_correcoes" />
 </resources>

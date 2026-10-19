@@ -364,4 +364,10 @@
         <item>Bloqueio de tela (screen pinning): fixe o jogo na tela ao abri-lo, evitando toques acidentais; para sair, toque e segure Voltar + Recentes.</item>
     </string-array>
     <string-array name="changelog_1_28_correcoes" />
+    <string name="som_titulo">Silenciar só mídia no jogo</string>
+    <string name="som_desc">Baixa o volume de músicas e vídeos (stream de mídia) no Modo Jogo; toques, alarmes e chamadas continuam audíveis</string>
+    <string-array name="changelog_1_29_novidades">
+        <item>Silenciar só mídia: no Game Turbo, baixa o volume de músicas e vídeos durante o Modo Jogo, sem afetar chamadas, alarmes e notificações.</item>
+    </string-array>
+    <string-array name="changelog_1_29_correcoes" />
 </resources>

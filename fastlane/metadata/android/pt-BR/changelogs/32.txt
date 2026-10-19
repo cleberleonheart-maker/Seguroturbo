@@ -1,0 +1,1 @@
+- Silenciar só mídia: baixa o volume de músicas e vídeos no Modo Jogo, sem afetar chamadas e alarmes.

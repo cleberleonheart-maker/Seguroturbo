@@ -364,4 +364,10 @@
         <item>Fijado de pantalla: fija el juego en pantalla al abrirlo, evitando toques accidentales; para salir, mantén pulsado Atrás + Recientes.</item>
     </string-array>
     <string-array name="changelog_1_28_correcoes" />
+    <string name="som_titulo">Silenciar solo multimedia en el juego</string>
+    <string name="som_desc">Baja el volumen de música y vídeos (stream de multimedia) en el Modo Juego; tonos, alarmas y llamadas siguen audibles</string>
+    <string-array name="changelog_1_29_novidades">
+        <item>Silenciar solo multimedia: en Game Turbo, baja el volumen de música y vídeos durante el Modo Juego, sin afectar llamadas, alarmas ni notificaciones.</item>
+    </string-array>
+    <string-array name="changelog_1_29_correcoes" />
 </resources>

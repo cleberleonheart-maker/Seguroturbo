@@ -1,0 +1,1 @@
+- Mute only media: lowers music and video volume in Game Mode, without affecting calls and alarms.

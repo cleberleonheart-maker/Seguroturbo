@@ -20,6 +20,8 @@ object Preferencias {
     private const val K_VERSAO_IGNORADA = "versao_ignorada"
     private const val K_DND_AUTO = "dnd_auto"
     private const val K_TRAVA_TELA_JOGO = "trava_tela_jogo"
+    private const val K_SILENCIAR_MIDIA = "silenciar_midia_jogo"
+    private const val K_VOLUME_MIDIA = "volume_midia_anterior"
     private const val K_FILTRO_ANTERIOR = "filtro_anterior"
     private const val K_PERFIL_DESEMPENHO = "perfil_desempenho"
     private const val K_ONBOARDING_VISTO = "onboarding_visto"
@@ -107,6 +109,22 @@ object Preferencias {
 
     fun definirTravaTelaJogo(ctx: Context, ativo: Boolean) {
         prefs(ctx).edit().putBoolean(K_TRAVA_TELA_JOGO, ativo).apply()
+    }
+
+    // ---- Silenciar só mídia no Modo Jogo ----
+    fun silenciarMidia(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(K_SILENCIAR_MIDIA, false)
+
+    fun definirSilenciarMidia(ctx: Context, ativo: Boolean) {
+        prefs(ctx).edit().putBoolean(K_SILENCIAR_MIDIA, ativo).apply()
+    }
+
+    /** Volume de mídia guardado antes de silenciar (-1 = nenhum). */
+    fun volumeMidia(ctx: Context): Int =
+        prefs(ctx).getInt(K_VOLUME_MIDIA, -1)
+
+    fun definirVolumeMidia(ctx: Context, volume: Int) {
+        prefs(ctx).edit().putInt(K_VOLUME_MIDIA, volume).apply()
     }
 
     /** Modo de interrupção do sistema antes de o SeguroTurbo ativar o Não Perturbe. */

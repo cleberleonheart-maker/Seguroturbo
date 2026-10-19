@@ -364,4 +364,10 @@
         <item>Screen pinning: pin the game to the screen when you open it, avoiding accidental taps; to exit, touch and hold Back + Recents.</item>
     </string-array>
     <string-array name="changelog_1_28_correcoes" />
+    <string name="som_titulo">Mute only media in game</string>
+    <string name="som_desc">Lowers music and video volume (media stream) in Game Mode; ringtones, alarms and calls stay audible</string>
+    <string-array name="changelog_1_29_novidades">
+        <item>Mute only media: in Game Turbo, lowers music and video volume during Game Mode, without affecting calls, alarms and notifications.</item>
+    </string-array>
+    <string-array name="changelog_1_29_correcoes" />
 </resources>

@@ -1,0 +1,1 @@
+- Couper uniquement les medias : baisse le volume de la musique et des videos en Mode Jeu, sans affecter appels et alarmes.

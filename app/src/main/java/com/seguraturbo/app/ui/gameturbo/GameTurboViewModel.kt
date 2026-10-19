@@ -20,6 +20,7 @@ import com.seguraturbo.app.util.HistoricoStore
 import com.seguraturbo.app.util.JogosDetector
 import com.seguraturbo.app.util.ModoConcentracao
 import com.seguraturbo.app.util.Preferencias
+import com.seguraturbo.app.util.SilenciarMidia
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,6 +49,8 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     var travaTelaJogo by mutableStateOf(false)
     /** true = o bloqueio de tela está ligado nas configurações do sistema. */
     var travaTelaSistema by mutableStateOf(true)
+    /** true = silenciar só a mídia enquanto o Modo Jogo está ativo. */
+    var silenciarMidia by mutableStateOf(false)
     /** Perfil de desempenho atual do Game Turbo. */
     var perfil by mutableStateOf(PerfilDesempenho.EQUILIBRADO)
     /** Temperatura da bateria em °C (null se o sistema não informar). */
@@ -76,6 +79,7 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         atualizarRam()
         travaTelaJogo = Preferencias.travaTelaJogo(getApplication<Application>())
         atualizarTravaTela()
+        silenciarMidia = Preferencias.silenciarMidia(getApplication<Application>())
     }
 
     private fun carregarHistorico() {
@@ -151,6 +155,19 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         atualizarTravaTela()
     }
 
+    /**
+     * Liga/desliga o silenciamento só da mídia. Reflete na hora se o Modo Jogo
+     * já estiver ativo (silencia ou devolve o som).
+     */
+    fun definirSilenciarMidia(ativo: Boolean) {
+        val app = getApplication<Application>()
+        silenciarMidia = ativo
+        Preferencias.definirSilenciarMidia(app, ativo)
+        if (modoJogo) {
+            if (ativo) SilenciarMidia.silenciar(app) else SilenciarMidia.restaurar(app)
+        }
+    }
+
     /** Liga/desliga o Não Perturbe automático. Sem acesso, abre as configurações. */
     fun definirDndAuto(ativo: Boolean) {
         val app = getApplication<Application>()
@@ -201,6 +218,10 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
             } else {
                 ModoConcentracao.restaurar(getApplication<Application>())
             }
+        }
+        if (silenciarMidia) {
+            if (ativo) SilenciarMidia.silenciar(getApplication<Application>())
+            else SilenciarMidia.restaurar(getApplication<Application>())
         }
         HistoricoStore.adicionar(
             getApplication<Application>(),
