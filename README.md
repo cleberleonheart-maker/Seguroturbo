@@ -392,8 +392,16 @@ O projeto está preparado para o F-Droid:
 - Metadados `fastlane/metadata/android/` (pt-BR, en-US, es-ES, fr-FR)
 
 A submissão ao repositório **oficial** foi recusada (template do MR não seguido
-e política dos 3 meses de manutenção). Enquanto isso, é possível publicar um
-**repositório F-Droid próprio** (repositório alternativo) que já funciona:
+e política dos 3 meses de manutenção). Enquanto isso, há um **repositório F-Droid
+próprio** publicado e funcionando:
+
+```
+https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo
+```
+
+No app F-Droid: **Configurações → Repositórios → +** e cole a URL acima.
+
+Para gerar/atualizar esse repositório localmente:
 
 ```bash
 pip install fdroidserver
