@@ -10,8 +10,10 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Root/SELinux/bootloader** (v1.23): detecção ampliada de root, estado do SELinux
       (Enforcing/Permissive) e indícios de bootloader desbloqueado, com explicações.
 - [ ] **Play Integrity**: checar a integridade do dispositivo (quando integrável).
-- [ ] **Detector de stalkerware/ratware** (v1.30): comparar os pacotes instalados com
-      uma lista local de apps espiões conhecidos; só usa PackageManager, sem permissão extra.
+- [x] **Detector de stalkerware/ratware** (v1.31): compara os pacotes instalados com
+      uma lista local de apps espiões conhecidos e sinaliza combinações incomuns de
+      permissões (SMS + localização + contatos/microfone); só usa PackageManager, sem
+      permissão extra e sem enviar dados.
 - [ ] **Perfil de risco por app** (v1.30): cruzar `INTERNET` + permissões sensíveis e
       destacar os apps que combinam as duas coisas, sem coletar nada.
 - [ ] **Alertas temporais de segurança** (v1.31): avisar quando o patch de segurança do
@@ -63,8 +65,9 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 - [x] **Testes instrumentados** (Compose UI) para os fluxos principais (v1.27).
 - [ ] **Baseline Profiles** por módulo, para abertura ainda mais rápida.
-- [ ] **Publicação automática do repo F-Droid no CI** (v1.30): encadear o
-      `scripts/publicar-repo.sh` no workflow de release, para fechar o ciclo.
+- [x] **Publicação automática do repo F-Droid no CI** (v1.31): workflow
+      `.github/workflows/publicar-repo-fdroid.yml` regenera o índice assinado e publica
+      no GitHub Pages logo após a release, fechando o ciclo sem passo manual.
 - [ ] **Migrar SharedPreferences → DataStore** (v1.31): manter os 3 stores, mais robustos.
 - [ ] **Testes de snapshot Compose** (v1.31): Paparazzi/Roborazzi nos fluxos já testados.
 

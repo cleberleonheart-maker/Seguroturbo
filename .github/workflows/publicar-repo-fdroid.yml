@@ -1,0 +1,131 @@
+name: Publicar repo F-Droid
+
+# Publica a release nova no repositório F-Droid próprio (GitHub Pages) de forma
+# automática, logo após o workflow "Release" terminar com sucesso. Também pode
+# ser disparado manualmente informando a tag.
+#
+# Secrets necessários (no repositório do app):
+#   FDROID_REPO_KEYSTORE_BASE64  — keystore.jks do repositório F-Droid (base64)
+#   FDROID_REPO_KEYSTORE_PASS    — senha do keystore do repositório
+#   FDROID_PAGES_TOKEN           — PAT (escopo repo) com push em
+#                                  cleberleonheart-maker/seguraturbo-fdroid
+#
+# Veja docs/F-DROID.md (Caminho 2).
+
+on:
+  workflow_run:
+    workflows: ["Release"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag da release (ex.: v1.31). Vazio = última release.'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fdroid-repo
+  cancel-in-progress: false
+
+env:
+  GITHUB_REPO: cleberleonheart-maker/Seguroturbo
+  PAGES_REPO: cleberleonheart-maker/seguraturbo-fdroid
+  PACOTE: com.seguraturbo.app
+
+jobs:
+  publicar:
+    # No workflow_run, só prossegue se a release deu certo.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do app
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Instalar fdroidserver
+        run: pip install fdroidserver
+
+      - name: Descobrir a tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          TAG="$INPUT_TAG"
+          if [ -z "$TAG" ]; then
+            TAG="$(gh release view --repo "$GITHUB_REPO" --json tagName -q .tagName)"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Publicando a tag: $TAG"
+
+      - name: Baixar o APK da release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+          APK_URL="$(gh release view "$TAG" --repo "$GITHUB_REPO" --json assets \
+            -q ".assets[] | select(.name | test(\"${PACOTE}|SeguroTurbo-.*[^-debug].apk$\")) | select(.name | test(\"debug\") | not) | .url" \
+            | head -n1)"
+          [ -n "$APK_URL" ] || { echo "Nenhum APK na release $TAG" >&2; exit 1; }
+          gh release download "$TAG" --repo "$GITHUB_REPO" --clobber \
+            -p "$(basename "${APK_URL##*/}")" -O app-release.apk
+
+      - name: Determinar versionCode
+        id: ver
+        run: |
+          set -euo pipefail
+          VCODE="$(sed -n 's/.*versionCode[^0-9]\+\([0-9]\+\).*/\1/p' app/build.gradle | head -n1)"
+          [ -n "$VCODE" ] || { echo "versionCode não encontrado" >&2; exit 1; }
+          echo "vcode=$VCODE" >> "$GITHUB_OUTPUT"
+          echo "versionCode: $VCODE"
+
+      - name: Montar o repositório F-Droid
+        env:
+          FDROID_REPO_KEYSTORE_BASE64: ${{ secrets.FDROID_REPO_KEYSTORE_BASE64 }}
+          FDROID_REPO_KEYSTORE_PASS: ${{ secrets.FDROID_REPO_KEYSTORE_PASS }}
+        run: |
+          set -euo pipefail
+          REPO_DIR="$RUNNER_TEMP/fdroid-repo"
+          mkdir -p "$REPO_DIR/repo" "$REPO_DIR/metadata"
+          echo "$FDROID_REPO_KEYSTORE_BASE64" | base64 -d > "$REPO_DIR/keystore.jks"
+          cp fdroid/repo-config.example.yml "$REPO_DIR/config.yml"
+          sed -i -e "s|^keystorepass:.*|keystorepass: ${FDROID_REPO_KEYSTORE_PASS}|" \
+                 -e "s|^keypass:.*|keypass: ${FDROID_REPO_KEYSTORE_PASS}|" \
+                 "$REPO_DIR/config.yml"
+          cp fastlane/metadata/android/pt-BR/images/icon.png "$REPO_DIR/icon.png"
+          cp fdroid/${PACOTE}.yml "$REPO_DIR/metadata/${PACOTE}.yml"
+          cp app-release.apk "$REPO_DIR/repo/${PACOTE}_${{ steps.ver.outputs.vcode }}.apk"
+          cd "$REPO_DIR"
+          export FDROID_KEY_STORE_PASS="$FDROID_REPO_KEYSTORE_PASS"
+          export FDROID_KEY_PASS="$FDROID_REPO_KEYSTORE_PASS"
+          fdroid update --create-metadata
+          fdroid update -c
+
+      - name: Publicar no GitHub Pages
+        env:
+          PAGES_TOKEN: ${{ secrets.FDROID_PAGES_TOKEN }}
+        run: |
+          set -euo pipefail
+          REPO_DIR="$RUNNER_TEMP/fdroid-repo"
+          APK_NAME="${PACOTE}_${{ steps.ver.outputs.vcode }}.apk"
+          git clone "https://x-access-token:${PAGES_TOKEN}@github.com/${PAGES_REPO}.git" pages
+          rsync -a --delete "$REPO_DIR/repo/" pages/repo/
+          cd pages
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nada mudou no repositório F-Droid."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "repo: publica $APK_NAME (${{ steps.tag.outputs.tag }})"
+          git push -q origin HEAD:main
+          echo "Publicado: $APK_NAME"

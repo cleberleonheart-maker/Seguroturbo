@@ -34,7 +34,7 @@ Repo: https://github.com/cleberleonheart-maker/Seguroturbo.git
 Builds:
   - versionName: '1.31'
     versionCode: 34
-    commit: PLACEHOLDER_V131
+    commit: e94d3380761d42a1361a276bba5e123920b637dc
     gradle:
       - yes
 

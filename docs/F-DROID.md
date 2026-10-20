@@ -114,6 +114,35 @@ do repositório é lida de `~/fdroid-repo/.keystore-pass`.
 Variáveis opcionais: `FDROID_REPO_DIR` (padrão `~/fdroid-repo`) e
 `FDROID_PAGES_DIR` (padrão `~/seguraturbo-fdroid`).
 
+#### Automático no CI (recomendado)
+
+O workflow [`.github/workflows/publicar-repo-fdroid.yml`](../.github/workflows/publicar-repo-fdroid.yml)
+faz o mesmo ciclo sozinho: dispara logo após o workflow **Release** terminar com
+sucesso (ou manualmente em **Actions → Publicar repo F-Droid → Run workflow**),
+baixa o APK da release, regenera o índice assinado e publica no GitHub Pages. Não
+é preciso rodar nada na sua máquina.
+
+Ele precisa destes secrets no repositório do app:
+
+| Secret | Conteúdo |
+| --- | --- |
+| `FDROID_REPO_KEYSTORE_BASE64` | `keystore.jks` do repositório, em base64 |
+| `FDROID_REPO_KEYSTORE_PASS` | senha do keystore do repositório |
+| `FDROID_PAGES_TOKEN` | PAT (escopo `repo`) com push em `cleberleonheart-maker/seguraturbo-fdroid` |
+
+Para (re)criar os dois primeiros a partir da máquina local:
+
+```bash
+base64 -w0 ~/fdroid-repo/keystore.jks | gh secret set FDROID_REPO_KEYSTORE_BASE64
+gh secret set FDROID_REPO_KEYSTORE_PASS --body "$(cat ~/fdroid-repo/.keystore-pass)"
+```
+
+O `FDROID_PAGES_TOKEN` é um [token de acesso pessoal](https://github.com/settings/tokens)
+(classic) com o escopo `repo`; sem ele o push no repositório de Pages falha.
+
+> O script `scripts/publicar-repo.sh` continua útil para publicar manualmente ou
+> recuperar de uma falha no CI.
+
 ### Ícone e screenshots
 
 O F-Droid extrai o ícone do APK automaticamente. O guia oficial recomenda também:
