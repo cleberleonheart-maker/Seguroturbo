@@ -421,4 +421,12 @@ pip install fdroidserver
 ./fdroid/gerar-repo.sh ~/fdroid-repo
 ```
 
+Para publicar uma release nova de ponta a ponta (baixa o APK, regenera o índice
+e publica no GitHub Pages) num comando só:
+
+```bash
+./scripts/publicar-repo.sh          # usa a última release
+./scripts/publicar-repo.sh v1.30    # ou uma tag específica
+```
+
 O passo a passo completo está em [docs/F-DROID.md](docs/F-DROID.md).

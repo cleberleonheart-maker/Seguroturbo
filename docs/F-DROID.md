@@ -94,6 +94,26 @@ O app [`fdroidserver`](https://f-droid.org/docs/) gera tudo isso a partir de um
 
 5. A cada release nova: coloque o novo APK na pasta e rode `fdroid update` de novo.
 
+### Publicação automatizada
+
+O script [`scripts/publicar-repo.sh`](../scripts/publicar-repo.sh) faz o ciclo
+inteiro de uma release nova num comando:
+
+```bash
+./scripts/publicar-repo.sh          # usa a última release do GitHub
+./scripts/publicar-repo.sh v1.30    # ou uma tag específica
+```
+
+Ele: baixa o APK oficial da release, salva em `~/fdroid-repo/repo/` com o nome
+`com.seguraturbo.app_<versionCode>.apk`, regenera o índice assinado e publica a
+pasta `repo/` no repositório do GitHub Pages (`cleberleonheart-maker/seguraturbo-fdroid`).
+
+Requisitos: `gh` autenticado, `fdroidserver`, `git` e `rsync`. A senha do keystore
+do repositório é lida de `~/fdroid-repo/.keystore-pass`.
+
+Variáveis opcionais: `FDROID_REPO_DIR` (padrão `~/fdroid-repo`) e
+`FDROID_PAGES_DIR` (padrão `~/seguraturbo-fdroid`).
+
 ### Ícone e screenshots
 
 O F-Droid extrai o ícone do APK automaticamente. O guia oficial recomenda também:
