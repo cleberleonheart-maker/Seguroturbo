@@ -46,7 +46,7 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Produto / UX
 
-- [ ] **Perfis de uso** (v1.30): presets **"Gamer"**, **"Casual"**, **"Bateria"** e
+- [x] **Perfis de uso** (v1.30): presets **"Gamer"**, **"Casual"**, **"Bateria"** e
       **"Segurança máxima"** que aplicam várias preferências de uma vez (perfil de
       desempenho, Não Perturbe, trava de tela, nível de alerta). Totalmente local, sem
       conta nem nuvem — mantém o "sem coleta de dados".
@@ -109,3 +109,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Testes instrumentados** (Compose UI) dos fluxos principais (v1.27).
 - [x] **Bloqueio de tela** (screen pinning) ao iniciar um jogo (v1.28).
 - [x] **Silenciar só mídia** no Modo Jogo (v1.29).
+- [x] **Perfis de uso** (Gamer/Casual/Bateria/Segurança máxima) (v1.30).

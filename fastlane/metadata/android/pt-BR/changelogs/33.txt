@@ -1,0 +1,1 @@
+- Perfis de uso: presets Padrão, Gamer, Casual, Bateria e Segurança máxima que aplicam várias configurações de uma vez. Tudo local, sem conta nem nuvem.

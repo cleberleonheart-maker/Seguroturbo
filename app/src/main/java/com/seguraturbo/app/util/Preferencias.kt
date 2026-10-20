@@ -2,6 +2,7 @@ package com.seguraturbo.app.util
 
 import android.content.Context
 import com.seguraturbo.app.model.PerfilDesempenho
+import com.seguraturbo.app.model.PerfilUso
 import com.seguraturbo.app.model.TemaModo
 
 /**
@@ -24,6 +25,7 @@ object Preferencias {
     private const val K_VOLUME_MIDIA = "volume_midia_anterior"
     private const val K_FILTRO_ANTERIOR = "filtro_anterior"
     private const val K_PERFIL_DESEMPENHO = "perfil_desempenho"
+    private const val K_PERFIL_USO = "perfil_uso"
     private const val K_ONBOARDING_VISTO = "onboarding_visto"
     private const val K_ATUALIZACAO_AUTO = "atualizacao_automatica"
     private const val K_ULTIMA_VERSAO_VISTA = "ultima_versao_vista"
@@ -144,6 +146,17 @@ object Preferencias {
 
     fun definirPerfilDesempenho(ctx: Context, perfil: PerfilDesempenho) {
         prefs(ctx).edit().putString(K_PERFIL_DESEMPENHO, perfil.name).apply()
+    }
+
+    // ---- Perfil de uso (preset que aplica várias preferências) ----
+    fun perfilUso(ctx: Context): PerfilUso = runCatching {
+        PerfilUso.valueOf(
+            prefs(ctx).getString(K_PERFIL_USO, null) ?: PerfilUso.PADRAO.name
+        )
+    }.getOrDefault(PerfilUso.PADRAO)
+
+    fun definirPerfilUso(ctx: Context, perfil: PerfilUso) {
+        prefs(ctx).edit().putString(K_PERFIL_USO, perfil.name).apply()
     }
 
     // ---- Onboarding (tela de boas-vindas exibida só no primeiro uso) ----

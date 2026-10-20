@@ -1,0 +1,1 @@
+- Usage profiles: Default, Gamer, Casual, Battery and Maximum security presets that apply several settings at once. All local, no account or cloud.

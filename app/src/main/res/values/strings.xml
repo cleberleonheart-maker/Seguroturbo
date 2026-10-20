@@ -164,6 +164,14 @@
 
     <!-- Configurações -->
     <string name="cfg_title">Configurações</string>
+    <string name="cfg_perfil_uso">Perfil de uso</string>
+    <string name="cfg_perfil_uso_desc">Aplica várias configurações de uma vez, conforme o seu jeito de usar o aparelho</string>
+    <string name="cfg_perfil_padrao">Padrão</string>
+    <string name="cfg_perfil_gamer">Gamer</string>
+    <string name="cfg_perfil_casual">Casual</string>
+    <string name="cfg_perfil_bateria">Bateria</string>
+    <string name="cfg_perfil_seguranca_maxima">Segurança máxima</string>
+    <string name="cfg_perfil_aplicado">Perfil "%1$s" aplicado</string>
     <string name="cfg_dark">Tema</string>
     <string name="cfg_dark_desc">Segue o sistema ou fixa o tema neon claro/escuro</string>
     <string name="cfg_tema_sistema">Sistema</string>
@@ -370,4 +378,8 @@
         <item>Silenciar só mídia: no Game Turbo, baixa o volume de músicas e vídeos durante o Modo Jogo, sem afetar chamadas, alarmes e notificações.</item>
     </string-array>
     <string-array name="changelog_1_29_correcoes" />
+    <string-array name="changelog_1_30_novidades">
+        <item>Perfis de uso: presets Padrão, Gamer, Casual, Bateria e Segurança máxima que aplicam várias configurações de uma vez. Tudo local, sem conta nem nuvem.</item>
+    </string-array>
+    <string-array name="changelog_1_30_correcoes" />
 </resources>

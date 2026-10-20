@@ -57,6 +57,13 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.30
+
+- **Perfis de uso**: presets **Padrão**, **Gamer**, **Casual**, **Bateria** e
+  **Segurança máxima** que aplicam várias configurações de uma vez (perfil de
+  desempenho, Não Perturbe, trava de tela, silenciar mídia, lembrete e atualização
+  automática). Tudo local, sem conta nem nuvem.
+
 ## Novidades da versão 1.29
 
 - **Silenciar só mídia no jogo**: no Game Turbo, uma opção abaixa o volume de

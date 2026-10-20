@@ -41,6 +41,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.seguraturbo.app.R
 import com.seguraturbo.app.model.Changelog
+import com.seguraturbo.app.model.PerfilUso
 import com.seguraturbo.app.model.TemaModo
 import com.seguraturbo.app.ui.theme.Aparencia
 import com.seguraturbo.app.ui.theme.Cores
@@ -49,6 +50,7 @@ import com.seguraturbo.app.util.AgendadorAtualizacao
 import com.seguraturbo.app.util.AssinaturaApp
 import com.seguraturbo.app.util.Backup
 import com.seguraturbo.app.util.Notificacoes
+import com.seguraturbo.app.util.PerfisUso
 import com.seguraturbo.app.util.Preferencias
 import kotlin.math.abs
 
@@ -69,6 +71,7 @@ fun ConfiguracoesDialog(
     var escala by remember { mutableStateOf(Aparencia.escalaFonte) }
     var lembrete by remember { mutableStateOf(Preferencias.lembreteAtivo(ctx)) }
     var atualizacaoAuto by remember { mutableStateOf(Preferencias.atualizacaoAutomatica(ctx)) }
+    var perfilUso by remember { mutableStateOf(Preferencias.perfilUso(ctx)) }
     var mostrarNovidades by remember { mutableStateOf(false) }
     val assinatura by remember { mutableStateOf(AssinaturaApp.sha256(ctx)) }
     val sistemaEscuro = isSystemInDarkTheme()
@@ -91,9 +94,31 @@ fun ConfiguracoesDialog(
         )
         lembrete = Preferencias.lembreteAtivo(ctx)
         atualizacaoAuto = Preferencias.atualizacaoAutomatica(ctx)
+        perfilUso = Preferencias.perfilUso(ctx)
         Notificacoes.criarCanal(ctx)
         if (lembrete) Agendador.agendar(ctx) else Agendador.cancelar(ctx)
         if (atualizacaoAuto) AgendadorAtualizacao.agendar(ctx) else AgendadorAtualizacao.cancelar(ctx)
+    }
+
+    fun aplicarPerfil(perfil: PerfilUso) {
+        perfilUso = perfil
+        val ativouLembrete = PerfisUso.aplicar(ctx, perfil)
+        reaplicarPreferencias()
+        Notificacoes.criarCanal(ctx)
+        if (ativouLembrete) {
+            val precisaPermissao = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(
+                    ctx, Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            if (precisaPermissao) {
+                pedirNotificacao.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+        Toast.makeText(
+            ctx,
+            ctx.getString(R.string.cfg_perfil_aplicado, rotuloPerfilUso(ctx, perfil)),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     val exportarBackup = rememberLauncherForActivityResult(
@@ -155,6 +180,59 @@ fun ConfiguracoesDialog(
         },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                Text(
+                    stringResource(R.string.cfg_perfil_uso),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.cfg_perfil_uso_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+                Spacer(Modifier.height(8.dp))
+                listOf(
+                    PerfilUso.PADRAO, PerfilUso.GAMER, PerfilUso.CASUAL,
+                    PerfilUso.BATERIA, PerfilUso.SEGURANCA_MAXIMA
+                ).chunked(3).forEach { linha ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        linha.forEach { perfil ->
+                            val selecionado = perfilUso == perfil
+                            val cor = if (selecionado) Cores.Ciano else Cores.TextoCinza
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(cor.copy(alpha = if (selecionado) 0.16f else 0.05f))
+                                    .border(
+                                        width = 1.dp,
+                                        color = cor.copy(alpha = if (selecionado) 0.9f else 0.3f),
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .clickable { aplicarPerfil(perfil) }
+                                    .padding(vertical = 10.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    rotuloPerfilUso(ctx, perfil),
+                                    color = cor,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        repeat(3 - linha.size) { Spacer(Modifier.weight(1f)) }
+                    }
+                }
+
+                Spacer(Modifier.height(18.dp))
+
                 Text(
                     stringResource(R.string.cfg_dark),
                     color = Cores.TextoClaro,
@@ -471,3 +549,13 @@ fun ConfiguracoesDialog(
         NovidadesDialog(versoes = Changelog.versoes, onFechar = { mostrarNovidades = false })
     }
 }
+
+private fun rotuloPerfilUso(ctx: android.content.Context, perfil: PerfilUso): String = ctx.getString(
+    when (perfil) {
+        PerfilUso.PADRAO -> R.string.cfg_perfil_padrao
+        PerfilUso.GAMER -> R.string.cfg_perfil_gamer
+        PerfilUso.CASUAL -> R.string.cfg_perfil_casual
+        PerfilUso.BATERIA -> R.string.cfg_perfil_bateria
+        PerfilUso.SEGURANCA_MAXIMA -> R.string.cfg_perfil_seguranca_maxima
+    }
+)
