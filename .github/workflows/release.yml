@@ -52,7 +52,7 @@ jobs:
         run: echo "tag=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
 
       - name: Compilar (release + debug + AAB)
-        run: ./gradlew assembleRelease assembleDebug bundleRelease --no-daemon
+        run: ./gradlew assembleRelease assembleDebug bundleRelease --no-daemon -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=1g" -Dkotlin.compiler.execution.strategy=in-process
 
       - name: Renomear artefatos
         run: |

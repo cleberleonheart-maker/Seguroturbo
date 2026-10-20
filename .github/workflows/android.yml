@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # O gradle.properties fixa pouca memória (máquina local pequena); no CI há mais.
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
