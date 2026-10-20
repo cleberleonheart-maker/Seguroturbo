@@ -5,6 +5,35 @@
 [![Downloads](https://img.shields.io/github/downloads/cleberleonheart-maker/Seguroturbo/total?label=downloads)](https://github.com/cleberleonheart-maker/Seguroturbo/releases)
 [![Plataforma](https://img.shields.io/badge/plataforma-Android-3DDC84?logo=android&logoColor=white)](https://www.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![F-Droid repo](https://img.shields.io/badge/F--Droid-reposit%C3%B3rio-1976D2?logo=fdroid&logoColor=white)](https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo)
+[![Repositório F-Droid](https://img.shields.io/badge/repo-seguraturbo--fdroid-181717?logo=github&logoColor=white)](https://github.com/cleberleonheart-maker/seguraturbo-fdroid)
+
+## Instalação
+
+A forma mais fácil de instalar e receber atualizações automáticas é pelo
+**F-Droid** (repositório próprio, sem depender da loja oficial):
+
+**1.** No app F-Droid, abra **Configurações → Repositórios → +** e cole:
+
+```
+https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo
+```
+
+**2.** Ou escaneie o QR code com o F-Droid / celular:
+
+<a href="https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo">
+  <img src="docs/fdroid-repo-qr.png" alt="QR code do repositório F-Droid do SeguroTurbo" width="180">
+</a>
+
+Fingerprint da chave do repositório (SHA-256) para conferir a autenticidade:
+
+```
+92:FB:1F:52:80:E4:F8:26:32:72:12:81:B0:BB:55:59:AC:D9:93:E7:FE:A0:7A:67:10:D5:3F:6C:97:6E:73:34
+```
+
+Também dá para baixar o APK direto das
+[**releases do GitHub**](https://github.com/cleberleonheart-maker/Seguroturbo/releases/latest).
+
 
 Aplicativo Android que une três módulos em um só app, com tema futurista neon:
 
@@ -393,19 +422,8 @@ O projeto está preparado para o F-Droid:
 
 A submissão ao repositório **oficial** foi recusada (template do MR não seguido
 e política dos 3 meses de manutenção). Enquanto isso, há um **repositório F-Droid
-próprio** publicado e funcionando:
-
-```
-https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo
-```
-
-No app F-Droid: **Configurações → Repositórios → +** e cole a URL acima.
-
-Fingerprint da chave do repositório (SHA-256), para conferir a autenticidade:
-
-```
-92:FB:1F:52:80:E4:F8:26:32:72:12:81:B0:BB:55:59:AC:D9:93:E7:FE:A0:7A:67:10:D5:3F:6C:97:6E:73:34
-```
+próprio** publicado e funcionando — veja como adicionar na seção
+[**Instalação**](#instalação) no topo deste README.
 
 > A chave do repositório foi regerada em 20/10/2026. Se você já tinha adicionado
 > este repositório, remova e adicione de novo para aceitar a nova chave.
