@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
  *  - Google Play Protect / verificação de apps
  *  - Rede: Wi‑Fi aberto, VPN e DNS privado
  *  - apps com permissões sensíveis
+ *  - stalkerware/ratware conhecidos (lista curada, offline) e combinações incomuns
  *  - cache/temporários acumulados
  *
  * (Não é um antivírus: não analisa assinaturas de malware — é educativo.)
@@ -142,6 +143,42 @@ object SecurityScanner {
                     (if (foraDaLoja.size > 3) "…" else "") +
                     ". Instale apps apenas de fontes em que você confia.",
                 peso = 6
+            )
+        }
+
+        delay(350)
+        val stalkerware = withContext(Dispatchers.IO) { DetectorStalkerware.procurar(ctx) }
+        stalkerware.forEach { app ->
+            encontradas += Threat(
+                nome = "App de vigilância conhecido: ${app.nome}",
+                tipo = "STALKERWARE",
+                risco = "ALTO",
+                descricao = "O app \"${app.nome}\" (${app.pacote}) é um software de " +
+                    "monitoramento/espionagem conhecido (${app.categoria}). Ele pode " +
+                    "gravar sua tela, mensagens, chamadas e localização sem que você saiba. " +
+                    "Se você não reconhece este app, abra os detalhes e desinstale-o. " +
+                    "Se alguém instalou sem seu consentimento, procure ajuda (a ONG SaferNet " +
+                    "orienta vítimas de stalkerware).",
+                acao = AcaoConfig.APPS,
+                peso = 40,
+                pacoteApp = app.pacote
+            )
+        }
+
+        delay(350)
+        val combinacao = withContext(Dispatchers.IO) { DetectorStalkerware.combinacaoSuspeita(ctx) }
+        if (combinacao.isNotEmpty()) {
+            encontradas += Threat(
+                nome = "${combinacao.size} app(s) com combinação incomum de permissões",
+                tipo = "STALKERWARE",
+                risco = "MÉDIO",
+                descricao = "Estes apps pedem ao mesmo tempo acesso a mensagens, localização, " +
+                    "contatos e/ou microfone — combinação típica de apps de vigilância: " +
+                    combinacao.take(3).joinToString(", ") +
+                    (if (combinacao.size > 3) "…" else "") +
+                    ". Confira se você confia em todos eles.",
+                acao = AcaoConfig.APPS,
+                peso = 12
             )
         }
 

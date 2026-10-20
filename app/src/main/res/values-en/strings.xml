@@ -228,6 +228,7 @@
     <string name="sec_detail_nenhuma">Keep the system updated and review your apps\' permissions regularly.</string>
     <string name="sec_detail_rede">Open Wi‑Fi settings, forget the open network and prefer password-protected ones. On public networks, use a VPN and enable Private DNS.</string>
     <string name="sec_detail_tela">Open display settings and shorten the screen timeout (30 seconds or less is ideal).</string>
+    <string name="sec_detail_apps">Open the app details and, if you don\'t recognize it, tap Uninstall. If someone is spying on you, seek help.</string>
 
     <!-- Conteúdo dos relatórios -->
     <string name="rep_sec_title">Device security</string>
@@ -382,4 +383,8 @@
         <item>Usage profiles: Default, Gamer, Casual, Battery and Maximum security presets that apply several settings at once. All local, no account or cloud.</item>
     </string-array>
     <string-array name="changelog_1_30_correcoes" />
+    <string-array name="changelog_1_31_novidades">
+        <item>Stalkerware detector: the scan now looks for known surveillance apps and unusual permission combinations (SMS + location + contacts/microphone), with a button to open app details and uninstall. All on-device, no data sent out.</item>
+    </string-array>
+    <string-array name="changelog_1_31_correcoes" />
 </resources>

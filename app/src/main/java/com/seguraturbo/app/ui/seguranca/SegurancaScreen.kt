@@ -149,7 +149,7 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
                             if (ameaca.acao == AcaoConfig.CACHE) {
                                 vm.limpar()
                             } else {
-                                AcoesSistema.abrirConfiguracao(contexto, ameaca.acao)
+                                AcoesSistema.abrirConfiguracao(contexto, ameaca.acao, ameaca.pacoteApp)
                             }
                         }
                     )
@@ -193,7 +193,7 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
                 if (ameaca.acao == AcaoConfig.CACHE) {
                     vm.limpar()
                 } else {
-                    AcoesSistema.abrirConfiguracao(contexto, ameaca.acao)
+                    AcoesSistema.abrirConfiguracao(contexto, ameaca.acao, ameaca.pacoteApp)
                 }
             },
             onFechar = { selecionada = null }

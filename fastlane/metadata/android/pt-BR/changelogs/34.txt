@@ -1,0 +1,1 @@
+- Detector de stalkerware: a varredura agora procura apps de vigilância conhecidos e combinações incomuns de permissões (SMS + localização + contatos/microfone), com botão para abrir os detalhes e desinstalar. Tudo local, sem enviar dados para fora.

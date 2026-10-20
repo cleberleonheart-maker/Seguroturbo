@@ -228,6 +228,7 @@
     <string name="sec_detail_nenhuma">Mantén el sistema actualizado y revisa periódicamente los permisos de tus apps.</string>
     <string name="sec_detail_rede">Abre los ajustes de Wi‑Fi, olvida la red abierta y prefiere redes con contraseña. En redes públicas, usa una VPN y activa el DNS privado.</string>
     <string name="sec_detail_tela">Abre los ajustes de pantalla y reduce el tiempo de bloqueo automático (lo ideal es 30 segundos o menos).</string>
+    <string name="sec_detail_apps">Abre los detalles de la app y, si no la reconoces, toca Desinstalar. Si alguien te está vigilando, busca ayuda.</string>
 
     <!-- Contenido de los informes -->
     <string name="rep_sec_title">Seguridad del dispositivo</string>
@@ -382,4 +383,8 @@
         <item>Perfiles de uso: presets Predeterminado, Gamer, Casual, Batería y Seguridad máxima que aplican varios ajustes a la vez. Todo local, sin cuenta ni nube.</item>
     </string-array>
     <string-array name="changelog_1_30_correcoes" />
+    <string-array name="changelog_1_31_novidades">
+        <item>Detector de stalkerware: el análisis ahora busca apps de vigilancia conocidas y combinaciones inusuales de permisos (SMS + ubicación + contactos/micrófono), con un botón para abrir los detalles y desinstalar. Todo local, sin enviar datos.</item>
+    </string-array>
+    <string-array name="changelog_1_31_correcoes" />
 </resources>

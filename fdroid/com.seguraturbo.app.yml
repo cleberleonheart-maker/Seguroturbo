@@ -17,6 +17,8 @@ Description: |-
   localização, SMS, contatos e outros dados sensíveis, e explica como revogar.
   • Integridade do sistema — detecta root, SELinux em modo Permissive e builds de
   teste, que indicam bootloader desbloqueado.
+  • Detector de stalkerware — procura apps de vigilância conhecidos e combinações
+  incomuns de permissões, com atalho para desinstalar. Tudo local.
   • Game Turbo — perfil de desempenho, Não Perturbe durante a partida, barra
   flutuante com bateria/RAM/temperatura, limpeza de RAM, bloqueio de tela ao
   abrir o jogo e silenciamento só da mídia.
@@ -30,13 +32,13 @@ RepoType: git
 Repo: https://github.com/cleberleonheart-maker/Seguroturbo.git
 
 Builds:
-  - versionName: '1.30'
-    versionCode: 33
-    commit: 0b4a0075434df6bb51deb9ffe15334eca52580dc
+  - versionName: '1.31'
+    versionCode: 34
+    commit: PLACEHOLDER_V131
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 1.30
-CurrentVersionCode: 33
+CurrentVersion: 1.31
+CurrentVersionCode: 34

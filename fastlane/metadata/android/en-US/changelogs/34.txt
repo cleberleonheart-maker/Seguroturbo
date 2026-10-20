@@ -1,0 +1,1 @@
+- Stalkerware detector: the scan now looks for known surveillance apps and unusual permission combinations (SMS + location + contacts/microphone), with a button to open app details and uninstall. All on-device, no data sent out.

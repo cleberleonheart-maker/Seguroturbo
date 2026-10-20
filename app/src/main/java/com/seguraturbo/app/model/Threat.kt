@@ -14,7 +14,9 @@ data class Threat(
     val removido: Boolean = false,
     val acao: AcaoConfig = AcaoConfig.NENHUMA,
     /** Peso (0–100) subtraído da pontuação de segurança quando o alerta existe. */
-    val peso: Int = 0
+    val peso: Int = 0,
+    /** Pacote do app relacionado ao alerta (usado pelas ações que abrem um app). */
+    val pacoteApp: String? = null
 )
 
 /** Ação sugerida para corrigir um alerta (abre a tela de configuração adequada). */
@@ -28,5 +30,6 @@ enum class AcaoConfig {
     BATERIA,
     ATUALIZACAO_SISTEMA,
     REDES,
-    DISPLAY
+    DISPLAY,
+    APPS
 }

@@ -32,6 +32,33 @@
         <package android:name="com.yellowes.su" />
         <package android:name="com.kingroot.kinguser" />
         <package android:name="com.zhiqupk.root.global" />
+
+        <!-- Pacotes conhecidos de stalkerware/ratware: declarados aqui para que o
+             detector consiga enxergá-los mesmo quando o app se esconde da lista. -->
+        <package android:name="com.mspy.mobile" />
+        <package android:name="com.mspy.pro" />
+        <package android:name="com.bsbsoft.mspy" />
+        <package android:name="com.cyberlink.mobiletracker" />
+        <package android:name="com.cocospy.android" />
+        <package android:name="com.spyzie.android" />
+        <package android:name="com.hoverwatch.mobile" />
+        <package android:name="com.kidguard.monitor" />
+        <package android:name="com.iosnoops" />
+        <package android:name="com.spyera.android" />
+        <package android:name="com.minspy.monitor" />
+        <package android:name="com.flexispy.android" />
+        <package android:name="com.mobiletracker.android" />
+        <package android:name="com.thetruthspy.guardian" />
+        <package android:name="com.xnspy.android" />
+        <package android:name="com.spyic.mobile" />
+        <package android:name="com.highster.mobile" />
+        <package android:name="com.mobiletracker.monitor" />
+        <package android:name="com.wt.spy" />
+        <package android:name="com.familykeylogger" />
+        <package android:name="net.omniwave.spyphone" />
+        <package android:name="com.aim.spyphone" />
+        <package android:name="com.hiddenapp.hidespy" />
+        <package android:name="com.spyphone.android" />
     </queries>
 
     <!-- Barra flutuante do Game Turbo sobre o jogo (o usuário precisa autorizar

@@ -57,6 +57,14 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.31
+
+- **Detector de stalkerware**: a varredura de segurança agora procura **apps de
+  vigilância/espionagem conhecidos** (lista curada, offline) e sinaliza apps com
+  **combinação incomum de permissões** (SMS + localização + contatos/microfone).
+  Cada alerta tem um botão que abre os detalhes do app para desinstalar. Tudo no
+  aparelho, sem enviar dados para lugar nenhum.
+
 ## Novidades da versão 1.30
 
 - **Perfis de uso**: presets **Padrão**, **Gamer**, **Casual**, **Bateria** e

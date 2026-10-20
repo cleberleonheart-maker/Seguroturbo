@@ -16,7 +16,7 @@ import com.seguraturbo.app.model.AcaoConfig
 object AcoesSistema {
 
     /** Abre a tela de configuração adequada. Retorna true se conseguiu abrir. */
-    fun abrirConfiguracao(ctx: Context, acao: AcaoConfig): Boolean {
+    fun abrirConfiguracao(ctx: Context, acao: AcaoConfig, pacoteApp: String? = null): Boolean {
         val intent = when (acao) {
             AcaoConfig.FONTES_DESCONHECIDAS -> intentFontesDesconhecidas(ctx)
             AcaoConfig.OPCOES_DESENVOLVEDOR -> Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
@@ -26,9 +26,28 @@ object AcoesSistema {
             AcaoConfig.ATUALIZACAO_SISTEMA -> Intent(Settings.ACTION_DEVICE_INFO_SETTINGS)
             AcaoConfig.REDES -> Intent(Settings.ACTION_WIFI_SETTINGS)
             AcaoConfig.DISPLAY -> Intent(Settings.ACTION_DISPLAY_SETTINGS)
+            AcaoConfig.APPS -> intentDetalhesApp(ctx, pacoteApp)
             AcaoConfig.CACHE, AcaoConfig.NENHUMA -> return false
         }
         return tentarAbrir(ctx, intent)
+    }
+
+    /**
+     * Abre a tela de detalhes do app (informações/desinstalar). Se o pacote não
+     * vier ou não existir, cai na lista de apps instalados.
+     */
+    private fun intentDetalhesApp(ctx: Context, pacote: String?): Intent {
+        if (pacote != null && temPacote(ctx, pacote)) {
+            return Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$pacote"))
+        }
+        return Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
+    }
+
+    private fun temPacote(ctx: Context, pacote: String): Boolean = try {
+        ctx.packageManager.getApplicationInfo(pacote, 0)
+        true
+    } catch (e: Exception) {
+        false
     }
 
     /**

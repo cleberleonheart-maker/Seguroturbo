@@ -228,6 +228,7 @@
     <string name="sec_detail_nenhuma">Gardez le système à jour et vérifiez régulièrement les autorisations de vos apps.</string>
     <string name="sec_detail_rede">Ouvrez les réglages Wi‑Fi, oubliez le réseau ouvert et préférez les réseaux avec mot de passe. Sur les réseaux publics, utilisez un VPN et activez le DNS privé.</string>
     <string name="sec_detail_tela">Ouvrez les réglages d\'écran et réduisez le délai de verrouillage automatique (l\'idéal est 30 secondes ou moins).</string>
+    <string name="sec_detail_apps">Ouvrez les détails de l\'app et, si vous ne la reconnaissez pas, appuyez sur Désinstaller. Si quelqu\'un vous espionne, demandez de l\'aide.</string>
 
     <!-- Contenu des rapports -->
     <string name="rep_sec_title">Sécurité de l\'appareil</string>
@@ -382,4 +383,8 @@
         <item>Profils d\'utilisation : préréglages Par défaut, Gamer, Casual, Batterie et Sécurité maximale qui appliquent plusieurs réglages d\'un coup. Tout en local, sans compte ni cloud.</item>
     </string-array>
     <string-array name="changelog_1_30_correcoes" />
+    <string-array name="changelog_1_31_novidades">
+        <item>Détecteur de stalkerware : l\'analyse recherche désormais les applis de surveillance connues et les combinaisons de permissions inhabituelles (SMS + localisation + contacts/micro), avec un bouton pour ouvrir les détails et désinstaller. Tout en local, aucune donnée envoyée.</item>
+    </string-array>
+    <string-array name="changelog_1_31_correcoes" />
 </resources>

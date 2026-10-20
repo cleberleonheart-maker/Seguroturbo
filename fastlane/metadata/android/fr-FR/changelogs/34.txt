@@ -1,0 +1,1 @@
+- Détecteur de stalkerware : l'analyse recherche désormais les applis de surveillance connues et les combinaisons de permissions inhabituelles (SMS + localisation + contacts/micro), avec un bouton pour ouvrir les détails et désinstaller. Tout en local, aucune donnée envoyée.
