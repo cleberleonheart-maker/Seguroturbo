@@ -391,4 +391,13 @@ O projeto está preparado para o F-Droid:
 - `LICENSE` com a GPL-3.0 (exigência do F-Droid)
 - Metadados `fastlane/metadata/android/` (pt-BR, en-US, es-ES, fr-FR)
 
-O passo a passo de submissão está em [docs/F-DROID.md](docs/F-DROID.md).
+A submissão ao repositório **oficial** foi recusada (template do MR não seguido
+e política dos 3 meses de manutenção). Enquanto isso, é possível publicar um
+**repositório F-Droid próprio** (repositório alternativo) que já funciona:
+
+```bash
+pip install fdroidserver
+./fdroid/gerar-repo.sh ~/fdroid-repo
+```
+
+O passo a passo completo está em [docs/F-DROID.md](docs/F-DROID.md).

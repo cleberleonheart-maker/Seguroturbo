@@ -24,3 +24,7 @@ local.properties
 *.jks
 keystore.properties
 CREDENCIAIS-KEYSTORE.txt
+.keystore-pass
+fdroid/config.yml
+fdroid/*.apk
+fdroid/repo/

@@ -24,17 +24,22 @@ limpar_daemons() {
     sleep 2
 }
 
+# Máquina pequena (≤ 4 GB de RAM): o JVM padrão do Gradle (Xmx1024m) somado ao
+# uso do sistema faz o daemon ser morto pelo OOM killer. 512m/256m compila bem
+# dentro de ~400 MB livres. Sobrescreva com GRADLE_XMX se tiver mais memória.
+GRADLE_XMX="${GRADLE_XMX:--Xmx512m -XX:MaxMetaspaceSize=256m}"
+
 build_com_retry() {
     local tarefa="$1"
     limpar_daemons
     echo ">>> $tarefa (1ª passada)"
-    if ./gradlew "$tarefa" --no-daemon; then
+    if ./gradlew "$tarefa" --no-daemon -Dorg.gradle.jvmargs="$GRADLE_XMX"; then
         return 0
     fi
     echo ">>> 1ª passada falhou (provável OOM no R8). Repetindo com o cache quente..."
     limpar_daemons
     echo ">>> $tarefa (2ª passada)"
-    ./gradlew "$tarefa" --no-daemon
+    ./gradlew "$tarefa" --no-daemon -Dorg.gradle.jvmargs="$GRADLE_XMX"
 }
 
 echo "== SeguroTurbo $VERSAO — build =="

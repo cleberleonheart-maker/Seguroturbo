@@ -1,0 +1,23 @@
+# Configuração para gerar um repositório F-Droid próprio do SeguroTurbo.
+# Uso: copie este arquivo para a pasta do seu repo (ex.: ~/fdroid-repo/config.yml)
+# e rode `fdroid update`. Veja docs/F-DROID.md (Caminho 2).
+#
+# `repo_url` deve apontar para onde você vai publicar a pasta (GitHub Pages etc.).
+# `repo_name`/`repo_description` aparecem dentro do app F-Droid do usuário.
+
+repo_url: https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo
+repo_name: SeguroTurbo
+repo_description: |
+  Segurança, privacidade e desempenho para Android. Código aberto (GPL-3.0),
+  sem rastreamento, sem anúncios e sem coleta de dados.
+
+archive_older: 0
+repo_icon: icon.png
+keystore: keystore.jks
+repo_keyalias: seguraturbo
+keydname: CN=SeguroTurbo, OU=SeguroTurbo, O=SeguroTurbo, C=BR
+
+# As senhas são preenchidas automaticamente por gerar-repo.sh a partir do
+# keystore.jks gerado (arquivo .keystore-pass, que não deve ser versionado).
+keystorepass: TROQUE_ESTA_SENHA
+keypass: TROQUE_ESTA_SENHA
