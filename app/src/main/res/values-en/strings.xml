@@ -36,6 +36,8 @@
     <string name="perm_vazio">No app has sensitive permissions granted.</string>
     <string name="perm_fechar">Close</string>
     <string name="perm_contagem">%1$d app(s)</string>
+    <string name="perm_exportar">Export inventory</string>
+    <string name="perm_exportar_texto">App and permission inventory (SeguroTurbo)</string>
     <string name="perm_aviso">For privacy, Android only shows visible apps (Android 11+ rule). Review anything you don\'t recognize in the system Settings.</string>
     <string name="perm_camera">Camera</string>
     <string name="perm_microfone">Microphone</string>
@@ -387,4 +389,8 @@
         <item>Stalkerware detector: the scan now looks for known surveillance apps and unusual permission combinations (SMS + location + contacts/microphone), with a button to open app details and uninstall. All on-device, no data sent out.</item>
     </string-array>
     <string-array name="changelog_1_31_correcoes" />
+    <string-array name="changelog_1_32_novidades">
+        <item>Exportable inventory: in the permission audit, a button generates a CSV with every visible app and the sensitive permissions each one holds. All on-device, no data sent out.</item>
+    </string-array>
+    <string-array name="changelog_1_32_correcoes" />
 </resources>

@@ -36,6 +36,8 @@
     <string name="perm_vazio">Aucune app n\'a d\'autorisation sensible accordée.</string>
     <string name="perm_fechar">Fermer</string>
     <string name="perm_contagem">%1$d app(s)</string>
+    <string name="perm_exportar">Exporter l\'inventaire</string>
+    <string name="perm_exportar_texto">Inventaire des applis et permissions (SeguroTurbo)</string>
     <string name="perm_aviso">Pour la confidentialité, Android n\'affiche que les apps visibles (règle Android 11+). Vérifiez ce que vous ne reconnaissez pas dans les réglages du système.</string>
     <string name="perm_camera">Appareil photo</string>
     <string name="perm_microfone">Microphone</string>
@@ -387,4 +389,8 @@
         <item>Détecteur de stalkerware : l\'analyse recherche désormais les applis de surveillance connues et les combinaisons de permissions inhabituelles (SMS + localisation + contacts/micro), avec un bouton pour ouvrir les détails et désinstaller. Tout en local, aucune donnée envoyée.</item>
     </string-array>
     <string-array name="changelog_1_31_correcoes" />
+    <string-array name="changelog_1_32_novidades">
+        <item>Inventaire exportable : dans l\'audit des permissions, un bouton génère un CSV avec toutes les applis visibles et les permissions sensibles de chacune. Tout en local, aucune donnée envoyée.</item>
+    </string-array>
+    <string-array name="changelog_1_32_correcoes" />
 </resources>

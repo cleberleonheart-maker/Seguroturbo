@@ -36,6 +36,8 @@
     <string name="perm_vazio">Nenhum app com permissões sensíveis concedidas.</string>
     <string name="perm_fechar">Fechar</string>
     <string name="perm_contagem">%1$d app(s)</string>
+    <string name="perm_exportar">Exportar inventário</string>
+    <string name="perm_exportar_texto">Inventário de apps e permissões (SeguroTurbo)</string>
     <string name="perm_aviso">Por privacidade, o Android mostra apenas os apps visíveis (regra do Android 11+). Revise o que você não reconhece nas Configurações do sistema.</string>
     <string name="perm_camera">Câmera</string>
     <string name="perm_microfone">Microfone</string>
@@ -387,4 +389,8 @@
         <item>Detector de stalkerware: a varredura agora procura apps de vigilância conhecidos e combinações incomuns de permissões (SMS + localização + contatos/microfone), com botão para abrir os detalhes e desinstalar. Tudo local, sem enviar dados para fora.</item>
     </string-array>
     <string-array name="changelog_1_31_correcoes" />
+    <string-array name="changelog_1_32_novidades">
+        <item>Inventário exportável: na auditoria de permissões, um botão gera um CSV com todos os apps visíveis e as permissões sensíveis que cada um tem. Tudo local, sem enviar dados.</item>
+    </string-array>
+    <string-array name="changelog_1_32_correcoes" />
 </resources>

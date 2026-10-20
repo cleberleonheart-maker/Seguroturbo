@@ -20,7 +20,9 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       sistema estiver desatualizado há mais de X meses.
 - [ ] **Verificador de senhas vazadas (offline)** (v1.31): dicionário local, sem enviar
       nada pela rede — alinhado ao "sem coleta de dados".
-- [ ] **Inventário exportável de apps + permissões** (v1.31): reaproveita `RelatorioCsv.kt`.
+- [x] **Inventário exportável de apps + permissões** (v1.32): gera CSV (`InventarioCsv.kt`,
+      reaproveitando `RelatorioCsv.kt`) com os apps visíveis e seus grupos de permissão
+      sensível, tudo offline.
 
 ## Desempenho / Game Turbo
 
@@ -113,3 +115,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Bloqueio de tela** (screen pinning) ao iniciar um jogo (v1.28).
 - [x] **Silenciar só mídia** no Modo Jogo (v1.29).
 - [x] **Perfis de uso** (Gamer/Casual/Bateria/Segurança máxima) (v1.30).
+- [x] **Detector de stalkerware** (v1.31).
+- [x] **Inventário exportável de apps + permissões** (v1.32).

@@ -15,6 +15,7 @@ Description: |-
 
   • Auditoria de permissões — lista os apps que acessam câmera, microfone,
   localização, SMS, contatos e outros dados sensíveis, e explica como revogar.
+  Exporta tudo em CSV, se você quiser guardar ou revisar depois.
   • Integridade do sistema — detecta root, SELinux em modo Permissive e builds de
   teste, que indicam bootloader desbloqueado.
   • Detector de stalkerware — procura apps de vigilância conhecidos e combinações
@@ -32,13 +33,13 @@ RepoType: git
 Repo: https://github.com/cleberleonheart-maker/Seguroturbo.git
 
 Builds:
-  - versionName: '1.31'
-    versionCode: 34
-    commit: e94d3380761d42a1361a276bba5e123920b637dc
+  - versionName: '1.32'
+    versionCode: 35
+    commit: PLACEHOLDER_V132
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 1.31
-CurrentVersionCode: 34
+CurrentVersion: 1.32
+CurrentVersionCode: 35

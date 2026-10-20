@@ -1,0 +1,1 @@
+- Inventario exportable: en la auditoría de permisos, un botón genera un CSV con todas las apps visibles y los permisos sensibles de cada una. Todo local, sin enviar datos.

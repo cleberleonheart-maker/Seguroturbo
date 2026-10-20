@@ -1,0 +1,1 @@
+- Exportable inventory: in the permission audit, a button generates a CSV with every visible app and the sensitive permissions each one holds. All on-device, no data sent out.

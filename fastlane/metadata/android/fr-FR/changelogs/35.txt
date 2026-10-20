@@ -1,0 +1,1 @@
+- Inventaire exportable : dans l'audit des permissions, un bouton génère un CSV avec toutes les applis visibles et les permissions sensibles de chacune. Tout en local, aucune donnée envoyée.

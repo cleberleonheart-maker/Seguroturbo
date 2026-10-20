@@ -30,6 +30,7 @@ import com.seguraturbo.app.R
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.AppComPermissoes
 import com.seguraturbo.app.util.AuditoriaPermissoes
+import com.seguraturbo.app.util.InventarioCsv
 
 /**
  * Diálogo de auditoria de permissões: mostra um resumo por permissão e a lista
@@ -139,12 +140,30 @@ fun PermissoesDialog(onFechar: () -> Unit) {
             }
         },
         confirmButton = {
-            TextButton(onClick = onFechar) {
-                Text(
-                    stringResource(R.string.perm_fechar),
-                    color = Cores.Ciano,
-                    fontWeight = FontWeight.Bold
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (!carregando && apps.isNotEmpty()) {
+                    TextButton(onClick = {
+                        InventarioCsv.compartilhar(
+                            ctx,
+                            apps,
+                            rotulo = { ctx.getString(it.rotuloRes) },
+                            texto = ctx.getString(R.string.perm_exportar_texto)
+                        )
+                    }) {
+                        Text(
+                            stringResource(R.string.perm_exportar),
+                            color = Cores.Verde,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                TextButton(onClick = onFechar) {
+                    Text(
+                        stringResource(R.string.perm_fechar),
+                        color = Cores.Ciano,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     )
