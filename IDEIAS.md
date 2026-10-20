@@ -46,6 +46,12 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Produto / UX
 
+- [ ] **Perfis de uso** (v1.30): presets **"Gamer"**, **"Casual"**, **"Bateria"** e
+      **"Segurança máxima"** que aplicam várias preferências de uma vez (perfil de
+      desempenho, Não Perturbe, trava de tela, nível de alerta). Totalmente local, sem
+      conta nem nuvem — mantém o "sem coleta de dados".
+- [ ] **Perfil de dispositivo** (v1.31): detecção read-only de work profile / Device
+      Owner (aparelho gerenciado) na aba Segurança.
 - [ ] **Widgets adicionais**: mais atalhos na tela inicial (score de segurança, limpeza
       de RAM com um toque).
 - [ ] **Atalhos dinâmicos** (v1.30): long-press no ícone → "Escanear", "Limpar RAM",
