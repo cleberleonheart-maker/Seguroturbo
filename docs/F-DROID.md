@@ -27,12 +27,19 @@ Nada disso impede o app de funcionar. Há dois caminhos a seguir.
 ## Caminho 1 — reabrir para o F-Droid oficial (mais tarde)
 
 Só vale depois de cumprir a política dos 3 meses, mantendo o repositório ativo
-(commits regulares, releases). Quando estiver pronto:
+(commits regulares, releases).
+
+> **Data-limite:** o primeiro commit do projeto é de **16/10/2026**, então o MR
+> oficial só pode ser reaberto a partir de **16/01/2027**. Anote o lembrete.
+
+Quando estiver pronto:
 
 1. Faça fork de <https://gitlab.com/fdroid/fdroiddata>
 2. Crie `metadata/com.seguraturbo.app.yml` com o conteúdo de
    [`fdroid/com.seguraturbo.app.yml`](../fdroid/com.seguraturbo.app.yml).
-3. Abra um merge request **usando o template oficial** (não apague as seções).
+3. Abra um merge request **usando o template oficial** (não apague as seções
+   obrigatórias — foi esse o erro do MR anterior). O template exige a checklist
+   de inclusão preenchida no corpo do MR.
 4. Responda às perguntas dos revisores.
 
 > **Atenção:** a cada release nova, atualize no YAML o `versionName`,
@@ -95,6 +102,30 @@ O F-Droid extrai o ícone do APK automaticamente. O guia oficial recomenda tamb�
 - `fastlane/metadata/android/en-US/images/phoneScreenshots/1.png` (capturas de tela)
 
 Screenshots aumentam a qualidade da ficha do app — vale tirar 3–4 do app rodando.
+
+### Fingerprint da chave do repositório
+
+Para conferir se o repositório é autêntico, use o fingerprint SHA-256 da chave
+do repositório próprio:
+
+```
+92:FB:1F:52:80:E4:F8:26:32:72:12:81:B0:BB:55:59:AC:D9:93:E7:FE:A0:7A:67:10:D5:3F:6C:97:6E:73:34
+```
+
+> A chave foi regerada em **20/10/2026**. Ao usar o repositório próprio, o APK
+> publicado é sempre o binário oficial da release (mesmo `sha256`) — em
+> 20/10/2026 o índice passou a apontar para o APK da v1.29
+> (`sha256 3e315c2f1c86da7ec6692fd75c8d68a61a547dddf933b74de37d10a938278485`).
+
+### Senhas dos keystores
+
+Dois keystores diferentes, não confundir:
+
+- **App** (`seguraturbo.keystore`) — assina o APK. Senha nos secrets do GitHub
+  Actions (`KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`).
+- **Repositório** (`~/fdroid-repo/keystore.jks`) — assina o índice do repositório
+  próprio. Senha em `~/fdroid-repo/.keystore-pass` e no `~/fdroid-repo/config.yml`
+  (permissão `600`, nunca versionar).
 
 ## Doação
 

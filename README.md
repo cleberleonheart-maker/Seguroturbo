@@ -401,6 +401,19 @@ https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo
 
 No app F-Droid: **Configurações → Repositórios → +** e cole a URL acima.
 
+Fingerprint da chave do repositório (SHA-256), para conferir a autenticidade:
+
+```
+92:FB:1F:52:80:E4:F8:26:32:72:12:81:B0:BB:55:59:AC:D9:93:E7:FE:A0:7A:67:10:D5:3F:6C:97:6E:73:34
+```
+
+> A chave do repositório foi regerada em 20/10/2026. Se você já tinha adicionado
+> este repositório, remova e adicione de novo para aceitar a nova chave.
+
+O MR oficial pode ser reaberto depois de cumprir a política dos **3 meses de
+manutenção** (primeiro commit em 16/10/2026 — reabrir a partir de **16/01/2027**,
+usando o template oficial de "New app").
+
 Para gerar/atualizar esse repositório localmente:
 
 ```bash
