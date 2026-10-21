@@ -6,6 +6,11 @@ SDK="${ANDROID_HOME:-$HOME/android-sdk}"
 BT="$(ls -d "$SDK"/build-tools/*/ 2>/dev/null | sort -V | tail -1)"
 BT="${BT%/}"
 AJ="$SDK/platforms/android-34/android.jar"
+# se android-34 nao estiver instalado, usa a plataforma mais nova disponivel
+if [ ! -f "$AJ" ]; then
+  PLAT="$(ls -d "$SDK"/platforms/android-* 2>/dev/null | sort -V | tail -1)"
+  AJ="$PLAT/android.jar"
+fi
 PROJ="$(cd "$(dirname "$0")" && pwd)"
 OUT="$PROJ/../apk"
 KS="$PROJ/galinha.keystore"
@@ -33,6 +38,7 @@ fi
 rm -rf "$PROJ/build"; mkdir -p "$PROJ/build"/{res,classes,dex,gen} "$OUT"
 
 echo "==> copiando o jogo para os assets"
+mkdir -p "$PROJ/assets"
 cp "$GAME" "$PROJ/assets/index.html"
 
 echo "==> aapt2 compile (resources)"

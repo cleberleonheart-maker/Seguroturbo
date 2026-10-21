@@ -49,6 +49,12 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Instalar fdroidserver
         run: pip install fdroidserver
 
