@@ -281,14 +281,18 @@ const SIZES = { small: 104, normal: 134, large: 170 };
 const DIFF = {
   easy:   { ghost: 0.88, fright: 1.35, player: 0.96, lives: 4, label: "FÁCIL" },
   normal: { ghost: 1,    fright: 1,    player: 1,    lives: 3, label: "NORMAL" },
-  hard:   { ghost: 1.10, fright: 0.70, player: 1.05, lives: 2, label: "DIFÍCIL" }
+  hard:   { ghost: 1.10, fright: 0.70, player: 1.05, lives: 2, label: "DIFÍCIL" },
+  // Zen: sem derrota. Os gatos continuam caçando (e o chefe e o clone continuam
+  // aparecendo), mas a galinha nunca perde a vida e o jogo nunca acaba.
+  zen:    { ghost: 0.85, fright: 1.40, player: 1,    lives: 3, label: "ZEN" }
 };
+function isZen(){ return CFG.diff === "zen"; }
 const CFG = Object.assign(
   { stick: true, side: "left", size: "normal", vol: 0.7, muted: false, vibrate: true, diff: "normal",
     reduceMotion: false, contrast: false, bigText: false, nick: null, server: null },
   readCfg()
 );
-const DIFF_KEYS = ["easy", "normal", "hard"];
+const DIFF_KEYS = ["easy", "normal", "hard", "zen"];
 function readCfg(){ try { return JSON.parse(store.get(CFG_KEY) || "{}") || {}; } catch (e) { return {}; } }
 function dayKey(){ try { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); } catch (e) { return "0"; } }
 function saveCfg(){ store.set(CFG_KEY, JSON.stringify(CFG)); }
@@ -1231,6 +1235,11 @@ function refreshScore(){
 function refreshStats(){
   ui.level.textContent = bonus ? "BÔNUS" : level;
   ui.lives.innerHTML = "";
+  if (isZen()){
+    // no Zen a galinha nunca perde a vida
+    ui.lives.innerHTML = '<span style="font-size:16px;line-height:20px;color:#facc15">&#8734;</span>';
+    return;
+  }
   const n = Math.max(0, lives - 1);
   for (let i = 0; i < n; i++) ui.lives.appendChild(chickenIcon());
 }
@@ -1383,7 +1392,7 @@ function titleScreen(){
   const mCur = mst.done ? MT.target : Math.min(MT.need(mst), MT.target);
   showOverlay(`
     <h1>GALINHA ASSADA<em>açaí &amp; peixe</em></h1>
-    <div class="sub">Recorde (${DIFF[CFG.diff].label}): <b style="color:#facc15">${fmt(rec)}</b> &nbsp;&bull;&nbsp; Sequência: <b>${streak}/7</b></div>
+    <div class="sub">Recorde (${DIFF[CFG.diff].label}): <b style="color:#facc15">${fmt(rec)}</b> &nbsp;&bull;&nbsp; Sequência: <b>${streak}/7</b>${isZen() ? ' &nbsp;&bull;&nbsp; <b style="color:#facc15">modo zen: você não perde vida</b>' : ""}</div>
     <div class="sub" style="opacity:.9">Missão do dia: <b style="color:#f472b6">${MT.name} ${mst.done ? "&#10003;" : ""}</b> (${mCur}/${MT.target})</div>
     <div class="sub">Ela assou o açaí e o peixe ficou perto.<br>Repita a receita sem deixar os <b>gatos</b> pegarem a galinha.</div>
     <div class="legend">
@@ -1672,12 +1681,14 @@ function updateModes(dt){
    10. UPDATE
    ============================================================ */
 function die(){
-  state = "dying"; stateTimer = 1.8;
+  state = "dying"; stateTimer = isZen() ? 0.9 : 1.8;
   deathsThisLevel++;
   mstSync();
   if (firstRun && !tips.death){
     tips.death = true;
-    toast("Perdeu uma vida… pimenta e escudo ajudam a sobreviver!", "#f59e0b");
+    toast(isZen()
+      ? "No modo Zen você não perde vida! Aproveite pra conhecer o labirinto."
+      : "Perdeu uma vida… pimenta e escudo ajudam a sobreviver!", isZen() ? "#facc15" : "#f59e0b");
   }
   shake = Math.max(shake, CFG.reduceMotion ? 0 : 0.4);
   Buzz.ok([60, 70, 160]);
@@ -1693,7 +1704,7 @@ function die(){
       rot: Math.random() * 6, vr: (Math.random() - 0.5) * 14, t: 0
     });
   }
-  popups.push({ r: player.r, c: player.c, text: "OPS!", t: 0, color: "#ef4444" });
+  popups.push({ r: player.r, c: player.c, text: isZen() ? "DE VOLTA!" : "OPS!", t: 0, color: isZen() ? "#facc15" : "#ef4444" });
 }
 
 function update(dt){
@@ -1710,9 +1721,12 @@ function update(dt){
   if (state === "dying"){
     stateTimer -= dt;
     if (stateTimer <= 0){
-      lives--;
-      refreshStats();
-      if (lives <= 0) gameOver(); else respawn();
+      if (!isZen()){
+        lives--;
+        refreshStats();
+        if (lives <= 0){ gameOver(); return; }
+      }
+      respawn();
     }
     return;
   }
@@ -2971,7 +2985,7 @@ function cfgCycle(key){
   else if (key === "size") CFG.size = { small: "normal", normal: "large", large: "small" }[CFG.size];
   else if (key === "vol") Sound.setVolume(CFG.vol >= 0.99 ? 0.2 : Math.min(1, CFG.vol + 0.2));
   else if (key === "vibrate") CFG.vibrate = !CFG.vibrate;
-  else if (key === "diff") CFG.diff = { easy: "normal", normal: "hard", hard: "easy" }[CFG.diff];
+  else if (key === "diff") CFG.diff = { easy: "normal", normal: "hard", hard: "zen", zen: "easy" }[CFG.diff];
   else if (key === "reduceMotion") CFG.reduceMotion = !CFG.reduceMotion;
   else if (key === "contrast") CFG.contrast = !CFG.contrast;
   else if (key === "bigText") CFG.bigText = !CFG.bigText;
@@ -3647,6 +3661,28 @@ player = makeEntity(1, 1, 0, 7.4, "player");
 refreshAll();
 titleScreen();
 requestAnimationFrame(frame);
+
+/* ---- gancho de teste (usado por test/harness.js) ---- */
+window.__galinha = {
+  CFG, DIFF, DIFF_KEYS, isZen,
+  get state(){ return state; },
+  get lives(){ return lives; },
+  get level(){ return level; },
+  get score(){ return score; },
+  get best(){ return best; },
+  get player(){ return player; },
+  get ghosts(){ return ghosts; },
+  get bonus(){ return bonus; },
+  get bossLevel(){ return bossLevel; },
+  get cloneAt(){ return cloneAt; },
+  setLives(n){ lives = n; refreshStats(); },
+  setLevel(n){ level = n; newLevel(false); },
+  start(){ startGame(); },
+  die(){ die(); },
+  step(dt){ update(dt); },
+  setDiff(d){ CFG.diff = d; best = bestByDiff[d] || 0; refreshAll(); },
+  cfgCycle(k){ cfgCycle(k); }
+};
 
 })();
 </script>

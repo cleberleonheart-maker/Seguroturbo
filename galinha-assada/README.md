@@ -23,6 +23,17 @@ gamepad Bluetooth).
 Abra `index.html` num navegador. Para testar com gamepad Bluetooth no
 computador, o Chrome funciona; no celular use o app Android.
 
+## Testes
+
+O jogo roda em Node com um DOM mínimo, sem navegador e sem rede:
+
+```bash
+node test/harness.js
+```
+
+Cobre o modo Zen (dificuldade nova, ciclo do menu, HUD, morte sem perder vida,
+chefe e clone continuam valendo) e a regressão das outras dificuldades.
+
 ## Gerar o APK Android
 
 O APK é montado sem Gradle (aapt2 + javac + d8 + apksigner), o que deixa o
