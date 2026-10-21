@@ -116,7 +116,7 @@ fi
 
 log "Sincronizando a pasta repo/ com o GitHub Pages..."
 git -C "$PAGES_DIR" pull --ff-only --quiet
-rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/repo/"
+rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/fdroid/repo/"
 
 git -C "$PAGES_DIR" add -A
 if git -C "$PAGES_DIR" diff --cached --quiet; then

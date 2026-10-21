@@ -92,6 +92,18 @@ O app [`fdroidserver`](https://f-droid.org/docs/) gera tudo isso a partir de um
 4. Publique a pasta como site (GitHub Pages, Codeberg Pages, servidor próprio).
    Os usuários adicionam a URL em **F-Droid → Configurações → Repositórios**.
 
+   O repositório precisa ficar num caminho que termine em `/fdroid/repo`, porque
+   é esse que o cliente do F-Droid procura. Publicando a pasta `repo/` dentro de
+   um diretório `fdroid/`, a URL que o usuário digita é a raiz do site:
+
+   ```
+   https://cleberleonheart-maker.github.io/seguraturbo-fdroid
+   ```
+
+   O cliente acrescenta `/fdroid/repo` sozinho. Se você digitar a URL completa
+   com `/repo` no final, ele vai procurar `/repo/fdroid/repo` e vai avisar que o
+   endereço do repositório está malformado.
+
 5. A cada release nova: coloque o novo APK na pasta e rode `fdroid update` de novo.
 
 ### Publicação automatizada

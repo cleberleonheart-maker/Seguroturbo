@@ -5,7 +5,7 @@
 # `repo_url` deve apontar para onde você vai publicar a pasta (GitHub Pages etc.).
 # `repo_name`/`repo_description` aparecem dentro do app F-Droid do usuário.
 
-repo_url: https://cleberleonheart-maker.github.io/seguraturbo-fdroid/repo
+repo_url: https://cleberleonheart-maker.github.io/seguraturbo-fdroid/fdroid/repo
 repo_name: SeguroTurbo
 repo_description: |
   Segurança, privacidade e desempenho para Android. Código aberto (GPL-3.0),
