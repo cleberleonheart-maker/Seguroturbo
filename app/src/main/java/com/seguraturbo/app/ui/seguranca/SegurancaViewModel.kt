@@ -8,9 +8,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.model.Threat
+import com.seguraturbo.app.util.AppComPermissoes
+import com.seguraturbo.app.util.AuditoriaPermissoes
 import com.seguraturbo.app.util.Formato
 import com.seguraturbo.app.util.HistoricoStore
 import com.seguraturbo.app.util.Preferencias
+import com.seguraturbo.app.util.RiscoApp
 import com.seguraturbo.app.util.SecurityScanner
 import com.seguraturbo.app.util.StorageCleaner
 import com.seguraturbo.app.widget.SeguroTurboWidget
@@ -33,13 +36,22 @@ class SegurancaViewModel(app: Application) : AndroidViewModel(app) {
     var progressoLimpeza by mutableStateOf(0)
     var mensagemLimpeza by mutableStateOf<String?>(null)
     var historico by mutableStateOf<List<HistoricoEntrada>>(emptyList())
+    var appsEmRisco by mutableStateOf<List<AppComPermissoes>>(emptyList())
 
     init {
         carregarHistorico()
+        carregarPerfisRisco()
     }
 
     private fun carregarHistorico() {
         historico = HistoricoStore.listar(getApplication<Application>())
+    }
+
+    fun carregarPerfisRisco() {
+        viewModelScope.launch {
+            val apps = withContext(Dispatchers.IO) { AuditoriaPermissoes.listar(getApplication<Application>()) }
+            appsEmRisco = apps.filter { AuditoriaPermissoes.riscoDe(it) != RiscoApp.NENHUM }
+        }
     }
 
     fun escanear() {
@@ -70,6 +82,7 @@ class SegurancaViewModel(app: Application) : AndroidViewModel(app) {
                 )
             )
             carregarHistorico()
+            carregarPerfisRisco()
         }
     }
 

@@ -92,6 +92,14 @@ object Cores {
         else -> Verde
     }
 
+    /** Cor neon correspondente ao nível de risco de um app. */
+    fun corPorRiscoApp(risco: com.seguraturbo.app.util.RiscoApp): Color = when (risco) {
+        com.seguraturbo.app.util.RiscoApp.ALTO -> Vermelho
+        com.seguraturbo.app.util.RiscoApp.MEDIO -> Amarelo
+        com.seguraturbo.app.util.RiscoApp.BAIXO -> Ciano
+        com.seguraturbo.app.util.RiscoApp.NENHUM -> Verde
+    }
+
     /** Cor de destaque conforme a pontuação de segurança (0–100). */
     fun corPorScore(score: Int): Color = when {
         score >= 80 -> Verde

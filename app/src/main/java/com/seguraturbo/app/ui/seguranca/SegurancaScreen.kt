@@ -50,6 +50,8 @@ import com.seguraturbo.app.ui.components.SeloStatus
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.AcoesSistema
+import com.seguraturbo.app.util.AuditoriaPermissoes
+import com.seguraturbo.app.util.RiscoApp
 import com.seguraturbo.app.util.RelatorioImagem
 import com.seguraturbo.app.util.RelatorioPdf
 
@@ -91,7 +93,7 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
             }
         }
 
-        item { CartaoAuditoriaPermissoes { mostrarPermissoes = true } }
+        item { CartaoAuditoriaPermissoes(vm, { mostrarPermissoes = true }) }
 
         if (vm.limpando || vm.mensagemLimpeza != null) {
             item {
@@ -303,7 +305,9 @@ private fun CartaoStatus(vm: SegurancaViewModel, pulso: Float) {
 }
 
 @Composable
-private fun CartaoAuditoriaPermissoes(onAbrir: () -> Unit) {
+private fun CartaoAuditoriaPermissoes(vm: SegurancaViewModel, onAbrir: () -> Unit) {
+    val alto = vm.appsEmRisco.count { AuditoriaPermissoes.riscoDe(it) == RiscoApp.ALTO }
+    val medio = vm.appsEmRisco.count { AuditoriaPermissoes.riscoDe(it) == RiscoApp.MEDIO }
     CartaoFuturista {
         TituloSecao(stringResource(R.string.perm_titulo))
         Spacer(Modifier.height(10.dp))
@@ -312,6 +316,20 @@ private fun CartaoAuditoriaPermissoes(onAbrir: () -> Unit) {
             color = Cores.TextoCinza,
             fontSize = 12.sp
         )
+        if (vm.appsEmRisco.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                stringResource(
+                    R.string.perm_risco_perfis,
+                    alto,
+                    medio,
+                    vm.appsEmRisco.size - alto - medio
+                ),
+                color = Cores.Ciano,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
         Spacer(Modifier.height(12.dp))
         BotaoNeon(
             texto = stringResource(R.string.perm_abrir),

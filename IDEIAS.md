@@ -14,8 +14,8 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       uma lista local de apps espiões conhecidos e sinaliza combinações incomuns de
       permissões (SMS + localização + contatos/microfone); só usa PackageManager, sem
       permissão extra e sem enviar dados.
-- [ ] **Perfil de risco por app** (v1.30): cruzar `INTERNET` + permissões sensíveis e
-      destacar os apps que combinam as duas coisas, sem coletar nada.
+- [x] **Perfil de risco por app** (v1.33): cruza `INTERNET` + permissões sensíveis e
+      destaca os apps que combinam as duas coisas, sem coletar nada.
 - [ ] **Alertas temporais de segurança** (v1.31): avisar quando o patch de segurança do
       sistema estiver desatualizado há mais de X meses.
 - [ ] **Verificador de senhas vazadas (offline)** (v1.31): dicionário local, sem enviar
@@ -117,3 +117,5 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Perfis de uso** (Gamer/Casual/Bateria/Segurança máxima) (v1.30).
 - [x] **Detector de stalkerware** (v1.31).
 - [x] **Inventário exportável de apps + permissões** (v1.32).
+- [x] **Perfil de risco por app** (v1.33): nível alto/médio/baixo cruzando internet e
+      permissões sensíveis, com resumo no cartão e ordenação por risco no diálogo.

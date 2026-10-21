@@ -38,6 +38,12 @@
     <string name="perm_contagem">%1$d app(s)</string>
     <string name="perm_exportar">Export inventory</string>
     <string name="perm_exportar_texto">App and permission inventory (SeguroTurbo)</string>
+    <string name="perm_risco_resumo">Risk per app</string>
+    <string name="perm_risco_alto">High risk</string>
+    <string name="perm_risco_medio">Medium risk</string>
+    <string name="perm_risco_baixo">Low risk</string>
+    <string name="perm_risco_internet">Has internet access</string>
+    <string name="perm_risco_perfis">Risk profiles: %1$d high · %2$d medium · %3$d low</string>
     <string name="perm_aviso">For privacy, Android only shows visible apps (Android 11+ rule). Review anything you don\'t recognize in the system Settings.</string>
     <string name="perm_camera">Camera</string>
     <string name="perm_microfone">Microphone</string>

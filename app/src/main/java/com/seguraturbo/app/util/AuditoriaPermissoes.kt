@@ -55,8 +55,21 @@ enum class GrupoPermissao(val rotuloRes: Int, val permissoes: List<String>) {
 data class AppComPermissoes(
     val pacote: String,
     val nome: String,
-    val grupos: List<GrupoPermissao>
+    val grupos: List<GrupoPermissao>,
+    val temInternet: Boolean = false
 )
+
+/**
+ * Nível de risco de um app, cruzando o acesso à internet com as permissões
+ * sensíveis que ele tem. Um app que pode enviar dados para fora **e** acessa
+ * dados sensíveis merece mais atenção do que um que só faz uma das duas coisas.
+ */
+enum class RiscoApp(val peso: Int) {
+    NENHUM(0),
+    BAIXO(1),
+    MEDIO(2),
+    ALTO(3)
+}
 
 /**
  * Auditoria de permissões: descobre quais apps visíveis têm acesso concedido a
@@ -65,6 +78,15 @@ data class AppComPermissoes(
  * pelo usuário.
  */
 object AuditoriaPermissoes {
+
+    /** Grupos de dados mais sensíveis, cujo vazamento causa mais dano. */
+    private val GRUPOS_CRITICOS = setOf(
+        GrupoPermissao.MICROFONE,
+        GrupoPermissao.LOCALIZACAO,
+        GrupoPermissao.SMS,
+        GrupoPermissao.CHAMADAS,
+        GrupoPermissao.CONTATOS
+    )
 
     /** Lista os apps (não de sistema) com pelo menos um grupo sensível concedido. */
     suspend fun listar(ctx: Context): List<AppComPermissoes> = withContext(Dispatchers.IO) {
@@ -85,12 +107,53 @@ object AuditoriaPermissoes {
                 if (grupos.isEmpty()) {
                     null
                 } else {
-                    AppComPermissoes(app.packageName, rotulo(pm, app), grupos)
+                    AppComPermissoes(
+                        app.packageName,
+                        rotulo(pm, app),
+                        grupos,
+                        temInternet = temInternet(pm, app.packageName)
+                    )
                 }
             }
             .sortedBy { it.nome.lowercase() }
             .toList()
     }
+
+    /** Se o app pede a permissão de internet (pode enviar dados para fora). */
+    fun temInternet(pm: PackageManager, pacote: String): Boolean = try {
+        @Suppress("DEPRECATION")
+        val info = pm.getPackageInfo(pacote, PackageManager.GET_PERMISSIONS)
+        info.requestedPermissions?.contains("android.permission.INTERNET") == true
+    } catch (e: Exception) {
+        false
+    }
+
+    /**
+     * Calcula o risco de um app a partir dos grupos concedidos e do acesso à
+     * internet. Função pura (usada na UI e nos testes).
+     *
+     * Regra: internet + vários dados críticos = ALTO; internet + 1 dado crítico
+     * (ou vários dados sem internet) = MÉDIO; só internet ou só um dado = BAIXO.
+     */
+    fun risco(grupos: List<GrupoPermissao>, temInternet: Boolean): RiscoApp {
+        val criticos = grupos.count { it in GRUPOS_CRITICOS }
+        return when {
+            temInternet && criticos >= 2 -> RiscoApp.ALTO
+            temInternet && criticos == 1 -> RiscoApp.MEDIO
+            !temInternet && criticos >= 3 -> RiscoApp.MEDIO
+            temInternet || grupos.isNotEmpty() -> RiscoApp.BAIXO
+            else -> RiscoApp.NENHUM
+        }
+    }
+
+    /** Risco de um app já montado (atalho para a UI). */
+    fun riscoDe(app: AppComPermissoes): RiscoApp = risco(app.grupos, app.temInternet)
+
+    /** Quantos apps há em cada nível de risco (mais alto primeiro). */
+    fun resumoRisco(apps: List<AppComPermissoes>): List<Pair<RiscoApp, Int>> =
+        RiscoApp.values().reversed()
+            .map { risco -> risco to apps.count { riscoDe(it) == risco } }
+            .filter { it.second > 0 }
 
     /** Grupos cujas permissões o app realmente tem concedidas. */
     fun gruposConcedidos(pm: PackageManager, pacote: String): List<GrupoPermissao> =

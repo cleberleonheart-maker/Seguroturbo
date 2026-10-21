@@ -31,6 +31,7 @@ import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.AppComPermissoes
 import com.seguraturbo.app.util.AuditoriaPermissoes
 import com.seguraturbo.app.util.InventarioCsv
+import com.seguraturbo.app.util.RiscoApp
 
 /**
  * Diálogo de auditoria de permissões: mostra um resumo por permissão e a lista
@@ -104,29 +105,76 @@ fun PermissoesDialog(onFechar: () -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Text(
+                            stringResource(R.string.perm_risco_resumo),
+                            color = Cores.Ciano,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        AuditoriaPermissoes.resumoRisco(apps).forEach { (risco, quantidade) ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 3.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    stringResource(rotuloRisco(risco)),
+                                    color = Cores.TextoClaro,
+                                    fontSize = 13.sp
+                                )
+                                SeloStatus(
+                                    stringResource(R.string.perm_contagem, quantidade),
+                                    Cores.corPorRiscoApp(risco)
+                                )
+                            }
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        Text(
                             stringResource(R.string.perm_apps),
                             color = Cores.Ciano,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(Modifier.height(6.dp))
-                        apps.forEach { app ->
+                        apps.sortedByDescending { AuditoriaPermissoes.riscoDe(it).peso }
+                            .forEach { app ->
+                            val risco = AuditoriaPermissoes.riscoDe(app)
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 6.dp)
                             ) {
-                                Text(
-                                    app.nome,
-                                    color = Cores.TextoClaro,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        app.nome,
+                                        color = Cores.TextoClaro,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    SeloStatus(
+                                        stringResource(rotuloRisco(risco)),
+                                        Cores.corPorRiscoApp(risco)
+                                    )
+                                }
                                 Text(
                                     app.grupos.joinToString(" · ") { ctx.getString(it.rotuloRes) },
                                     color = Cores.TextoCinza,
                                     fontSize = 11.sp
                                 )
+                                if (app.temInternet) {
+                                    Text(
+                                        stringResource(R.string.perm_risco_internet),
+                                        color = Cores.TextoCinza,
+                                        fontSize = 10.sp
+                                    )
+                                }
                             }
                         }
                         Spacer(Modifier.height(12.dp))
@@ -167,4 +215,13 @@ fun PermissoesDialog(onFechar: () -> Unit) {
             }
         }
     )
+}
+
+/** Rótulo traduzível de um nível de risco de app. */
+@androidx.annotation.StringRes
+private fun rotuloRisco(risco: RiscoApp): Int = when (risco) {
+    RiscoApp.ALTO -> R.string.perm_risco_alto
+    RiscoApp.MEDIO -> R.string.perm_risco_medio
+    RiscoApp.BAIXO -> R.string.perm_risco_baixo
+    RiscoApp.NENHUM -> R.string.perm_risco_baixo
 }
