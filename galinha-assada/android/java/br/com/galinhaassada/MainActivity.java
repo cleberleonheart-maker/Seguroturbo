@@ -15,9 +15,13 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.util.Log;
 
 public class MainActivity extends Activity {
 
@@ -61,13 +65,58 @@ public class MainActivity extends Activity {
             s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         }
 
-        web.setWebViewClient(new WebViewClient());
+        web.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                Log.d("GalinhaJS", "pagina carregada: " + url);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request != null && request.isForMainFrame())
+                    Log.d("GalinhaJS", "erro de rede: " + request.getUrl() + " -> " + error.getDescription());
+            }
+        });
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(android.webkit.ConsoleMessage cm) {
+                Log.d("GalinhaJS", cm.message() + "  (" + cm.sourceId() + ":" + cm.lineNumber() + ")");
+                return true;
+            }
+
+            @Override
+            public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+                Log.d("GalinhaJS", message + "  (" + sourceID + ":" + lineNumber + ")");
+            }
+        });
         bridge = new GamepadBridge();
         web.addJavascriptInterface(bridge, "AndroidGamepad");
         web.loadUrl("file:///android_asset/index.html");
 
         setContentView(web);
         immersive();
+
+        if ((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            web.postDelayed(new Runnable() {
+                public void run() {
+                    web.evaluateJavascript("String(typeof window.__galinha)", jsLog("hook"));
+                    web.evaluateJavascript(
+                            "fetch('" + onlineServer + "/health').then(r=>r.text()).then(t=>'OK:'+t).catch(e=>'ERRO:'+e)",
+                            jsLog("fetch"));
+                }
+            }, 6000);
+        }
+    }
+
+    private static final String onlineServer = "https://iptv-srv.tail045fd4.ts.net/galinha";
+
+    private android.webkit.ValueCallback<String> jsLog(final String label) {
+        return new android.webkit.ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                Log.d("GalinhaJS", label + " = " + value);
+            }
+        };
     }
 
     private void immersive() {

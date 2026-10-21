@@ -460,10 +460,16 @@ function onlineNick(){
   saveCfg();
   return CFG.nick;
 }
+async function fetchOnline(url, opts){
+  const ctrl = new AbortController();
+  const timer = setTimeout(function(){ ctrl.abort(); }, 7000);
+  try { return await fetch(url, Object.assign({ signal: ctrl.signal }, opts || {})); }
+  finally { clearTimeout(timer); }
+}
 async function uploadScore(){
   if (score <= 0) return;
   try {
-    const r = await fetch(onlineServer() + "/api/scores", {
+    const r = await fetchOnline(onlineServer() + "/api/scores", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nick: onlineNick(), score: score, diff: CFG.diff, level: level })
     });
@@ -477,7 +483,7 @@ async function loadOnlineRank(){
   if (!box) return;
   box.innerHTML = "<div style='opacity:.6'>Carregando ranking online...</div>";
   try {
-    const r = await fetch(onlineServer() + "/api/scores?diff=" + encodeURIComponent(CFG.diff) + "&limit=10");
+    const r = await fetchOnline(onlineServer() + "/api/scores?diff=" + encodeURIComponent(CFG.diff) + "&limit=10");
     if (!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
     const list = d.scores || [];
