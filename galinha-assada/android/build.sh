@@ -18,9 +18,12 @@ KS="$PROJ/galinha.keystore"
 KS_PASS="${KS_PASS:-galinha123}"
 GAME="$(cd "$PROJ/.." && pwd)/index.html"
 
-# versao automatica pela data (versionCode cresce a cada build do dia)
-# pode ser sobrescrita com VC_OVERRIDE / VN_OVERRIDE para varios builds no mesmo dia
-VC="${VC_OVERRIDE:-$(date +%y%m%d)}"
+# versao automatica: versionCode em minutos desde 1970.
+# cresce sempre, nao importa a maquina nem a ordem dos builds (a data sozinha
+# nao servia: dois builds no mesmo dia colidiam, e o CI publicava um numero
+# menor que o do build local, o que travava a atualizacao pelo F-Droid)
+# pode ser sobrescrita com VC_OVERRIDE / VN_OVERRIDE
+VC="${VC_OVERRIDE:-$(($(date +%s) / 60))}"
 VN="${VN_OVERRIDE:-1.$(date +%y).$(date +%m).$(date +%d)}"
 
 # o versionCode tem que ser >= o do APK anterior, senao o Android recusa a atualizacao
