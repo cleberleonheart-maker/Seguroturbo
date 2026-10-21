@@ -2,6 +2,7 @@ package com.seguraturbo.app.util
 
 import android.app.admin.DevicePolicyManager
 import android.content.Context
+import android.os.Build
 import android.os.UserManager
 
 /**
@@ -71,10 +72,15 @@ object PerfilDispositivo {
         // estável em todas as versões; usamos apenas as APIs confiáveis abaixo.
         val gerenciado = false
 
-        val perfilTrabalho = try {
-            val um = ctx.getSystemService(Context.USER_SERVICE) as? UserManager
-            um?.isManagedProfile == true
-        } catch (e: Exception) {
+        // `isManagedProfile` só existe a partir do Android 11 (API 30).
+        val perfilTrabalho = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                val um = ctx.getSystemService(Context.USER_SERVICE) as? UserManager
+                um?.isManagedProfile == true
+            } catch (e: Exception) {
+                false
+            }
+        } else {
             false
         }
 
