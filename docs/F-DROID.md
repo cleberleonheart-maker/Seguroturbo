@@ -141,6 +141,19 @@ Ele precisa destes secrets no repositório do app:
 | `FDROID_REPO_KEYSTORE_BASE64` | `keystore.jks` do repositório, em base64 |
 | `FDROID_REPO_KEYSTORE_PASS` | senha do keystore do repositório |
 | `FDROID_PAGES_TOKEN` | PAT (escopo `repo`) com push em `cleberleonheart-maker/seguraturbo-fdroid` |
+| `FDROID_GALINHA_KEYSTORE_BASE64` | `galinha.keystore` do Galinha Assada, em base64 |
+| `FDROID_GALINHA_KEYSTORE_PASS` | senha do keystore do Galinha Assada |
+
+O repositório F-Droid publica **dois apps**: o SeguroTurbo e o
+[Galinha Assada](../galinha-assada/) (jogo de labirinto). O workflow compila
+o APK do Galinha Assada com [`../galinha-assada/android/build.sh`](../galinha-assada/android/build.sh)
+e inclui os dois no mesmo índice assinado.
+
+Se `FDROID_GALINHA_KEYSTORE_BASE64` não estiver configurado, o workflow publica
+só o SeguroTurbo e avisa com um warning — nada quebra.
+
+O keystore do Galinha Assada precisa ser **sempre o mesmo**: se a assinatura
+mudar, o Android recusa a atualização por cima do app já instalado no celular.
 
 Para (re)criar os dois primeiros a partir da máquina local:
 

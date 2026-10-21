@@ -87,6 +87,19 @@ jobs:
           echo "vcode=$VCODE" >> "$GITHUB_OUTPUT"
           echo "versionCode: $VCODE"
 
+      - name: Montar o APK do Galinha Assada
+        env:
+          FDROID_GALINHA_KEYSTORE_BASE64: ${{ secrets.FDROID_GALINHA_KEYSTORE_BASE64 }}
+          FDROID_GALINHA_KEYSTORE_PASS: ${{ secrets.FDROID_GALINHA_KEYSTORE_PASS }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FDROID_GALINHA_KEYSTORE_BASE64:-}" ]; then
+            echo "::warning::secret FDROID_GALINHA_KEYSTORE_BASE64 ausente; Galinha Assada nao sera publicado"
+            exit 0
+          fi
+          echo "$FDROID_GALINHA_KEYSTORE_BASE64" | base64 -d > galinha-assada/android/galinha.keystore
+          KS_PASS="$FDROID_GALINHA_KEYSTORE_PASS" ./galinha-assada/android/build.sh
+
       - name: Montar o repositório F-Droid
         env:
           FDROID_REPO_KEYSTORE_BASE64: ${{ secrets.FDROID_REPO_KEYSTORE_BASE64 }}
@@ -103,6 +116,22 @@ jobs:
           cp fastlane/metadata/android/pt-BR/images/icon.png "$REPO_DIR/icon.png"
           cp fdroid/${PACOTE}.yml "$REPO_DIR/metadata/${PACOTE}.yml"
           cp app-release.apk "$REPO_DIR/repo/${PACOTE}_${{ steps.ver.outputs.vcode }}.apk"
+
+          # Galinha Assada (mesmo repositorio, app separado)
+          if [ -f galinha-assada/apk/galinha-assada.apk ]; then
+            BT="$(ls -d "${ANDROID_HOME:-$HOME/android-sdk}"/build-tools/*/ | sort -V | tail -1)"
+            BADGING="$("$BT/aapt2" dump badging galinha-assada/apk/galinha-assada.apk)"
+            GVC="$(sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p" <<<"$BADGING" | head -n1)"
+            GVN="$(sed -n "s/.*versionName='\([^']*\)'.*/\1/p" <<<"$BADGING" | head -n1)"
+            [ -n "$GVC" ] || { echo "versionCode do Galinha Assada nao encontrado" >&2; exit 1; }
+            sed -i -e "s|^CurrentVersionCode:.*|CurrentVersionCode: $GVC|" \
+                   -e "s|^CurrentVersion:.*|CurrentVersion: $GVN|" \
+                   fdroid/br.com.galinhaassada.yml
+            cp fdroid/br.com.galinhaassada.yml "$REPO_DIR/metadata/br.com.galinhaassada.yml"
+            cp galinha-assada/apk/galinha-assada.apk "$REPO_DIR/repo/br.com.galinhaassada_${GVC}.apk"
+            echo "Galinha Assada $GVN ($GVC)"
+          fi
+
           cd "$REPO_DIR"
           export FDROID_KEY_STORE_PASS="$FDROID_REPO_KEYSTORE_PASS"
           export FDROID_KEY_PASS="$FDROID_REPO_KEYSTORE_PASS"

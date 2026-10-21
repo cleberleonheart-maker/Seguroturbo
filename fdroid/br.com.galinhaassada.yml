@@ -1,0 +1,38 @@
+Categories:
+  - Game
+License: GPL-3.0-only
+AuthorName: cleberleonheart-maker
+SourceCode: https://github.com/cleberleonheart-maker/Seguroturbo/tree/main/galinha-assada
+IssueTracker: https://github.com/cleberleonheart-maker/Seguroturbo/issues
+Changelog: https://github.com/cleberleonheart-maker/Seguroturbo/commits/main/galinha-assada
+
+Name: "Galinha Assada: Açaí & Peixe"
+Summary: "Labirinto estilo arcade: coma açaí, escape dos gatos e derrote o chefe"
+Description: |-
+  Galinha Assada é um jogo de labirinto no estilo arcade, com a pegada do Brasil:
+  a galinha foge pelos corredores atrás de açaí e peixe, enquanto os gatos
+  tentam te pegar.
+
+  • Labirinto de 21×21 com fases que aumentam de dificuldade, chefe final e
+    fases bônus para quem limpa o forno sem perder a vida.
+  • Açaí e peixe espalhados pelo mapa, além de itens de poder: escudo, ímã,
+    ralentizador e pimenta.
+  • Combo: comer açaí em sequência aumenta o multiplicador de pontos.
+  • Conquistas e missões para desbloquear, com progresso salvo no aparelho.
+  • Ranking online, direto do celular.
+  • Partida salva: dá para continuar de onde parou.
+  • Controles para todo mundo: analógico na tela, setas, WASD, gesto de arrastar
+    e controle Bluetooth (o app conversa direto com o gamepad).
+  • Tela de presence: o jogo acompanha a rotação do aparelho e se adapta em
+    retrato e paisagem.
+
+  Código aberto (GPL-3.0), sem rastreamento, sem anúncios e sem coleta de dados.
+
+RepoType: git
+Repo: https://github.com/cleberleonheart-maker/Seguroturbo.git
+
+UpdateCheckMode: None
+AutoUpdateMode: None
+
+CurrentVersion: 1.26.10.21
+CurrentVersionCode: 261022
