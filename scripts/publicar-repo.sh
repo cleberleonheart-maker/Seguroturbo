@@ -119,7 +119,7 @@ git -C "$PAGES_DIR" pull --ff-only --quiet
 # publica o mesmo repo em tres caminhos, para que qualquer URL que o app
 # F-Droid tente funcionar (raiz, /fdroid/repo e o /repo antigo)
 rsync -a --delete --exclude='/fdroid' --exclude='/repo' \
-      --exclude='/.nojekyll' --exclude='/README.md' \
+      --exclude='/.nojekyll' --exclude='/README.md' --exclude='/.git' \
       "$REPO_DIR/repo/" "$PAGES_DIR/"
 rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/fdroid/repo/"
 rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/repo/"
