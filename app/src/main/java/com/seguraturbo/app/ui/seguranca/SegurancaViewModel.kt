@@ -38,6 +38,17 @@ class SegurancaViewModel(app: Application) : AndroidViewModel(app) {
     var historico by mutableStateOf<List<HistoricoEntrada>>(emptyList())
     var appsEmRisco by mutableStateOf<List<AppComPermissoes>>(emptyList())
 
+    /** Categoria (tipo de ameaça) selecionada no filtro; null = mostrar todas. */
+    var categoriaFiltro by mutableStateOf<String?>(null)
+
+    /** Tipos de ameaça presentes no último scan, ordenados, para os chips de filtro. */
+    val categorias: List<String>
+        get() = ameacas.map { it.tipo }.distinct().sorted()
+
+    /** Ameaças visíveis conforme o filtro de categoria escolhido. */
+    val ameacasFiltradas: List<Threat>
+        get() = categoriaFiltro?.let { filtro -> ameacas.filter { it.tipo == filtro } } ?: ameacas
+
     init {
         carregarHistorico()
         carregarPerfisRisco()
@@ -60,6 +71,7 @@ class SegurancaViewModel(app: Application) : AndroidViewModel(app) {
             escaneando = true
             jaEscaneou = true
             ameacas = emptyList()
+            categoriaFiltro = null
             val resultado = SecurityScanner.scan(getApplication<Application>()) { encontrada ->
                 ameacas = ameacas + encontrada
             }

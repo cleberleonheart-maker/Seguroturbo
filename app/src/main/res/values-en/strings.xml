@@ -7,6 +7,14 @@
     <string name="nav_game_turbo">Game Turbo</string>
     <string name="nav_benchmark">Benchmark</string>
 
+    <!-- Icon shortcuts (long press) -->
+    <string name="atalho_escanear">Scan</string>
+    <string name="atalho_escanear_longo">Scan the device now</string>
+    <string name="atalho_limpar_ram">Free RAM</string>
+    <string name="atalho_limpar_ram_longo">Free memory (clear RAM)</string>
+    <string name="atalho_testar_rede">Test network</string>
+    <string name="atalho_testar_rede_longo">Measure latency and speed</string>
+
     <!-- Segurança -->
     <string name="sec_title">Device Security</string>
     <string name="sec_subtitle">Advanced protection system</string>
@@ -17,6 +25,16 @@
     <string name="sec_status_secure">Device secure</string>
     <string name="sec_status_alerts">%1$d alert(s) found</string>
     <string name="sec_alerts_title">Security alerts</string>
+    <string name="sec_filtro_todas">All</string>
+    <string name="sec_cat_sistema">System</string>
+    <string name="sec_cat_acessibilidade">Accessibility</string>
+    <string name="sec_cat_configuracao">Settings</string>
+    <string name="sec_cat_privacidade">Privacy</string>
+    <string name="sec_cat_stalkerware">Stalkerware</string>
+    <string name="sec_cat_rede">Network</string>
+    <string name="sec_cat_apps">Apps</string>
+    <string name="sec_cat_tela">Screen</string>
+    <string name="sec_cat_lixo">Junk</string>
     <string name="sec_clean_title">File cleanup</string>
     <string name="sec_clean_progress">Cleaning… %1$d%%</string>
     <string name="sec_no_threats">No issues found. System protected.</string>
@@ -181,10 +199,11 @@
     <string name="cfg_perfil_seguranca_maxima">Maximum security</string>
     <string name="cfg_perfil_aplicado">Profile "%1$s" applied</string>
     <string name="cfg_dark">Theme</string>
-    <string name="cfg_dark_desc">Follow the system or set the light/dark neon theme</string>
+    <string name="cfg_dark_desc">Follow the system or set the light/dark neon theme (AMOLED uses pure black to save battery)</string>
     <string name="cfg_tema_sistema">System</string>
     <string name="cfg_tema_claro">Light</string>
     <string name="cfg_tema_escuro">Dark</string>
+    <string name="cfg_tema_amoled">AMOLED</string>
     <string name="cfg_font">Font size</string>
     <string name="cfg_font_desc">Adjusts the size of all texts</string>
     <string name="cfg_font_small">Small</string>
@@ -399,4 +418,12 @@
         <item>Exportable inventory: in the permission audit, a button generates a CSV with every visible app and the sensitive permissions each one holds. All on-device, no data sent out.</item>
     </string-array>
     <string-array name="changelog_1_32_correcoes" />
+    <string-array name="changelog_1_34_novidades">
+        <item>Per-app risk profile: the permission audit classifies each app as high, medium or low risk by combining internet access and sensitive permissions.</item>
+        <item>AMOLED theme: a dark mode with pure black to save battery on OLED screens.</item>
+        <item>Alert filtering by category on the Security screen, with a count per type.</item>
+        <item>Read-only detection of managed device and work profile.</item>
+        <item>Icon shortcuts (long press): Scan, Free RAM and Test network.</item>
+    </string-array>
+    <string-array name="changelog_1_34_correcoes" />
 </resources>

@@ -50,4 +50,61 @@
         </intent>
     </shortcut>
 
+    <shortcut
+        android:shortcutId="acao_escanear"
+        android:enabled="true"
+        android:icon="@drawable/ic_security"
+        android:shortcutShortLabel="@string/atalho_escanear"
+        android:shortcutLongLabel="@string/atalho_escanear_longo">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.seguraturbo.app"
+            android:targetClass="com.seguraturbo.app.MainActivity">
+            <extra
+                android:name="tela"
+                android:value="seguranca" />
+            <extra
+                android:name="acao"
+                android:value="escanear" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="acao_limpar_ram"
+        android:enabled="true"
+        android:icon="@drawable/ic_game_turbo"
+        android:shortcutShortLabel="@string/atalho_limpar_ram"
+        android:shortcutLongLabel="@string/atalho_limpar_ram_longo">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.seguraturbo.app"
+            android:targetClass="com.seguraturbo.app.MainActivity">
+            <extra
+                android:name="tela"
+                android:value="game_turbo" />
+            <extra
+                android:name="acao"
+                android:value="limpar_ram" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="acao_testar_rede"
+        android:enabled="true"
+        android:icon="@drawable/ic_benchmark"
+        android:shortcutShortLabel="@string/atalho_testar_rede"
+        android:shortcutLongLabel="@string/atalho_testar_rede_longo">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.seguraturbo.app"
+            android:targetClass="com.seguraturbo.app.MainActivity">
+            <extra
+                android:name="tela"
+                android:value="benchmark" />
+            <extra
+                android:name="acao"
+                android:value="testar_rede" />
+        </intent>
+    </shortcut>
+
 </shortcuts>

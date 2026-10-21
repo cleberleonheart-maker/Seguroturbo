@@ -118,6 +118,9 @@ object SecurityScanner {
         verificarRede(ctx)?.let { encontradas += it }
 
         delay(350)
+        verificarPerfilDispositivo(ctx)?.let { encontradas += it }
+
+        delay(350)
         val appsSensiveis = withContext(Dispatchers.IO) { appsComPermissoesSensiveis(ctx) }
         if (appsSensiveis.isNotEmpty()) {
             encontradas += Threat(
@@ -377,6 +380,41 @@ object SecurityScanner {
         }
     } catch (e: Exception) {
         null
+    }
+
+    /**
+     * Confere se o aparelho é gerenciado (Device Owner / Profile Owner) ou tem um
+     * perfil de trabalho. É apenas informativo: um aparelho corporativo pode ter
+     * políticas que limitam instalações e acessos, então avisamos o usuário.
+     */
+    private fun verificarPerfilDispositivo(ctx: Context): Threat? {
+        val diag = try {
+            PerfilDispositivo.coletar(ctx)
+        } catch (e: Exception) {
+            return null
+        }
+        return when (diag.tipo) {
+            PerfilDispositivo.Tipo.GERENCIADO -> Threat(
+                nome = "Aparelho gerenciado",
+                tipo = "PRIVACIDADE",
+                risco = "BAIXO",
+                descricao = "Este aparelho é gerenciado por uma organização (Device Owner " +
+                    "ou Profile Owner). Um administrador pode aplicar políticas, instalar " +
+                    "apps e restringir configurações. Se você não reconhece esse " +
+                    "gerenciamento, procure o responsável pelo aparelho.",
+                peso = 4
+            )
+            PerfilDispositivo.Tipo.PERFIL_TRABALHO -> Threat(
+                nome = "Perfil de trabalho ativo",
+                tipo = "PRIVACIDADE",
+                risco = "BAIXO",
+                descricao = "Há um perfil de trabalho neste aparelho. Apps do trabalho " +
+                    "ficam separados dos pessoais, mas o administrador da organização " +
+                    "pode gerenciar o que está nesse perfil.",
+                peso = 3
+            )
+            PerfilDispositivo.Tipo.PESSOAL -> null
+        }
     }
 
     /**

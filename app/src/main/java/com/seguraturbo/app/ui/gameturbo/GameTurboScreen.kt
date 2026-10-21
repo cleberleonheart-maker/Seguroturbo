@@ -22,6 +22,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +51,8 @@ import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.service.PermissaoSobreposicao
 import com.seguraturbo.app.service.ServicoBarraJogo
 import com.seguraturbo.app.util.AcoesSistema
+import com.seguraturbo.app.util.AtalhoAcao
+import com.seguraturbo.app.util.AtalhoPendente
 import com.seguraturbo.app.util.BloqueioTela
 import android.app.Activity
 import android.widget.Toast
@@ -57,6 +60,14 @@ import android.widget.Toast
 @Composable
 fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
     val contexto = LocalContext.current
+
+    // Atalho "Limpar RAM" do ícone: abre o diálogo de limpeza ao entrar na tela.
+    LaunchedEffect(Unit) {
+        if (AtalhoPendente.consumir() == AtalhoAcao.LIMPAR_RAM) {
+            vm.atualizarRam()
+            vm.mostrarLimpezaRam = true
+        }
+    }
 
     // Ao voltar das configurações, revalida bateria e acesso ao Não Perturbe.
     val lifecycleOwner = LocalLifecycleOwner.current

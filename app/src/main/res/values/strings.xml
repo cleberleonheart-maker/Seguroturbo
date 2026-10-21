@@ -7,6 +7,14 @@
     <string name="nav_game_turbo">Game Turbo</string>
     <string name="nav_benchmark">Benchmark</string>
 
+    <!-- Atalhos do ícone (toque longo) -->
+    <string name="atalho_escanear">Escanear</string>
+    <string name="atalho_escanear_longo">Escanear o aparelho agora</string>
+    <string name="atalho_limpar_ram">Limpar RAM</string>
+    <string name="atalho_limpar_ram_longo">Liberar memória (limpar RAM)</string>
+    <string name="atalho_testar_rede">Testar rede</string>
+    <string name="atalho_testar_rede_longo">Medir latência e velocidade</string>
+
     <!-- Segurança -->
     <string name="sec_title">Segurança do Dispositivo</string>
     <string name="sec_subtitle">Sistema de proteção avançada</string>
@@ -17,6 +25,16 @@
     <string name="sec_status_secure">Dispositivo seguro</string>
     <string name="sec_status_alerts">%1$d alerta(s) encontrado(s)</string>
     <string name="sec_alerts_title">Alertas de segurança</string>
+    <string name="sec_filtro_todas">Todas</string>
+    <string name="sec_cat_sistema">Sistema</string>
+    <string name="sec_cat_acessibilidade">Acessibilidade</string>
+    <string name="sec_cat_configuracao">Configuração</string>
+    <string name="sec_cat_privacidade">Privacidade</string>
+    <string name="sec_cat_stalkerware">Stalkerware</string>
+    <string name="sec_cat_rede">Rede</string>
+    <string name="sec_cat_apps">Apps</string>
+    <string name="sec_cat_tela">Tela</string>
+    <string name="sec_cat_lixo">Lixo</string>
     <string name="sec_clean_title">Limpeza de arquivos</string>
     <string name="sec_clean_progress">Limpando… %1$d%%</string>
     <string name="sec_no_threats">Nenhum problema encontrado. Sistema protegido.</string>
@@ -181,10 +199,11 @@
     <string name="cfg_perfil_seguranca_maxima">Segurança máxima</string>
     <string name="cfg_perfil_aplicado">Perfil "%1$s" aplicado</string>
     <string name="cfg_dark">Tema</string>
-    <string name="cfg_dark_desc">Segue o sistema ou fixa o tema neon claro/escuro</string>
+    <string name="cfg_dark_desc">Segue o sistema ou fixa o tema neon claro/escuro (AMOLED usa preto puro para economizar bateria)</string>
     <string name="cfg_tema_sistema">Sistema</string>
     <string name="cfg_tema_claro">Claro</string>
     <string name="cfg_tema_escuro">Escuro</string>
+    <string name="cfg_tema_amoled">AMOLED</string>
     <string name="cfg_font">Tamanho da fonte</string>
     <string name="cfg_font_desc">Ajusta o tamanho de todos os textos</string>
     <string name="cfg_font_small">Pequena</string>
@@ -399,4 +418,12 @@
         <item>Inventário exportável: na auditoria de permissões, um botão gera um CSV com todos os apps visíveis e as permissões sensíveis que cada um tem. Tudo local, sem enviar dados.</item>
     </string-array>
     <string-array name="changelog_1_32_correcoes" />
+    <string-array name="changelog_1_34_novidades">
+        <item>Perfil de risco por app: a auditoria de permissões classifica cada app em alto, médio ou baixo risco cruzando internet e permissões sensíveis.</item>
+        <item>Tema AMOLED: modo escuro com preto puro para economizar bateria em telas OLED.</item>
+        <item>Filtro de alertas por categoria na tela de Segurança, com contagem por tipo.</item>
+        <item>Detecção (somente leitura) de aparelho gerenciado e perfil de trabalho.</item>
+        <item>Atalhos no ícone (toque longo): Escanear, Limpar RAM e Testar rede.</item>
+    </string-array>
+    <string-array name="changelog_1_34_correcoes" />
 </resources>

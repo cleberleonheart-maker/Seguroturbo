@@ -81,13 +81,7 @@ fun SeguroTurboTheme(content: @Composable () -> Unit) {
     val sistemaEscuro = isSystemInDarkTheme()
     val modo = Aparencia.temaModo
     LaunchedEffect(modo, sistemaEscuro) {
-        Cores.definirTema(
-            when (modo) {
-                TemaModo.SISTEMA -> sistemaEscuro
-                TemaModo.CLARO -> false
-                TemaModo.ESCURO -> true
-            }
-        )
+        Cores.aplicarModo(modo, sistemaEscuro)
     }
     CompositionLocalProvider(LocalDensity provides densidadeEscalada) {
         MaterialTheme(

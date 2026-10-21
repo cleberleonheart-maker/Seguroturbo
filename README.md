@@ -57,6 +57,17 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.34
+
+- **Tema AMOLED**: modo escuro com **preto puro**, para economizar bateria em
+  telas OLED — em pixels pretos o display fica desligado.
+- **Filtro de alertas por categoria**: os alertas da tela de Segurança ganham
+  chips por tipo (Sistema, Rede, Privacidade…), com a contagem de cada um.
+- **Aparelho gerenciado / perfil de trabalho**: a varredura detecta (somente
+  leitura) Device/Profile Owner e avisa, de forma informativa.
+- **Atalhos no ícone** (toque longo): **Escanear**, **Limpar RAM** e **Testar
+  rede** direto da tela inicial, disparando a ação ao abrir o app.
+
 ## Novidades da versão 1.33
 
 - **Perfil de risco por app**: a auditoria de permissões agora cruza o acesso à

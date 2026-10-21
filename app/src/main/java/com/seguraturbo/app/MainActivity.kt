@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.seguraturbo.app.model.TemaModo
 import com.seguraturbo.app.ui.MainScreen
 import com.seguraturbo.app.ui.onboarding.OnboardingScreen
 import com.seguraturbo.app.ui.splash.SplashScreen
@@ -24,6 +23,8 @@ import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.ui.theme.SeguroTurboTheme
 import com.seguraturbo.app.util.Agendador
 import com.seguraturbo.app.util.AgendadorAtualizacao
+import com.seguraturbo.app.util.AtalhoAcao
+import com.seguraturbo.app.util.AtalhoPendente
 import com.seguraturbo.app.util.Notificacoes
 import com.seguraturbo.app.util.Preferencias
 import kotlinx.coroutines.delay
@@ -42,13 +43,7 @@ class MainActivity : ComponentActivity() {
         val sistemaEscuro =
             (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
                 android.content.res.Configuration.UI_MODE_NIGHT_YES
-        Cores.definirTema(
-            when (modoTema) {
-                TemaModo.SISTEMA -> sistemaEscuro
-                TemaModo.CLARO -> false
-                TemaModo.ESCURO -> true
-            }
-        )
+        Cores.aplicarModo(modoTema, sistemaEscuro)
         Aparencia.escalaFonte = Preferencias.escalaFonte(this)
 
         // Prepara os canais de notificação e mantém os agendamentos coerentes.
@@ -66,6 +61,7 @@ class MainActivity : ComponentActivity() {
         }
 
         abaInicial.value = abaDe(intent)
+        AtalhoPendente.acao = AtalhoAcao.de(intent.getStringExtra("acao"))
 
         setContent {
             SeguroTurboTheme {
@@ -108,6 +104,7 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         abaInicial.value = abaDe(intent)
+        AtalhoPendente.acao = AtalhoAcao.de(intent.getStringExtra("acao"))
     }
 
     /** Converte o extra "tela" dos atalhos na aba correspondente. */

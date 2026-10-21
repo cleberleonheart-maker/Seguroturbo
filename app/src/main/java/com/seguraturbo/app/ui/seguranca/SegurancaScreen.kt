@@ -8,6 +8,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,13 +19,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +55,8 @@ import com.seguraturbo.app.ui.components.SeloStatus
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.AcoesSistema
+import com.seguraturbo.app.util.AtalhoAcao
+import com.seguraturbo.app.util.AtalhoPendente
 import com.seguraturbo.app.util.AuditoriaPermissoes
 import com.seguraturbo.app.util.RiscoApp
 import com.seguraturbo.app.util.RelatorioImagem
@@ -60,6 +67,11 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
     val contexto = LocalContext.current
     var selecionada by remember { mutableStateOf<Threat?>(null) }
     var mostrarPermissoes by remember { mutableStateOf(false) }
+
+    // Atalho "Escanear" do ícone: dispara a varredura ao abrir a tela.
+    LaunchedEffect(Unit) {
+        if (AtalhoPendente.consumir() == AtalhoAcao.ESCANEAR) vm.escanear()
+    }
     val transicao = rememberInfiniteTransition(label = "pulso")
     val pulso by transicao.animateFloat(
         initialValue = 0.35f,
@@ -143,7 +155,10 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
                 }
             } else {
                 item { TituloSecao(stringResource(R.string.sec_alerts_title)) }
-                items(vm.ameacas) { ameaca ->
+                if (vm.categorias.size > 1) {
+                    item { ChipsFiltroCategoria(vm) }
+                }
+                items(vm.ameacasFiltradas) { ameaca ->
                     CartaoAmeaca(
                         ameaca = ameaca,
                         onAbrir = { selecionada = ameaca },
@@ -337,6 +352,72 @@ private fun CartaoAuditoriaPermissoes(vm: SegurancaViewModel, onAbrir: () -> Uni
             modifier = Modifier.fillMaxWidth()
         )
     }
+}
+
+@Composable
+private fun ChipsFiltroCategoria(vm: SegurancaViewModel) {
+    val selecionada = vm.categoriaFiltro
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 2.dp)
+    ) {
+        item {
+            ChipFiltro(
+                texto = stringResource(R.string.sec_filtro_todas),
+                contagem = vm.ameacas.size,
+                ativo = selecionada == null,
+                onClick = { vm.categoriaFiltro = null }
+            )
+        }
+        items(vm.categorias) { categoria ->
+            ChipFiltro(
+                texto = rotuloCategoria(categoria),
+                contagem = vm.ameacas.count { it.tipo == categoria },
+                ativo = selecionada == categoria,
+                onClick = {
+                    vm.categoriaFiltro = if (selecionada == categoria) null else categoria
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ChipFiltro(texto: String, contagem: Int, ativo: Boolean, onClick: () -> Unit) {
+    val cor = if (ativo) Cores.Ciano else Cores.TextoCinza
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(cor.copy(alpha = if (ativo) 0.16f else 0.05f))
+            .border(1.dp, cor.copy(alpha = if (ativo) 0.9f else 0.3f), RoundedCornerShape(50))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            texto,
+            color = cor,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(Modifier.width(6.dp))
+        Text("$contagem", color = cor.copy(alpha = 0.7f), fontSize = 12.sp)
+    }
+}
+
+/** Rótulo amigável para os tipos de ameaça usados como categoria de filtro. */
+@Composable
+private fun rotuloCategoria(tipo: String): String = when (tipo) {
+    "SISTEMA" -> stringResource(R.string.sec_cat_sistema)
+    "ACESSIBILIDADE" -> stringResource(R.string.sec_cat_acessibilidade)
+    "CONFIGURAÇÃO" -> stringResource(R.string.sec_cat_configuracao)
+    "PRIVACIDADE" -> stringResource(R.string.sec_cat_privacidade)
+    "STALKERWARE" -> stringResource(R.string.sec_cat_stalkerware)
+    "REDE" -> stringResource(R.string.sec_cat_rede)
+    "APPS" -> stringResource(R.string.sec_cat_apps)
+    "TELA" -> stringResource(R.string.sec_cat_tela)
+    "LIXO" -> stringResource(R.string.sec_cat_lixo)
+    else -> tipo
 }
 
 @Composable

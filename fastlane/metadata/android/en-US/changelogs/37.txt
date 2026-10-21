@@ -1,0 +1,5 @@
+- Per-app risk profile: the permission audit classifies each app as high, medium or low risk by combining internet access and sensitive permissions.
+- AMOLED theme: dark mode with pure black to save battery on OLED screens.
+- Alert filtering by category on the Security screen, with a count per type.
+- Read-only detection of managed device and work profile.
+- Icon shortcuts (long press): Scan, Free RAM and Test network.

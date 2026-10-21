@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,8 @@ import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.components.TesteToqueDialog
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.DeviceInfo
+import com.seguraturbo.app.util.AtalhoAcao
+import com.seguraturbo.app.util.AtalhoPendente
 import com.seguraturbo.app.util.Comparacao
 import com.seguraturbo.app.util.RelatorioImagem
 import com.seguraturbo.app.util.RelatorioPdf
@@ -45,6 +48,11 @@ import java.util.Locale
 @Composable
 fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
     val contexto = LocalContext.current
+
+    // Atalho "Testar rede" do ícone: dispara a medição ao abrir a tela.
+    LaunchedEffect(Unit) {
+        if (AtalhoPendente.consumir() == AtalhoAcao.TESTAR_REDE) vm.testarRede()
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),

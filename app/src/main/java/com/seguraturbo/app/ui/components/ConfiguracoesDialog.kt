@@ -85,13 +85,7 @@ fun ConfiguracoesDialog(
         Aparencia.escalaFonte = escala
         modo = Preferencias.temaModo(ctx)
         Aparencia.temaModo = modo
-        Cores.definirTema(
-            when (modo) {
-                TemaModo.SISTEMA -> sistemaEscuro
-                TemaModo.CLARO -> false
-                TemaModo.ESCURO -> true
-            }
-        )
+        Cores.aplicarModo(modo, sistemaEscuro)
         lembrete = Preferencias.lembreteAtivo(ctx)
         atualizacaoAuto = Preferencias.atualizacaoAutomatica(ctx)
         perfilUso = Preferencias.perfilUso(ctx)
@@ -163,7 +157,8 @@ fun ConfiguracoesDialog(
     val opcoesTema = listOf(
         TemaModo.SISTEMA to R.string.cfg_tema_sistema,
         TemaModo.CLARO to R.string.cfg_tema_claro,
-        TemaModo.ESCURO to R.string.cfg_tema_escuro
+        TemaModo.ESCURO to R.string.cfg_tema_escuro,
+        TemaModo.AMOLED to R.string.cfg_tema_amoled
     )
 
     AlertDialog(
@@ -266,13 +261,7 @@ fun ConfiguracoesDialog(
                                     modo = opcao
                                     Aparencia.temaModo = opcao
                                     Preferencias.definirTemaModo(ctx, opcao)
-                                    Cores.definirTema(
-                                        when (opcao) {
-                                            TemaModo.SISTEMA -> sistemaEscuro
-                                            TemaModo.CLARO -> false
-                                            TemaModo.ESCURO -> true
-                                        }
-                                    )
+                                    Cores.aplicarModo(opcao, sistemaEscuro)
                                 }
                                 .padding(vertical = 10.dp),
                             contentAlignment = Alignment.Center
@@ -280,7 +269,7 @@ fun ConfiguracoesDialog(
                             Text(
                                 stringResource(rotuloRes),
                                 color = cor,
-                                fontSize = 13.sp,
+                                fontSize = if (opcoesTema.size > 3) 11.sp else 13.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }

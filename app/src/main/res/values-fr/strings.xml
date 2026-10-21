@@ -7,6 +7,14 @@
     <string name="nav_game_turbo">Game Turbo</string>
     <string name="nav_benchmark">Benchmark</string>
 
+    <!-- Raccourcis de l'icône (appui long) -->
+    <string name="atalho_escanear">Analyser</string>
+    <string name="atalho_escanear_longo">Analyser l\'appareil maintenant</string>
+    <string name="atalho_limpar_ram">Libérer la RAM</string>
+    <string name="atalho_limpar_ram_longo">Libérer la mémoire (vider la RAM)</string>
+    <string name="atalho_testar_rede">Tester le réseau</string>
+    <string name="atalho_testar_rede_longo">Mesurer la latence et le débit</string>
+
     <!-- Sécurité -->
     <string name="sec_title">Sécurité de l\'appareil</string>
     <string name="sec_subtitle">Système de protection avancée</string>
@@ -17,6 +25,16 @@
     <string name="sec_status_secure">Appareil sécurisé</string>
     <string name="sec_status_alerts">%1$d alerte(s) détectée(s)</string>
     <string name="sec_alerts_title">Alertes de sécurité</string>
+    <string name="sec_filtro_todas">Toutes</string>
+    <string name="sec_cat_sistema">Système</string>
+    <string name="sec_cat_acessibilidade">Accessibilité</string>
+    <string name="sec_cat_configuracao">Configuration</string>
+    <string name="sec_cat_privacidade">Confidentialité</string>
+    <string name="sec_cat_stalkerware">Stalkerware</string>
+    <string name="sec_cat_rede">Réseau</string>
+    <string name="sec_cat_apps">Apps</string>
+    <string name="sec_cat_tela">Écran</string>
+    <string name="sec_cat_lixo">Déchets</string>
     <string name="sec_clean_title">Nettoyage des fichiers</string>
     <string name="sec_clean_progress">Nettoyage… %1$d%%</string>
     <string name="sec_no_threats">Aucun problème détecté. Système protégé.</string>
@@ -181,10 +199,11 @@
     <string name="cfg_perfil_seguranca_maxima">Sécurité maximale</string>
     <string name="cfg_perfil_aplicado">Profil « %1$s » appliqué</string>
     <string name="cfg_dark">Thème</string>
-    <string name="cfg_dark_desc">Suit le système ou fixe le thème néon clair/sombre</string>
+    <string name="cfg_dark_desc">Suit le système ou fixe le thème néon clair/sombre (AMOLED utilise le noir pur pour économiser la batterie)</string>
     <string name="cfg_tema_sistema">Système</string>
     <string name="cfg_tema_claro">Clair</string>
     <string name="cfg_tema_escuro">Sombre</string>
+    <string name="cfg_tema_amoled">AMOLED</string>
     <string name="cfg_font">Taille de la police</string>
     <string name="cfg_font_desc">Ajuste la taille de tous les textes</string>
     <string name="cfg_font_small">Petite</string>
@@ -399,4 +418,12 @@
         <item>Inventaire exportable : dans l\'audit des permissions, un bouton génère un CSV avec toutes les applis visibles et les permissions sensibles de chacune. Tout en local, aucune donnée envoyée.</item>
     </string-array>
     <string-array name="changelog_1_32_correcoes" />
+    <string-array name="changelog_1_34_novidades">
+        <item>Profil de risque par app : l\'audit des permissions classe chaque app en risque élevé, moyen ou faible en croisant internet et les permissions sensibles.</item>
+        <item>Thème AMOLED : mode sombre avec noir pur pour économiser la batterie sur les écrans OLED.</item>
+        <item>Filtrage des alertes par catégorie sur l\'écran Sécurité, avec un compteur par type.</item>
+        <item>Détection (lecture seule) d\'appareil géré et de profil de travail.</item>
+        <item>Raccourcis de l\'icône (appui long) : Analyser, Libérer la RAM et Tester le réseau.</item>
+    </string-array>
+    <string-array name="changelog_1_34_correcoes" />
 </resources>

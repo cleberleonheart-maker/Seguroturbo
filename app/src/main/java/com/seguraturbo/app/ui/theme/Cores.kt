@@ -36,6 +36,18 @@ private val PALETA_ESCURA = Paleta(
     textoCinza = Color(0xFFB4C0DE)
 )
 
+/**
+ * Escuro "AMOLED": fundo e superfícies em preto puro (#000000). Em telas OLED,
+ * pixels pretos ficam desligados, economizando bateria. As cores neon seguem iguais.
+ */
+private val PALETA_AMOLED = PALETA_ESCURA.copy(
+    fundo = Color(0xFF000000),
+    fundoSuave = Color(0xFF000000),
+    superficie = Color(0xFF000000),
+    superficieClara = Color(0xFF0A0A0A),
+    borda = Color(0xFF1A1A1A)
+)
+
 private val PALETA_CLARA = Paleta(
     fundo = Color(0xFFF3F6FC),
     fundoSuave = Color(0xFFFFFFFF),
@@ -61,10 +73,45 @@ object Cores {
     var escuro by mutableStateOf(true)
         private set
 
-    private val p: Paleta get() = if (escuro) PALETA_ESCURA else PALETA_CLARA
+    var amoled by mutableStateOf(false)
+        private set
+
+    private val p: Paleta
+        get() = when {
+            escuro && amoled -> PALETA_AMOLED
+            escuro -> PALETA_ESCURA
+            else -> PALETA_CLARA
+        }
 
     fun definirTema(temaEscuro: Boolean) {
         escuro = temaEscuro
+    }
+
+    /** Ativa a variação de preto puro (apenas faz efeito no tema escuro). */
+    fun definirAmoled(ativo: Boolean) {
+        amoled = ativo
+    }
+
+    /** Aplica o tema a partir do modo escolhido, seguindo o sistema quando preciso. */
+    fun aplicarModo(modo: com.seguraturbo.app.model.TemaModo, sistemaEscuro: Boolean) {
+        when (modo) {
+            com.seguraturbo.app.model.TemaModo.SISTEMA -> {
+                escuro = sistemaEscuro
+                amoled = false
+            }
+            com.seguraturbo.app.model.TemaModo.CLARO -> {
+                escuro = false
+                amoled = false
+            }
+            com.seguraturbo.app.model.TemaModo.ESCURO -> {
+                escuro = true
+                amoled = false
+            }
+            com.seguraturbo.app.model.TemaModo.AMOLED -> {
+                escuro = true
+                amoled = true
+            }
+        }
     }
 
     // Fundos

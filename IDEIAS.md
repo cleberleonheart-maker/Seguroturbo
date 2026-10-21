@@ -54,14 +54,14 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       **"Segurança máxima"** que aplicam várias preferências de uma vez (perfil de
       desempenho, Não Perturbe, trava de tela, nível de alerta). Totalmente local, sem
       conta nem nuvem — mantém o "sem coleta de dados".
-- [ ] **Perfil de dispositivo** (v1.31): detecção read-only de work profile / Device
+- [x] **Perfil de dispositivo** (v1.34): detecção read-only de work profile / Device
       Owner (aparelho gerenciado) na aba Segurança.
 - [ ] **Widgets adicionais**: mais atalhos na tela inicial (score de segurança, limpeza
       de RAM com um toque).
-- [ ] **Atalhos dinâmicos** (v1.30): long-press no ícone → "Escanear", "Limpar RAM",
+- [x] **Atalhos dinâmicos** (v1.34): long-press no ícone → "Escanear", "Limpar RAM",
       "Testar rede".
-- [ ] **Modo escuro AMOLED** (v1.30): preto puro para economizar bateria em telas OLED.
-- [ ] **Filtro de alertas por categoria** (v1.31) na tela de Segurança.
+- [x] **Modo escuro AMOLED** (v1.34): preto puro para economizar bateria em telas OLED.
+- [x] **Filtro de alertas por categoria** (v1.34) na tela de Segurança.
 
 ## Qualidade / engenharia
 
@@ -119,3 +119,4 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Inventário exportável de apps + permissões** (v1.32).
 - [x] **Perfil de risco por app** (v1.33): nível alto/médio/baixo cruzando internet e
       permissões sensíveis, com resumo no cartão e ordenação por risco no diálogo.
+- [x] **Tema AMOLED, filtro de alertas, perfil de dispositivo e atalhos no ícone** (v1.34).

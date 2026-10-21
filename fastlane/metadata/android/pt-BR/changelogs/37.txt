@@ -1,0 +1,5 @@
+- Perfil de risco por app: a auditoria de permissões classifica cada app em alto, médio ou baixo risco cruzando internet e permissões sensíveis.
+- Tema AMOLED: modo escuro com preto puro para economizar bateria em telas OLED.
+- Filtro de alertas por categoria na tela de Segurança, com contagem por tipo.
+- Detecção (somente leitura) de aparelho gerenciado e perfil de trabalho.
+- Atalhos no ícone (toque longo): Escanear, Limpar RAM e Testar rede.
