@@ -34,6 +34,24 @@ node test/harness.js
 Cobre o modo Zen (dificuldade nova, ciclo do menu, HUD, morte sem perder vida,
 chefe e clone continuam valendo) e a regressão das outras dificuldades.
 
+## Ranking online
+
+O placar online usa um servidor HTTP próprio, exposto publicamente por
+Tailscale Funnel em `https://iptv-srv.tail045fd4.ts.net/galinha` (padrão em
+`ONLINE_SERVER_DEFAULT`, em `index.html`). O endereço pode ser trocado no
+CONFIG do jogo ("Servidor online").
+
+O app Android precisa da permissão `INTERNET` (e `ACCESS_NETWORK_STATE`) para o
+WebView falar com o servidor — sem elas nenhuma requisição sai do app e o
+ranking fica em "Offline (sem ranking online)". As chamadas ao servidor têm
+timeout de 7 s, para a tela não ficar presa em "Carregando ranking online...".
+
+Para ver o que o jogo fala com o servidor, conecte o aparelho por adb e rode:
+
+```bash
+adb logcat -s GalinhaJS:D
+```
+
 ## Gerar o APK Android
 
 O APK é montado sem Gradle (aapt2 + javac + d8 + apksigner), o que deixa o
