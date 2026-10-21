@@ -116,7 +116,17 @@ fi
 
 log "Sincronizando a pasta repo/ com o GitHub Pages..."
 git -C "$PAGES_DIR" pull --ff-only --quiet
+# publica o mesmo repo em tres caminhos, para que qualquer URL que o app
+# F-Droid tente funcionar (raiz, /fdroid/repo e o /repo antigo)
+rsync -a --delete --exclude='/fdroid' --exclude='/repo' \
+      --exclude='/.nojekyll' --exclude='/README.md' \
+      "$REPO_DIR/repo/" "$PAGES_DIR/"
 rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/fdroid/repo/"
+rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/repo/"
+# pagina de boas-vindas (troca o index.html gerado pelo fdroidserver)
+python3 "$PROJ_DIR/fdroid/gerar-welcome.py" "$REPO_DIR/repo" "$PAGES_DIR/index.html" ""
+python3 "$PROJ_DIR/fdroid/gerar-welcome.py" "$REPO_DIR/repo" "$PAGES_DIR/fdroid/repo/index.html" "/fdroid/repo"
+python3 "$PROJ_DIR/fdroid/gerar-welcome.py" "$REPO_DIR/repo" "$PAGES_DIR/repo/index.html" "/repo"
 
 git -C "$PAGES_DIR" add -A
 if git -C "$PAGES_DIR" diff --cached --quiet; then

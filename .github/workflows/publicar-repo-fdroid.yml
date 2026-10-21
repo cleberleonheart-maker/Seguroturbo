@@ -152,7 +152,17 @@ jobs:
           REPO_DIR="$RUNNER_TEMP/fdroid-repo"
           APK_NAME="${PACOTE}_${{ steps.ver.outputs.vcode }}.apk"
           git clone "https://x-access-token:${PAGES_TOKEN}@github.com/${PAGES_REPO}.git" pages
+          # publica o mesmo repo em tres caminhos, para que qualquer URL que o
+          # app F-Droid tente funcionar (raiz, /fdroid/repo e o /repo antigo)
+          rsync -a --delete --exclude='/fdroid' --exclude='/repo' \
+                --exclude='/.nojekyll' --exclude='/README.md' \
+                "$REPO_DIR/repo/" pages/
           rsync -a --delete "$REPO_DIR/repo/" pages/fdroid/repo/
+          rsync -a --delete "$REPO_DIR/repo/" pages/repo/
+          # pagina de boas-vindas (troca o index.html gerado pelo fdroidserver)
+          python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/index.html ""
+          python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/fdroid/repo/index.html "/fdroid/repo"
+          python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/repo/index.html "/repo"
           cd pages
           git add -A
           if git diff --cached --quiet; then
