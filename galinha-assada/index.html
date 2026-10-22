@@ -390,7 +390,7 @@ const PROG_KEY = "galinhaAssadaProg";
 const ACH_KEY = "galinhaAssadaAch";
 const RUN_KEY = "galinhaAssadaRun";
 const PROG_KIND_DEFAULT = { games:0, clears:0, ghosts:0, fish:0, fruits:0, maxCombo:1, maxLevel:1,
-  bossKills:0, shields:0, magnets:0, slows:0, bestFrightCombo:0, noDeathClear:0, coins:0, chilis:0, masters:0, bonusClears:0, clones:0, recipes:0 };
+  bossKills:0, shields:0, magnets:0, slows:0, bestFrightCombo:0, noDeathClear:0, coins:0, chilis:0, masters:0, bonusClears:0, clones:0, recipes:0, dogs:0 };
 const PROG_DEFAULT = PROG_KIND_DEFAULT;
 let PROG = Object.assign({}, PROG_DEFAULT, readJSON(PROG_KEY, {}));
 let ACH_UNLOCKED = readJSON(ACH_KEY, {}) || {};
@@ -480,6 +480,7 @@ const ACH = [
   { id:"clear1",   name:"Forno Limpo",      desc:"Complete a fase 1",             color:"#a3e635", got:()=> PROG.clears >= 1 },
   { id:"ghost1",   name:"Gato no Espeto",   desc:"Coma um gato",                  color:"#38bdf8", got:()=> PROG.ghosts >= 1 },
   { id:"ghost4",   name:"Buffet de Gatos",  desc:"Coma 3 gatos com uma pimenta",  color:"#22d3ee", got:()=> PROG.bestFrightCombo >= 3 },
+  { id:"dog",      name:"Cachorro Quente",  desc:"Coma o cachorro",               color:"#fbbf24", got:()=> (PROG.dogs || 0) >= 1 },
   { id:"fish10",   name:"Pescador",         desc:"Coma 10 peixes",                color:"#38bdf8", got:()=> PROG.fish >= 10 },
   { id:"combo5",   name:"Combo Mestre",     desc:"Chegue ao combo x5",            color:"#facc15", got:()=> PROG.maxCombo >= 5 },
   { id:"lvl5",     name:"Aquecendo o Forno",desc:"Chegue à fase 5",               color:"#f97316", got:()=> PROG.maxLevel >= 5 },
@@ -534,7 +535,7 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.6";
+const GAME_BUILD = "2026-10-22.7";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -871,6 +872,7 @@ const Sound = {
   powerup(){ this.seq([523, 784, 1046], "square", 0.05, 45); },
   coin(){ this.seq([1320, 1760], "square", 0.035, 55); },
   combo(n){ this.tone(300 * (n || 1), 0.08, "square", 0.025, 1200); },
+  bark(){ this.seq([175, 132], "sawtooth", 0.045, 65); },
   bossWarn(){ this.seq([170, 135, 110], "sawtooth", 0.05, 120); },
   startSiren(level){
     if (!this.ac || this.siren || this.muted) return;
@@ -1281,6 +1283,7 @@ function buildLevel(){
     g.color = s.color; g.name = s.name; g.scatter = s.scatter;
     g.bias = s.bias; g.speedMul = s.speedMul;
     g.state = "leaving";
+    g.dog = false;
     g.active = !(i === 3 && level < 3);           // o cachorro entra na fase 3
     if (bossLevel && i === 3){                   // fase de chefe: o cachorro vira o chefe
       if (level % 10 === 0){ g.boss = true; g.master = true; g.hp = 5 + Math.floor(level / 5);
@@ -1289,10 +1292,15 @@ function buildLevel(){
         g.name = "Chefe"; g.color = "#7c2d12"; }
       g.active = true;
     }
+    if (s.name === "Cachorro" && !g.boss) g.dog = true;
     g.releaseAt = clock + (i === 0 ? 0.4 : 2.5 + (i - 1) * 5) + (level - 1) * 0.5;
     return g;
   });
 
+  if (firstRun && !tips.dog && ghosts.some(g => g.dog)){
+    tips.dog = true;
+    toast("Cachorro na cozinha! Ele late e dá investidas — pimenta ou farol resolvem.", "#fbbf24");
+  }
   fish = null;
   fishAt = clock + 1.0;
   const p = PAL[chapter().pal];
@@ -1722,6 +1730,7 @@ function renderHelp(){
       <span style="color:#facc15">&#9679; fruta bônus</span> (dourada 500 &bull; ovo 750 &bull; estrela 1000 &bull; coração +1 vida)
     </div>
     <div class="legend" style="opacity:.7">itens de poder: <span style="color:#c084fc">&#9679; ímã</span> &nbsp;<span style="color:#60a5fa">&#9679; escudo</span> &nbsp;<span style="color:#2dd4bf">&#9679; tempo lento</span> &nbsp;<span style="color:#fde047">&#9679; moeda</span> &nbsp;<span style="color:#f87171">&#9679; pimenta mágica</span> &nbsp;<span style="color:#93c5fd">&#9679; relógio</span> (gatos parados) &nbsp;<span style="color:#f8fafc">&#9679; farol</span> (afasta os gatos) &nbsp;&bull;&nbsp; combo de açaí até x5</div>
+    <div class="legend" style="opacity:.7">cachorro: late e dá investidas — com a pimenta ele vira comida (+300)</div>
     <div class="legend" style="opacity:.85"><b style="color:#facc15">receita da fase:</b> a barrinha abaixo do placar mostra o objetivo extra (assar peixe, comer açaí, fritar gato ou derrubar o chefe). Fazer a receita vale <b>+500 pontos</b>.</div>
     <div class="keys">
       <div><kbd>&#8593;</kbd><kbd>&#8594;</kbd><kbd>&#8595;</kbd><kbd>&#8592;</kbd> ou <kbd>WASD</kbd></div>
@@ -1958,6 +1967,17 @@ function updateGhost(g, dt){
   sp *= g.speedMul || 1;
   if (slowTimer > 0) sp *= 0.55;
   if (hurry) sp *= 1.15;
+  if (g.dog && !g.boss && !fr && g.state === "chase"){
+    g.dashT = Math.max(0, (g.dashT || 0) - dt);
+    g.dashCd = (g.dashCd || 0) - dt;
+    if (g.dashT > 0) sp *= 1.35;                                   // investida
+    else if (g.dashCd <= 0 && Math.abs(g.r - player.r) + Math.abs(g.c - player.c) <= 9){
+      g.dashT = 0.75; g.dashCd = 3.4 + Math.random() * 1.2;        // late e parte pra cima
+      Sound.bark();
+      if (!CFG.reduceMotion) shake = Math.max(shake, 0.12);
+      popups.push({ r: g.r, c: g.c, text: "AU! AU!", t: 0, color: "#fbbf24" });
+    }
+  }
   g.speed = sp;
   g.who = (g.state === "leaving" || g.state === "eaten") ? "ghostLeave" : "ghost";
 
@@ -2184,7 +2204,7 @@ function update(dt){
         Buzz.ok(50); Sound.eatGhost();
         popups.push({ r: g.r, c: g.c, text: (g.clone ? "CLONE x" : "CHEFE x") + g.hp, t: 0, color: "#fca5a5" });
       } else {
-        const val = g.clone ? 2500 : (g.boss ? 1000 : 200 * Math.pow(2, frightCombo));
+        const val = g.clone ? 2500 : (g.boss ? 1000 : (g.dog ? 300 : 200) * Math.pow(2, frightCombo));
         frightCombo = Math.min(3, frightCombo + 1);
         recipeBump("ghost", 1);
         addScore(val);
@@ -2193,6 +2213,10 @@ function update(dt){
         Sound.eatGhost();
         popups.push({ r: g.r, c: g.c, text: "+" + val, t: 0, color: "#a3e635" });
         PROG.ghosts++;
+        if (g.dog){
+          PROG.dogs = (PROG.dogs || 0) + 1;
+          if (firstRun && !tips.dogEat){ tips.dogEat = true; toast("Cachorro comido! A pimenta também deixa ele azul.", "#fbbf24"); }
+        }
         mstBump("g");
         if (firstRun && !tips.ghost){
           tips.ghost = true;
@@ -2581,6 +2605,25 @@ function drawGhost(x, y, g, R){
       ctx.beginPath();
       ctx.arc(sx * R * 0.38 + look * R * 0.12, -R * 0.07, R * 0.13, 0, Math.PI * 2);
       ctx.fillStyle = "#1e3a8a"; ctx.fill();
+    }
+  }
+  if (g.dog && !g.boss && !eaten){
+    // orelhas caídas
+    ctx.fillStyle = "#7c4a12"; ctx.strokeStyle = "rgba(0,0,0,.45)"; ctx.lineWidth = 1.2;
+    for (const sx of [-1, 1]){
+      ctx.beginPath();
+      ctx.ellipse(sx * R * 0.8, -R * 0.5, R * 0.24, R * 0.42, sx * 0.45, 0, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+    }
+    // focinho
+    ctx.beginPath(); ctx.ellipse(0, R * 0.36, R * 0.5, R * 0.33, 0, 0, Math.PI * 2);
+    ctx.fillStyle = fr ? "#93c5fd" : "#e8c07a"; ctx.fill();
+    ctx.strokeStyle = "rgba(120,53,15,.55)"; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0, R * 0.3, R * 0.13, R * 0.1, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#1f1305"; ctx.fill();
+    if (!fr){
+      ctx.beginPath(); ctx.ellipse(0, R * 0.56, R * 0.1, R * 0.09, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#f472b6"; ctx.fill();
     }
   }
   if (g.boss && !eaten){
@@ -3566,6 +3609,7 @@ function renderStats(){
         ${row("Fases concluídas", fmt(PROG.clears))}
         ${row("Fase máxima", PROG.maxLevel)}
         ${row("Gatos comidos", fmt(PROG.ghosts))}
+        ${row("Cachorros comidos", fmt(PROG.dogs || 0))}
         ${row("Melhor combo de pimenta", "x" + (PROG.bestFrightCombo || 0))}
         ${row("Peixes", fmt(PROG.fish))}
         ${row("Pimentas douradas", fmt(PROG.fruits || 0))}
@@ -4120,7 +4164,7 @@ window.__galinha = {
   checkUpdates, appVersionCode, openSettings,
   checkContentUpdate, applyContentUpdate, autoContentUpdate, titleScreen,
   SKINS, skinById, skinUnlocked, skinPal, setSkin,
-  collectPowerup, openAchievements, ACH,
+  collectPowerup, openAchievements, ACH, render,
   get freezeTimer(){ return freezeTimer; }, set freezeTimer(v){ freezeTimer = v; },
   get farolTimer(){ return farolTimer; }, set farolTimer(v){ farolTimer = v; },
   get skin(){ return CFG.skin; },

@@ -125,6 +125,57 @@ const achCards = (achHtml.match(/class="ach[ "]/g) || []).length;
 check("todas as conquistas aparecem", achCards === g.ACH.length, achCards + " de " + g.ACH.length);
 check("nomes das conquistas no painel", g.ACH.every(a => achHtml.indexOf(a.name) >= 0), "faltou nome");
 
+// 8c) cachorro: entra na fase 3, tem IA propria e nao entra na casa
+g.setDiff("normal");
+g.start(); g.setLevel(2);
+check("sem cachorro na fase 2", !g.ghosts.some(x => x.dog && x.active), g.ghosts.map(x => x.name).join(","));
+g.start(); g.setLevel(6);
+const dog = g.ghosts.find(x => x.dog && x.active);
+check("cachorro na fase 6", !!dog && dog.name === "Cachorro", dog && dog.name);
+let casaOk = true, dogPos = "";
+for (let i = 0; i < 200 && dog; i++) {
+  g.step(0.05);
+  if (dog.state !== "chase" && dog.state !== "eaten") continue;   // saindo da casa ainda pode estar dentro
+  if (dog.r >= 9 && dog.r <= 11 && dog.c >= 8 && dog.c <= 12) { casaOk = false; dogPos = "cachorro na casa " + dog.r + "," + dog.c; break; }
+}
+check("cachorro nao entra na casa", casaOk, dogPos);
+
+function sairDaContagem(){
+  for (let i = 0; i < 140 && g.state === "ready"; i++) g.step(0.05);
+  return g.state === "play";
+}
+
+g.start(); g.setLevel(5);
+let desenhou = true;
+try { g.render(); } catch (e) { desenhou = false; }
+check("desenho com cachorro nao quebra", desenhou, "erro no render");
+check("na fase de chefe o cachorro vira chefe", !g.ghosts.some(x => x.dog && x.active),
+  g.ghosts.map(x => x.name).join(","));
+
+// investida: late e acelera perto da galinha
+g.start(); g.setLevel(6);
+sairDaContagem();
+const d2 = g.ghosts.find(x => x.dog && x.active);
+g.collectPowerup("farol");            // protege enquanto o cachorro fica em cima
+d2.state = "chase"; d2.r = g.player.r; d2.c = g.player.c; d2.prog = 0;
+let dashSeen = false;
+for (let i = 0; i < 100; i++) {
+  g.step(0.05);
+  if (d2.dashT > 0) { dashSeen = true; break; }
+}
+check("cachorro da investidas", dashSeen, "dashT=" + d2.dashT + " estado=" + g.state);
+
+// com pimenta o cachorro vira comida e conta no progresso
+g.start(); g.setLevel(6);
+sairDaContagem();
+const d3 = g.ghosts.find(x => x.dog && x.active);
+const dogs0 = g.prog.dogs || 0;
+g.collectPowerup("chili");
+d3.state = "chase"; d3.r = g.player.r; d3.c = g.player.c; d3.prog = 0;
+g.step(0.05);
+check("cachorro assustado pode ser comido", g.prog.dogs === dogs0 + 1 && d3.state === "eaten",
+  "dogs " + dogs0 + " -> " + g.prog.dogs + " estado " + d3.state);
+
 // 9) skins
 check("a skin padrao e a classica", g.skin === "classica" && g.skinUnlocked(g.skinById("classica")), g.skin);
 check("skin bloqueada nao entra", g.setSkin("fantasma") === false && g.skin === "classica", g.skin);
