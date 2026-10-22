@@ -139,6 +139,25 @@
     pointer-events:none;transition:transform .06s linear;
   }
   #stick.hit #knob{transition:none}
+  /* segunda bolinha: jogador 2 (só no modo 2 jogadores) */
+  #stick2{
+    display:none;position:fixed;z-index:40;left:auto;
+    right:calc(16px + env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));
+    width:134px;height:134px;border-radius:50%;
+    background:radial-gradient(circle at 50% 42%, rgba(37,99,235,.32), rgba(3,10,32,.62));
+    border:2px solid rgba(96,165,250,.5);
+    box-shadow:0 0 22px rgba(0,0,0,.5), inset 0 0 26px rgba(0,0,0,.45);
+    touch-action:none;-webkit-user-select:none;user-select:none;opacity:.72;
+  }
+  #stick2.on2{display:block}
+  #stick2.hit{opacity:1;border-color:rgba(96,165,250,.95)}
+  #knob2{
+    position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%, #e0f2fe, #3b82f6 58%, #1e40af);
+    box-shadow:0 3px 0 #1e3a8a, 0 6px 16px rgba(0,0,0,.55);
+    pointer-events:none;transition:transform .06s linear;
+  }
+  #stick2.hit #knob2{transition:none}
 
   /* aviso de controle conectado */
   #gpbadge{
@@ -174,6 +193,7 @@
     .brand b{font-size:16px}
     .brand span{font-size:9px}
     #stick{opacity:.95}
+    #stick2{opacity:.95}
     #stage{flex:1 1 auto}
     #overlay{border-radius:16px}
   }
@@ -244,6 +264,7 @@
 </div>
 
 <div id="stick" role="application" aria-label="Controle da galinha"><div id="knob"></div></div>
+<div id="stick2" role="application" aria-label="Controle do jogador 2"><div id="knob2"></div></div>
 <div id="gpbadge">controle conectado</div>
 <div id="toast"></div>
 
@@ -354,7 +375,7 @@ const DIFF = {
 function isZen(){ return CFG.diff === "zen"; }
 const CFG = Object.assign(
   { stick: true, side: "left", size: "normal", vol: 0.7, muted: false, vibrate: true, diff: "normal",
-    reduceMotion: false, contrast: false, bigText: false, nick: null, server: null, skin: "classica" },
+    reduceMotion: false, contrast: false, bigText: false, nick: null, server: null, skin: "classica", players: 1 },
   readCfg()
 );
 const DIFF_KEYS = ["easy", "normal", "hard", "zen"];
@@ -539,7 +560,7 @@ async function fetchOnline(url, opts, ms){
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.9";
+const GAME_BUILD = "2026-10-22.10";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -880,7 +901,7 @@ const Sound = {
 /* ============================================================
    4. ESTADO
    ============================================================ */
-let maze, food, pepper, fish, popups, feathers, ghosts, player;
+let maze, food, pepper, fish, popups, feathers, ghosts, player, mate;
 let fruit = null, fruitSpawned = false, sparks = [], shake = 0, trail = [];
 let powerup = null, powerAt = 0, magnetTimer = 0, magnetAcc = 0, slowTimer = 0, shield = 0;
 let freezeTimer = 0, farolTimer = 0;   // relogio e farol
@@ -1248,6 +1269,7 @@ function buildLevel(){
 
   const ps = nearestTileFrom(ROWS - 2, 1, "player");
   player = makeEntity(ps[0], ps[1], 0, playerSpeed(), "player");
+  mate = twoP() ? makeMate() : null;
 
   const base = ghostSpeed();
   ghosts = GHOST_SPECS.map((s, i) => {
@@ -1280,6 +1302,27 @@ function buildLevel(){
   trail = []; Sound.startMusic(level); buildMazeLayer();
 }
 
+// ---- dois jogadores no mesmo aparelho (coop): P1 e P2 no mesmo labirinto ----
+function twoP(){ return CFG.players === 2; }
+function actors(){ return twoP() && mate ? [player, mate] : [player]; }
+function makeMate(){
+  const ps = nearestTileFrom(ROWS - 2, COLS - 2, "player");
+  const m = makeEntity(ps[0], ps[1], 3, playerSpeed(), "player");
+  m.p2 = true;
+  return m;
+}
+// o gato persegue/escolhe quem estiver mais perto (evita ignorar o P2)
+function nearActor(g){
+  const list = actors();
+  if (list.length < 2) return list[0];
+  let best = list[0], bd = 1e9;
+  for (const p of list){
+    const d = Math.abs(p.r - g.r) + Math.abs(p.c - g.c);
+    if (d < bd){ bd = d; best = p; }
+  }
+  return best;
+}
+
 // a curva nao satura: a pressao continua subindo ate a fase 50
 function playerSpeed(){ return (7.4 + Math.min(level, 9) * 0.13 + Math.max(0, level - 9) * 0.06 + Math.max(0, level - 30) * 0.04) * DIFF[CFG.diff].player; }
 function ghostSpeed(){ return (4.9 + Math.min(level, 11) * 0.24 + Math.max(0, level - 11) * 0.10) * DIFF[CFG.diff].ghost * (bonus ? 0.55 : 1); }
@@ -1291,7 +1334,8 @@ function spawnSecretBoss(){
   const corners = [[1, COLS - 2], [1, 1], [ROWS - 2, 1], [ROWS - 2, COLS - 2]];
   for (const [r, c] of corners){
     const t = nearestTileFrom(r, c, "ghost");
-    const d = (t[0] - player.r) * (t[0] - player.r) + (t[1] - player.c) * (t[1] - player.c);
+    const nr = nearActor({ r: t[0], c: t[1] });
+    const d = (t[0] - nr.r) * (t[0] - nr.r) + (t[1] - nr.c) * (t[1] - nr.c);
     if (d > bd){ bd = d; best = t; }
   }
   const g = makeEntity(best[0], best[1], 2, ghostSpeed(), "ghost");
@@ -1422,6 +1466,7 @@ function eatPellet(pr, pc, quiet){
 function respawn(){
   const ps = nearestTileFrom(ROWS - 2, 1, "player");
   player = makeEntity(ps[0], ps[1], 0, playerSpeed(), "player");
+  mate = twoP() ? makeMate() : null;
   ghosts.forEach((g, i) => {
     const sp = GHOST_SPAWN[i];
     if (!sp){
@@ -1703,6 +1748,7 @@ function renderHelp(){
     </div>
     <div class="legend" style="opacity:.7">itens de poder: <span style="color:#c084fc">&#9679; ímã</span> &nbsp;<span style="color:#60a5fa">&#9679; escudo</span> &nbsp;<span style="color:#2dd4bf">&#9679; tempo lento</span> &nbsp;<span style="color:#fde047">&#9679; moeda</span> &nbsp;<span style="color:#f87171">&#9679; pimenta mágica</span> &nbsp;<span style="color:#93c5fd">&#9679; relógio</span> (gatos parados) &nbsp;<span style="color:#f8fafc">&#9679; farol</span> (afasta os gatos) &nbsp;&bull;&nbsp; combo de açaí até x5</div>
     <div class="legend" style="opacity:.7">cachorro: late e dá investidas — com a pimenta ele vira comida (+300)</div>
+    <div class="legend" style="opacity:.9"><b style="color:#60a5fa">2 jogadores (coop):</b> P1 usa WASD (ou a bolinha da esquerda) e P2 usa as setas (ou a bolinha da direita). Os dois dividem vidas, pontos e itens — e os gatos perseguem quem estiver mais perto.</div>
     <div class="legend" style="opacity:.85"><b style="color:#facc15">receita da fase:</b> a barrinha abaixo do placar mostra o objetivo extra (assar peixe, comer açaí, fritar gato ou derrubar o chefe). Fazer a receita vale <b>+500 pontos</b>.</div>
     <div class="keys">
       <div><kbd>&#8593;</kbd><kbd>&#8594;</kbd><kbd>&#8595;</kbd><kbd>&#8592;</kbd> ou <kbd>WASD</kbd></div>
@@ -1825,10 +1871,11 @@ ui.overlay.addEventListener("click", (ev) => {
    ============================================================ */
 // personalidade de cada gato aperta a cada fase
 function ghostTarget(g){
-  if (g.boss) return [player.r, player.c];          // o chefe nunca descansa
+  if (g.boss) { const b = nearActor(g); return [b.r, b.c]; }   // o chefe nunca descansa
   if (mode === "scatter") return g.scatter;
-  const pr = player.r, pc = player.c;
-  const pd = player.dir;
+  const ref = nearActor(g);
+  const pr = ref.r, pc = ref.c;
+  const pd = ref.dir;
   const lv = level;
   switch (g.name){
     case "Laranja": {                                  // cacador: aponta para a FRENTE da galinha
@@ -1881,7 +1928,8 @@ function setWantToGoal(g, t){
 
 // foge de verdade: maximiza a distancia ate a galinha e evita a frente dela
 function flee(g){
-  const pr = player.r, pc = player.c, pd = player.dir;
+  const ref = nearActor(g);
+  const pr = ref.r, pc = ref.c, pd = ref.dir;
   const predR = pr + DR[pd] * 3, predC = pc + DC[pd] * 3;
   let best = -1e9, bd = -1;
   for (let d = 0; d < 4; d++){
@@ -1917,8 +1965,8 @@ function ghostDecide(g){
     setWantToGoal(g, g.state === "eaten" ? HOUSE_CENTER : EXIT_TILE);
     return;
   }
-  if (farolTimer > 0 && Math.abs(g.r - player.r) + Math.abs(g.c - player.c) <= 6){ flee(g); return; }  // farol empurra
-  if (g.boss){ setWantToGoal(g, [player.r, player.c]); return; }
+  if (farolTimer > 0 && (() => { const r = nearActor(g); return Math.abs(g.r - r.r) + Math.abs(g.c - r.c) <= 6; })()){ flee(g); return; }  // farol empurra
+  if (g.boss){ const b = nearActor(g); setWantToGoal(g, [b.r, b.c]); return; }
   if (scared(g)){ flee(g); return; }                 // assustado: foge com estrategia
   if (mode === "rand"){ wander(g); return; }         // fase media+: descanso com personalidade
   setWantToGoal(g, ghostTarget(g));                  // perseguicao / dispersao
@@ -1942,7 +1990,7 @@ function updateGhost(g, dt){
     g.dashT = Math.max(0, (g.dashT || 0) - dt);
     g.dashCd = (g.dashCd || 0) - dt;
     if (g.dashT > 0) sp *= 1.35;                                   // investida
-    else if (g.dashCd <= 0 && Math.abs(g.r - player.r) + Math.abs(g.c - player.c) <= 9){
+    else if (g.dashCd <= 0 && (() => { const r = nearActor(g); return Math.abs(g.r - r.r) + Math.abs(g.c - r.c) <= 9; })()){
       g.dashT = 0.75; g.dashCd = 3.4 + Math.random() * 1.2;        // late e parte pra cima
       Sound.bark();
       if (!CFG.reduceMotion) shake = Math.max(shake, 0.12);
@@ -1984,7 +2032,8 @@ function updateModes(dt){
 /* ============================================================
    10. UPDATE
    ============================================================ */
-function die(){
+function die(pl){
+  pl = pl || player;
   if (state === "dying" || state === "over" || state === "clear") return;  // nao morre duas vezes
   state = "dying"; stateTimer = isZen() ? 0.9 : 1.8;
   deathsThisLevel++;
@@ -1998,7 +2047,7 @@ function die(){
   shake = Math.max(shake, CFG.reduceMotion ? 0 : 0.4);
   Buzz.ok([60, 70, 160]);
   Sound.stopSiren(); Sound.stopMusic(); Sound.die();
-  const p = entPos(player);
+  const p = entPos(pl);
   const featherN = CFG.reduceMotion ? 3 : 12;
   for (let i = 0; i < featherN; i++){
     feathers.push({
@@ -2009,7 +2058,76 @@ function die(){
       rot: Math.random() * 6, vr: (Math.random() - 0.5) * 14, t: 0
     });
   }
-  popups.push({ r: player.r, c: player.c, text: isZen() ? "DE VOLTA!" : "OPS!", t: 0, color: isZen() ? "#facc15" : "#ef4444" });
+  popups.push({ r: pl.r, c: pl.c, text: isZen() ? "DE VOLTA!" : "OPS!", t: 0, color: isZen() ? "#facc15" : "#ef4444" });
+}
+
+// itens do mapa valem para qualquer jogador que passar por cima
+function pickupsAt(ar, ac){
+  // pimenta
+  if (pepper){
+    for (let i = 0; i < pepper.length; i++){
+      const p = pepper[i];
+      if (!p || p.r !== ar || p.c !== ac) continue;
+      pepper[i] = null;
+      frightTimer = Math.max(2.2, 9 - level * 0.45) * DIFF[CFG.diff].fright;
+      frightCombo = 0;
+      turbo = 5.2;
+      Buzz.ok(45);
+      addScore(50);
+      Sound.power();
+      popups.push({ r: ar, c: ac, text: "PIMENTA! TURBO!", t: 0, color: "#ef4444" });
+      if (firstRun && !tips.pepper){
+        tips.pepper = true;
+        toast("PIMENTA! Os gatos ficam azuis e comíveis — aproveite!", "#ef4444");
+      }
+    }
+    if (pepper.every(p => !p)) pepper = null;
+  }
+
+  // fruta bônus (uma vez por fase; no bônus aparece o tempo todo)
+  if (fruit && fruit.r === ar && fruit.c === ac){
+    const F = fruit.type || FRUITS[0];
+    if (F.life){
+      lives++;
+      refreshStats();
+      Sound.extra();
+      popups.push({ r: ar, c: ac, text: "CORAÇÃO! +1 VIDA", t: 0, color: F.color });
+    } else {
+      if (F.pts) addScore(F.pts);
+      if (F.turbo) turbo = Math.max(turbo, F.turbo);
+      popups.push({ r: ar, c: ac, text: F.name + (F.pts ? " +" + F.pts : ""), t: 0, color: F.color });
+    }
+    Buzz.ok([35, 40, 70]);
+    Sound.eatFruit();
+    PROG.fruits = (PROG.fruits || 0) + 1;
+    saveProg();
+    if (firstRun && !tips.fruit){ tips.fruit = true; toast("Fruta bônus dá pontos extras — ou uma vida!", "#facc15"); }
+    fruit = null;
+  }
+
+  // peixe (fica ~11s no mapa)
+  if (fish && fish.r === ar && fish.c === ac){
+    addScore(100);
+    PROG.fish++;
+    recipeBump("fish", 1);
+    mstBump("f");
+    Buzz.ok(26);
+    Sound.eatFish();
+    popups.push({ r: ar, c: ac, text: "+100 PEIXE", t: 0, color: "#38bdf8" });
+    if (firstRun && !tips.fish){
+      tips.fish = true;
+      toast("Peixe bônus vale +100 e some em segundos!", "#38bdf8");
+    }
+    fish = null;
+    saveProg(); checkAch();
+  }
+
+  // power-up no mapa
+  if (powerup && powerup.r === ar && powerup.c === ac){
+    collectPowerup(powerup.kind);
+    powerup = null;
+  }
+
 }
 
 function update(dt){
@@ -2067,9 +2185,10 @@ function update(dt){
 
   const pr = player.r, pc = player.c;
 
-  // açaí
-  if (food.grid[pr][pc]){
-    eatPellet(pr, pc);
+  // açaí (o P2 também come)
+  for (const pl of actors()){
+    if (!food.grid[pl.r][pl.c]) continue;
+    eatPellet(pl.r, pl.c);
     if (food.left === 0){ levelClear(); return; }
   }
 
@@ -2093,73 +2212,10 @@ function update(dt){
   if (freezeTimer > 0) freezeTimer = Math.max(0, freezeTimer - dt);
   if (farolTimer > 0) farolTimer = Math.max(0, farolTimer - dt);
 
-  // pimenta
-  if (pepper){
-    for (let i = 0; i < pepper.length; i++){
-      const p = pepper[i];
-      if (!p || p.r !== pr || p.c !== pc) continue;
-      pepper[i] = null;
-      frightTimer = Math.max(2.2, 9 - level * 0.45) * DIFF[CFG.diff].fright;
-      frightCombo = 0;
-      turbo = 5.2;
-      Buzz.ok(45);
-      addScore(50);
-      Sound.power();
-      popups.push({ r: pr, c: pc, text: "PIMENTA! TURBO!", t: 0, color: "#ef4444" });
-      if (firstRun && !tips.pepper){
-        tips.pepper = true;
-        toast("PIMENTA! Os gatos ficam azuis e comíveis — aproveite!", "#ef4444");
-      }
-    }
-    if (pepper.every(p => !p)) pepper = null;
-  }
-
-  // fruta bônus (uma vez por fase; no bônus aparece o tempo todo)
-  if (fruit && fruit.r === pr && fruit.c === pc){
-    const F = fruit.type || FRUITS[0];
-    if (F.life){
-      lives++;
-      refreshStats();
-      Sound.extra();
-      popups.push({ r: pr, c: pc, text: "CORAÇÃO! +1 VIDA", t: 0, color: F.color });
-    } else {
-      if (F.pts) addScore(F.pts);
-      if (F.turbo) turbo = Math.max(turbo, F.turbo);
-      popups.push({ r: pr, c: pc, text: F.name + (F.pts ? " +" + F.pts : ""), t: 0, color: F.color });
-    }
-    Buzz.ok([35, 40, 70]);
-    Sound.eatFruit();
-    PROG.fruits = (PROG.fruits || 0) + 1;
-    saveProg();
-    if (firstRun && !tips.fruit){ tips.fruit = true; toast("Fruta bônus dá pontos extras — ou uma vida!", "#facc15"); }
-    fruit = null;
-  }
-
-  // peixe (fica ~11s no mapa)
-  if (fish && fish.r === pr && fish.c === pc){
-    addScore(100);
-    PROG.fish++;
-    recipeBump("fish", 1);
-    mstBump("f");
-    Buzz.ok(26);
-    Sound.eatFish();
-    popups.push({ r: pr, c: pc, text: "+100 PEIXE", t: 0, color: "#38bdf8" });
-    if (firstRun && !tips.fish){
-      tips.fish = true;
-      toast("Peixe bônus vale +100 e some em segundos!", "#38bdf8");
-    }
-    fish = null;
-    saveProg(); checkAch();
-  }
-
-  // power-up no mapa
-  if (powerup && powerup.r === pr && powerup.c === pc){
-    collectPowerup(powerup.kind);
-    powerup = null;
-  }
-
-  // colisões
-  const pp = entPos(player);
+  for (const pl of actors()) pickupsAt(pl.r, pl.c);
+  // colisões (gatos x P1 e P2)
+  for (const pl of actors()){
+  const pp = entPos(pl);
   for (const g of ghosts){
     if (!g.active || g.state === "eaten" || g.state === "leaving") continue;
     if (farolTimer > 0) continue;   // a luz do farol afasta os gatos
@@ -2211,12 +2267,13 @@ function update(dt){
       g.state = "eaten"; g.who = "ghostLeave";
       shake = Math.max(shake, CFG.reduceMotion ? 0 : 0.35);
       Buzz.ok([20, 30, 60]); Sound.eatGhost();
-      popups.push({ r: player.r, c: player.c, text: "ESCUDO!", t: 0, color: "#60a5fa" });
+      popups.push({ r: pl.r, c: pl.c, text: "ESCUDO!", t: 0, color: "#60a5fa" });
       saveProg(); checkAch();
     } else {
-      die();
+      die(pl);
       return;
     }
+  }
   }
 
   if (chainT > 0){
@@ -2224,7 +2281,7 @@ function update(dt){
     if (chainT <= 0){ chain = 0; chainMult = 1; }
   }
   if (turbo > 0) turbo = Math.max(0, turbo - dt);
-  player.speed = player.baseSpeed * (turbo > 0 ? 1.25 : 1) * (frightTimer > 0 ? 1.08 : 1);
+  for (const pl of actors()) pl.speed = pl.baseSpeed * (turbo > 0 ? 1.25 : 1) * (frightTimer > 0 ? 1.08 : 1);
 
   for (let i = popups.length - 1; i >= 0; i--){
     popups[i].t += dt;
@@ -2252,6 +2309,7 @@ function update(dt){
   if (shake > 0) shake = Math.max(0, shake - dt);
 
   advance(player, dt);
+  if (mate) advance(mate, dt);
 }
 
 /* ============================================================
@@ -2410,6 +2468,9 @@ const SKINS = [
 function skinById(id){ return SKINS.find(k => k.id === id) || SKINS[0]; }
 function skinUnlocked(k){ try { return !!k.need(PROG); } catch (e){ return false; } }
 function skinPal(){ const k = skinById(CFG.skin); return k.pal; }
+const PAL_GALO = { g0:"#eef2ff", g1:"#93a4c8", g2:"#475569", line:"#1e293b",
+  wing:"rgba(71,85,105,.45)", wingEdge:"rgba(30,41,59,.55)", grill:"rgba(51,65,85,.35)",
+  beak:"#f43f5e", beakEdge:"#9f1239" };
 function setSkin(id){
   const k = skinById(id);
   if (!skinUnlocked(k)){ toast("Ainda não desbloqueou a " + k.name + " (" + k.desc + ")", "#f87171"); return false; }
@@ -3047,6 +3108,28 @@ function drawScene(){
       fire: turbo > 0,
       pal: skinPal()
     });
+    if (mate){
+      const mp = entPos(mate);
+      drawChicken(mp.x, mp.y, ANG[mate.dir], 14, {
+        wobble: mate.moving ? Math.sin(tGlobal * 16 + 1.7) : 0,
+        aura: frightTimer > 0 || turbo > 0 || farolTimer > 0,
+        fire: turbo > 0,
+        pal: PAL_GALO
+      });
+    }
+    if (twoP()){
+      ctx.save();
+      ctx.font = "bold 11px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      const tag = (e, txt, col) => {
+        const q = entPos(e);
+        ctx.fillStyle = "rgba(0,0,0,.6)"; ctx.fillText(txt, q.x + 1.5, q.y - T * 0.72 + 1.5);
+        ctx.fillStyle = col; ctx.fillText(txt, q.x, q.y - T * 0.72);
+      };
+      tag(player, "P1", "#facc15");
+      if (mate) tag(mate, "P2", "#60a5fa");
+      ctx.restore();
+    }
   }
 
   ctx.save();
@@ -3201,6 +3284,7 @@ const KEYMAP = {
   ArrowUp: 0, ArrowRight: 1, ArrowDown: 2, ArrowLeft: 3,
   w: 0, d: 1, s: 2, a: 3, W: 0, D: 1, S: 2, A: 3
 };
+const KEYMAP2 = { ArrowUp: 0, ArrowRight: 1, ArrowDown: 2, ArrowLeft: 3 };
 
 
 function shareScore(){
@@ -3287,9 +3371,19 @@ function pressDir(d){
   if (state === "title" || state === "over") startGame();
   if (state !== "paused" && player) player.want = d;
 }
+function pressDir2(d){
+  Sound.init(); Sound.resume();
+  if (state === "title" || state === "over"){ startGame(); return; }
+  if (state !== "paused" && mate) mate.want = d;
+}
 
 window.addEventListener("keydown", (e) => {
   const k = e.key;
+  if (twoP() && Object.prototype.hasOwnProperty.call(KEYMAP2, k)){
+    e.preventDefault();
+    pressDir2(KEYMAP2[k]);
+    return;
+  }
   if (Object.prototype.hasOwnProperty.call(KEYMAP, k)){
     e.preventDefault();
     pressDir(KEYMAP[k]);
@@ -3317,7 +3411,10 @@ window.addEventListener("keydown", (e) => {
 /* ---- bolinha de controle no canto (joystick) ---- */
 const stickEl = document.getElementById("stick");
 const knobEl = document.getElementById("knob");
+const stick2El = document.getElementById("stick2");
+const knob2El = document.getElementById("knob2");
 let stickId = null, stickDir = -1;
+let stick2Id = null, stick2Dir = -1;
 
 function stickAim(dx, dy){
   const max = Math.max(1, stickEl.clientWidth / 2 - knobEl.offsetWidth / 2 - 4);
@@ -3358,6 +3455,47 @@ stickEl.addEventListener("pointermove", (e) => {
 ["pointerup", "pointercancel"].forEach((ev) =>
   stickEl.addEventListener(ev, (e) => { if (e.pointerId === stickId) stickRelease(); })
 );
+
+/* ---- bolinha do jogador 2 ---- */
+function stick2Aim(dx, dy){
+  if (!twoP()) return;
+  const max = Math.max(1, stick2El.clientWidth / 2 - knob2El.offsetWidth / 2 - 4);
+  const dist = Math.hypot(dx, dy);
+  if (dist > 0){
+    const k = Math.min(1, dist / max);
+    knob2El.style.transform = `translate(${dx / dist * max * k}px,${dy / dist * max * k}px)`;
+  }
+  if (dist < max * 0.12){ stick2Dir = -1; return; }
+  const dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0);
+  if (dir === stick2Dir) return;
+  stick2Dir = dir;
+  Sound.init(); Sound.resume();
+  if (state === "title" || state === "over"){ startGame(); return; }
+  if (state !== "paused" && mate) mate.want = dir;
+}
+function stick2Release(){
+  stick2Id = null; stick2Dir = -1;
+  knob2El.style.transform = "translate(0px,0px)";
+  stick2El.classList.remove("hit");
+}
+stick2El.addEventListener("pointerdown", (e) => {
+  if (!twoP()) return;
+  stick2Id = e.pointerId;
+  try { stick2El.setPointerCapture(e.pointerId); } catch (_) {}
+  stick2El.classList.add("hit");
+  const r = stick2El.getBoundingClientRect();
+  stick2Aim(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+  e.preventDefault();
+});
+stick2El.addEventListener("pointermove", (e) => {
+  if (e.pointerId !== stick2Id) return;
+  const r = stick2El.getBoundingClientRect();
+  stick2Aim(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+  e.preventDefault();
+});
+["pointerup", "pointercancel"].forEach((ev) =>
+  stick2El.addEventListener(ev, (e) => { if (e.pointerId === stick2Id) stick2Release(); })
+);
 /* ---- configuracoes ---- */
 function applyStick(){
   const s = SIZES[CFG.size] || SIZES.normal;
@@ -3370,6 +3508,15 @@ function applyStick(){
   stickEl.style.left = CFG.side === "right" ? "auto" : "";
   stickEl.style.right = CFG.side === "right" ? "calc(16px + env(safe-area-inset-right))" : "";
   stickEl.classList.toggle("on", CFG.stick && !/stick=0/.test(location.search));
+  stick2El.style.width = s + "px";
+  stick2El.style.height = s + "px";
+  knob2El.style.width = k + "px";
+  knob2El.style.height = k + "px";
+  knob2El.style.margin = (-k / 2) + "px 0 0 " + (-k / 2) + "px";
+  const rightSide = CFG.side === "right";
+  stick2El.style.left = rightSide ? "calc(16px + env(safe-area-inset-left))" : "auto";
+  stick2El.style.right = rightSide ? "auto" : "calc(16px + env(safe-area-inset-right))";
+  stick2El.classList.toggle("on2", twoP() && CFG.stick && !/stick=0/.test(location.search));
 }
 function applyA11y(){
   const b = document.body;
@@ -3384,6 +3531,9 @@ function applyCfg(){
   Sound.vol = CFG.vol;
   Sound.musicOn = CFG.music !== false;
   if (Sound.master) Sound.master.gain.value = Sound.muted ? 0 : Sound.vol;
+  if (twoP() && !mate && player) mate = makeMate();
+  else if (!twoP() && mate) mate = null;
+  if (player) mate && (mate.baseSpeed = playerSpeed());
 }
 function cfgLabel(key){
   if (key === "stick") return CFG.stick ? "SIM" : "NAO";
@@ -3392,6 +3542,7 @@ function cfgLabel(key){
   if (key === "vol") return Math.round(CFG.vol * 100) + "%";
   if (key === "vibrate") return CFG.vibrate ? "SIM" : "NAO";
   if (key === "diff") return DIFF[CFG.diff].label;
+  if (key === "players") return CFG.players === 2 ? "2 (coop)" : "1";
   if (key === "reduceMotion") return CFG.reduceMotion ? "SIM" : "NAO";
   if (key === "contrast") return CFG.contrast ? "SIM" : "NAO";
   if (key === "bigText") return CFG.bigText ? "SIM" : "NAO";
@@ -3406,6 +3557,10 @@ function cfgCycle(key){
   else if (key === "vol") Sound.setVolume(CFG.vol >= 0.99 ? 0.2 : Math.min(1, CFG.vol + 0.2));
   else if (key === "vibrate") CFG.vibrate = !CFG.vibrate;
   else if (key === "diff") CFG.diff = { easy: "normal", normal: "hard", hard: "zen", zen: "easy" }[CFG.diff];
+  else if (key === "players"){
+    CFG.players = CFG.players === 2 ? 1 : 2;
+    if (CFG.players === 2) toast("Dois jogadores! P1: WASD ou bolinha esquerda. P2: setas ou bolinha direita.", "#60a5fa");
+  }
   else if (key === "reduceMotion") CFG.reduceMotion = !CFG.reduceMotion;
   else if (key === "contrast") CFG.contrast = !CFG.contrast;
   else if (key === "bigText") CFG.bigText = !CFG.bigText;
@@ -3427,6 +3582,7 @@ function cfgCycle(key){
   best = bestByDiff[CFG.diff] || 0;
   refreshScore();
   if (player) player.baseSpeed = playerSpeed();
+  if (mate) mate.baseSpeed = playerSpeed();
   if (state === "play") Sound.startSiren(level);
   renderSettings();
   if (key === "vibrate") Buzz.ok(30);
@@ -3446,6 +3602,7 @@ function renderSettings(){
       <button class="iconbtn" data-cfg="reduceMotion">Reduzir animações: ${cfgLabel("reduceMotion")}</button>
       <button class="iconbtn" data-cfg="contrast">Alto contraste: ${cfgLabel("contrast")}</button>
       <button class="iconbtn" data-cfg="bigText">Texto maior: ${cfgLabel("bigText")}</button>
+      <button class="iconbtn" data-cfg="players">Jogadores: ${cfgLabel("players")}</button>
       <button class="iconbtn" data-act="gp">Controle: ${gpCal ? "manche calibrado" : "padrão"}</button>
       <button class="iconbtn" data-cfg="nick">Apelido online: ${cfgLabel("nick")}</button>
       <button class="iconbtn" data-cfg="server">Servidor online: ${cfgLabel("server")}</button>
@@ -4121,6 +4278,8 @@ window.__galinha = {
   get score(){ return score; },
   get best(){ return best; },
   get player(){ return player; },
+  get mate(){ return mate; },
+  twoP(){ return twoP(); },
   get ghosts(){ return ghosts; },
   get bonus(){ return bonus; },
   get bossLevel(){ return bossLevel; },

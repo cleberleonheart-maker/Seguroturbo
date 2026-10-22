@@ -4,7 +4,9 @@ Jogo de labirinto no estilo arcade, com a pegada do Pac-Man: a galinha corre
 pelos corredores atrás de açaí e peixe enquanto os gatos tentam te pegar.
 
 O mesmo `index.html` roda no navegador, no celular e dentro do app Android (que
-é só um WebView com um pontinho de ponte para gamepad Bluetooth).
+é só um WebView com um pontinho de ponte para gamepad Bluetooth). Tem modo de
+**dois jogadores no mesmo aparelho**: P1 no WASD e P2 nas setas (ou duas
+bolinhas na tela), com vidas, pontos e itens compartilhados.
 
 ## Estrutura
 
@@ -26,13 +28,13 @@ computador, o Chrome funciona; no celular use o app Android.
 O jogo roda em Node com um DOM mínimo, sem navegador e sem rede:
 
 ```bash
-node test/harness.js   # 37 verificações (curva, capítulos, receitas, ciclo do jogo)
+node test/harness.js   # 46 verificações (curva, capítulos, receitas, 2 jogadores, ciclo do jogo)
 node test/bugs.js      # stress: 50 fases, invariantes e o atualizador
 ```
 
 O `harness.js` cobre o modo Zen (dificuldade nova, ciclo do menu, HUD, morte
-sem perder vida, chefe e clone continuam valendo) e a regressão das outras
-dificuldades. O `bugs.js` roda 50 fases no normal e no Zen, checa
+sem perder vida, chefe e clone continuam valendo), o coop de dois jogadores no
+mesmo aparelho e a regressão das outras dificuldades. O `bugs.js` roda 50 fases no normal e no Zen, checa
 posições/NaN/velocidade, se a vida nunca fica negativa e o fluxo de atualização
 (consulta barata, URL válida e download do jogo novo).
 

@@ -132,5 +132,33 @@ g.setLevel(5);
 ok("a fase de chefe tem receita de chefe", g.recipe && g.recipe.id === "boss", JSON.stringify(g.recipe));
 g.setLevel(2);
 
+// 11) dois jogadores no mesmo aparelho (coop)
+g.setDiff("normal");
+g.cfgCycle("players");
+ok("ligou o modo 2 jogadores", g.CFG.players === 2, g.CFG.players);
+g.start();
+g.setLevel(3);
+g.step(3.2);                                   // passa a contagem
+ok("o jogador 2 aparece", !!g.mate, "mate");
+const p2a = { r: g.mate.r, c: g.mate.c };
+let andouP2 = false;
+for (let d = 0; d < 4 && !andouP2; d++){
+  g.mate.want = d;
+  for (let i = 0; i < 18; i++) g.step(0.033);
+  andouP2 = g.mate.r !== p2a.r || g.mate.c !== p2a.c;
+}
+ok("o jogador 2 se move pelo labirinto", andouP2, p2a.r + "," + p2a.c + " -> " + g.mate.r + "," + g.mate.c);
+let desenhou2 = true;
+try { g.render(); } catch (e) { desenhou2 = false; }
+ok("desenho com dois jogadores nao quebra", desenhou2, "erro no render");
+const vidas2 = g.lives;
+g.die();
+for (let i = 0; i < 90; i++) g.step(0.05);
+ok("os dois voltam juntos depois da morte", g.state === "ready" && !!g.mate, g.state);
+ok("as vidas sao compartilhadas", g.lives === vidas2 - 1, vidas2 + " -> " + g.lives);
+g.cfgCycle("players");
+ok("desliga o modo 2 jogadores", g.CFG.players === 1 && !g.mate, g.CFG.players);
+g.setLevel(2);
+
 console.log(falhas ? `\n${falhas} falha(s)` : "\nTudo certo");
 process.exit(falhas ? 1 : 0);
