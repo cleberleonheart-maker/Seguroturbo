@@ -89,6 +89,16 @@
   }
   .iconbtn:hover{background:rgba(255,255,255,.14)}
 
+  .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:360px;margin:12px auto 0}
+  .menu-grid .iconbtn{width:100%;font-size:11.5px;padding:10px 5px;line-height:1.2;overflow-wrap:anywhere}
+  @media (max-width:360px){ .menu-grid{grid-template-columns:repeat(2,1fr)} }
+  body.big-text .menu-grid .iconbtn{font-size:13px;padding:11px 6px}
+
+  .cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:360px;margin:14px auto}
+  .cfg-grid .iconbtn{width:100%;font-size:12px;padding:10px 8px;line-height:1.25;overflow-wrap:anywhere}
+  @media (max-width:340px){ .cfg-grid{grid-template-columns:1fr} }
+  body.big-text .cfg-grid .iconbtn{font-size:14px;padding:11px 8px}
+
   #pad{display:none;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,52px);gap:8px;justify-content:center}
   #pad button{
     border:1px solid rgba(255,255,255,.2);background:rgba(123,47,247,.28);color:#fff;
@@ -470,6 +480,8 @@ async function fetchOnline(url, opts, ms){
 const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/index.xml";
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 let updateInfo = null;
+let updateState = "";
+function updateLabel(){ return updateState || "verificar"; }
 function appVersionCode(){
   const v = (typeof window !== "undefined" && window.__galinhaVC != null) ? parseInt(window.__galinhaVC, 10) : 0;
   return isNaN(v) ? 0 : v;
@@ -506,9 +518,12 @@ async function checkUpdates(){
     const apk = get("apkname");
     const cur = appVersionCode();
     if (cur && vc <= cur){
+      updateState = "atualizado";
       toast("Você já está na última versão (" + vn + ")", "#4ade80");
+      if (ui.panel && ui.panel.querySelector('[data-act="update"]')) renderSettings();
       return;
     }
+    updateState = "nova " + vn;
     const fromCfg = !!(ui.panel && ui.panel.querySelector('[data-act="update"]'));
     updateInfo = { url: FDOID_BASE + apk, vn: vn, vc: vc, size: size, fromCfg: fromCfg, file: apk };
     showOverlay(`
@@ -519,7 +534,9 @@ async function checkUpdates(){
         <button class="iconbtn" data-act="updateclose">FECHAR</button>
       </div>`);
   } catch (e){
+    updateState = "sem net";
     toast("Não consegui verificar agora (sem internet?)", "#f87171");
+    if (ui.panel && ui.panel.querySelector('[data-act="update"]')) renderSettings();
   }
 }
 async function uploadScore(silencioso){
@@ -1461,8 +1478,39 @@ function titleScreen(){
   const mCur = mst.done ? MT.target : Math.min(MT.need(mst), MT.target);
   showOverlay(`
     <h1>GALINHA ASSADA<em>açaí &amp; peixe</em></h1>
-    <div class="sub">Recorde (${DIFF[CFG.diff].label}): <b style="color:#facc15">${fmt(rec)}</b> &nbsp;&bull;&nbsp; Sequência: <b>${streak}/7</b>${isZen() ? ' &nbsp;&bull;&nbsp; <b style="color:#facc15">modo zen: você não perde vida</b>' : ""}</div>
+    <div class="sub">Recorde (${DIFF[CFG.diff].label}): <b style="color:#facc15">${fmt(rec)}</b> &nbsp;&bull;&nbsp; Sequência: <b>${streak}/7</b>${isZen() ? ' &nbsp;&bull;&nbsp; <b style="color:#facc15">zen: sem perder vida</b>' : ""}</div>
     <div class="sub" style="opacity:.9">Missão do dia: <b style="color:#f472b6">${MT.name} ${mst.done ? "&#10003;" : ""}</b> (${mCur}/${MT.target})</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" data-act="start" style="font-size:16px;padding:12px 22px">ASSAR</button>
+      ${run ? `<button class="btn" data-act="continue" style="border-color:#a3e635;font-size:14px;padding:12px 16px">CONTINUAR • FASE ${run.level}</button>` : ""}
+    </div>
+    <div class="menu-grid">
+      <button class="iconbtn" data-act="help">COMO JOGAR</button>
+      <button class="iconbtn" data-act="mission">MISSÃO</button>
+      <button class="iconbtn" data-act="daily">PRESENÇA</button>
+      <button class="iconbtn" data-act="ach">CONQUISTAS</button>
+      <button class="iconbtn" data-act="rank">RANKING</button>
+      <button class="iconbtn" data-act="cfg">CONFIG</button>
+      <button class="iconbtn" data-act="mute">SOM: ${Sound.muted ? "OFF" : "ON"}</button>
+      <button class="iconbtn" data-act="gp">CONTROLE</button>
+      <button class="iconbtn" data-act="cheats">CHEATS</button>
+      <button class="iconbtn" data-act="stats">DADOS</button>
+      <button class="iconbtn" data-act="save">SALVAR</button>
+      <button class="iconbtn" data-act="snap">FOTO</button>
+      <button class="iconbtn" data-act="share">COMPARTILHAR</button>
+      ${PROG.bonusClears >= 1 ? `<button class="iconbtn" data-act="bonus" style="border-color:#f472b6">FASE BÔNUS</button>` : ""}
+    </div>
+    <div class="row" id="installRow" style="display:none;margin-top:10px">
+      <button class="iconbtn" data-act="install">INSTALAR NO CELULAR</button>
+    </div>
+    <div class="sub" id="installHint" style="display:none;font-size:11px;opacity:.6;margin-top:6px"></div>
+  `);
+}
+
+/* ---- como jogar: legenda e controles ---- */
+function renderHelp(){
+  showOverlay(`
+    <h1>COMO JOGAR<em>o manual da cozinha</em></h1>
     <div class="sub">Ela assou o açaí e o peixe ficou perto.<br>Repita a receita sem deixar os <b>gatos</b> pegarem a galinha.</div>
     <div class="legend">
       <span style="color:#b56cff">&#9679; açaí = 10</span> &nbsp;&bull;&nbsp;
@@ -1477,29 +1525,7 @@ function titleScreen(){
       <div><kbd>M</kbd> som</div>
       <div>arraste ou use os bot&otilde;es</div>
     </div>
-    <div class="row">
-      <button class="btn" data-act="start">ASSAR</button>
-      ${run ? `<button class="iconbtn" data-act="continue" style="border-color:#a3e635">CONTINUAR • FASE ${run.level}</button>` : ""}
-      <button class="iconbtn" data-act="mute">SOM: ${Sound.muted ? "OFF" : "ON"}</button>
-      <button class="iconbtn" data-act="daily">PRESENÇA</button>
-      <button class="iconbtn" data-act="ach">CONQUISTAS</button>
-      <button class="iconbtn" data-act="cfg">CONFIG</button>
-      <button class="iconbtn" data-act="gp">CONTROLE</button>
-    </div>
-    <div class="row" style="margin-top:8px">
-      <button class="iconbtn" data-act="rank">RANKING</button>
-      <button class="iconbtn" data-act="stats">DADOS</button>
-      <button class="iconbtn" data-act="save">SALVAR</button>
-      <button class="iconbtn" data-act="mission">MISSÃO</button>
-      ${PROG.bonusClears >= 1 ? `<button class="iconbtn" data-act="bonus" style="border-color:#f472b6">FASE BÔNUS</button>` : ""}
-      <button class="iconbtn" data-act="cheats">CHEATS</button>
-      <button class="iconbtn" data-act="share">COMPARTILHAR</button>
-      <button class="iconbtn" data-act="snap">FOTO</button>
-    </div>
-    <div class="row" id="installRow" style="display:none;margin-top:10px">
-      <button class="iconbtn" data-act="install">INSTALAR NO CELULAR</button>
-    </div>
-    <div class="sub" id="installHint" style="display:none;font-size:11px;opacity:.6;margin-top:6px"></div>
+    <div class="row" style="margin-top:10px"><button class="btn" data-act="helpback">VOLTAR</button></div>
   `);
 }
 
@@ -1556,6 +1582,8 @@ ui.overlay.addEventListener("click", (ev) => {
   else if (act === "title") titleScreen();
   else if (act === "resume") resumeGame();
   else if (act === "install") doInstall();
+  else if (act === "help") renderHelp();
+  else if (act === "helpback") titleScreen();
   else if (act === "update") checkUpdates();
   else if (act === "updatedl"){ if (updateInfo){ toast("Baixando o APK…", "#38bdf8"); openExternal(updateInfo.url, updateInfo.file); } }
   else if (act === "updateclose"){ if (updateInfo && updateInfo.fromCfg) renderSettings(); else closeSettings(); }
@@ -3088,7 +3116,7 @@ let cfgBack = "title";
 function renderSettings(){
   ui.panel.innerHTML = `
     <h1 style="font-size:clamp(18px,4.6vw,30px)">CONFIG<em>ajuste o jogo</em></h1>
-    <div style="display:flex;flex-direction:column;gap:8px;max-width:330px;margin:14px auto">
+    <div class="cfg-grid">
       <button class="iconbtn" data-cfg="stick">Bolinha na tela: ${cfgLabel("stick")}</button>
       <button class="iconbtn" data-cfg="side">Lado: ${cfgLabel("side")}</button>
       <button class="iconbtn" data-cfg="size">Tamanho: ${cfgLabel("size")}</button>
@@ -3096,17 +3124,15 @@ function renderSettings(){
       <button class="iconbtn" data-cfg="vol">Volume: ${cfgLabel("vol")}</button>
       <button class="iconbtn" data-cfg="music">Música: ${CFG.music !== false ? "SIM" : "NAO"}</button>
       <button class="iconbtn" data-cfg="vibrate">Vibra&ccedil;&atilde;o: ${cfgLabel("vibrate")}</button>
-      <div style="height:4px"></div>
       <button class="iconbtn" data-cfg="reduceMotion">Reduzir animações: ${cfgLabel("reduceMotion")}</button>
       <button class="iconbtn" data-cfg="contrast">Alto contraste: ${cfgLabel("contrast")}</button>
       <button class="iconbtn" data-cfg="bigText">Texto maior: ${cfgLabel("bigText")}</button>
-      <div style="height:4px"></div>
       <button class="iconbtn" data-act="gp">Controle: ${gpCal ? "manche calibrado" : "padrão"}</button>
-      <div style="height:4px"></div>
       <button class="iconbtn" data-cfg="nick">Apelido online: ${cfgLabel("nick")}</button>
       <button class="iconbtn" data-cfg="server">Servidor online: ${cfgLabel("server")}</button>
+      <button class="iconbtn" data-act="update">Atualiza&ccedil;&otilde;es: ${updateLabel()}</button>
     </div>
-    <div class="row"><button class="iconbtn" data-act="update">ATUALIZAÇÕES</button><button class="btn" data-act="cfgback">VOLTAR</button></div>
+    <div class="row"><button class="btn" data-act="cfgback">VOLTAR</button></div>
   `;
   ui.overlay.classList.remove("hidden");
 }
