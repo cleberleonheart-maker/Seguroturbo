@@ -520,7 +520,9 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-21.4";
+const GAME_BUILD = "2026-10-22.1";
+const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
+const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
   // API do GitHub: cache curtinho (1 min), e a que ve a novelty mais rapido
   "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/contents/galinha-assada/index.html?ref=main",
@@ -563,28 +565,40 @@ function decodeContent(txt){
   }
   return t;
 }
+// quebra o cache sem estragar a URL que ja tem query (?ref=main)
+function bust(u){ return u + (u.indexOf("?") >= 0 ? "&" : "?") + "t=" + Date.now(); }
 async function fetchGameContent(){
-  // duas fontes: o cache de cada uma e separado, entao pegamos a mais nova
-  const res = await Promise.allSettled(GAME_CONTENT_URLS.map(function(u){
-    return fetchOnline(u + "?t=" + Date.now(), { method: "GET", cache: "no-store" }, 30000)
-      .then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); });
-  }));
-  let melhor = null;
-  for (let i = 0; i < res.length; i++){
-    if (res[i].status !== "fulfilled") continue;
-    const txt = decodeContent(res[i].value);
-    const b = buildOf(txt);
-    if (!b) continue;
-    if (!melhor || b > melhor.build) melhor = { build: b, text: txt, url: GAME_CONTENT_URLS[i] };
+  // vao na ordem: a primeira que responder ganha (a API do GitHub e a mais rapida)
+  let erro = null;
+  for (const u of GAME_CONTENT_URLS){
+    try {
+      const r = await fetchOnline(bust(u), { method: "GET", cache: "no-store" }, 30000);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const txt = decodeContent(await r.text());
+      const b = buildOf(txt);
+      if (!b) throw new Error("resposta sem marcador");
+      return { build: b, text: txt, url: u };
+    } catch (e){ erro = e; }
   }
-  if (!melhor) throw new Error("não consegui baixar o jogo novo");
-  return melhor;
+  throw erro || new Error("não consegui baixar o jogo novo");
 }
 // o app Android sabe salvar o arquivo novo e recarregar sozinho
 function canSelfUpdate(){ return !!(window.AndroidUpdate && typeof window.AndroidUpdate.saveContent === "function"); }
+// probe barato: o arquivo do jogo mudou no repositorio? (uns 2 KB, nao baixa o jogo)
+async function fetchRemoteSha(){
+  const r = await fetchOnline(bust(GAME_COMMIT_API), { method: "GET", cache: "no-store" }, 20000);
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const d = await r.json();
+  const c = Array.isArray(d) ? d[0] : d;
+  return (c && c.sha) ? String(c.sha) : "";
+}
 async function checkContentUpdate(){
   if (!canSelfUpdate()) return null;
+  let sha = "";
+  try { sha = await fetchRemoteSha(); } catch (e){ sha = ""; }
+  if (sha && store.get(SHA_KEY) === sha) return null;   // ja esta na ultima
   const c = await fetchGameContent();
+  if (sha) store.set(SHA_KEY, sha);
   if (!c || c.build === GAME_BUILD) return null;
   return c;
 }
@@ -615,7 +629,7 @@ async function checkUpdates(){
           <button class="btn" data-act="updateapply">ATUALIZAR</button>
           <button class="iconbtn" data-act="updateclose">FECHAR</button>
         </div>`);
-      if (fromCfg) ui.panel.querySelector('[data-act="update"]').textContent = updateLabel();
+      if (fromCfg) renderSettings(); else updateState = updateLabel();
       return;
     }
   } catch (e){ /* sem internet: cai no teste do APK */ }
@@ -1387,6 +1401,13 @@ function respawn(){
   player = makeEntity(ps[0], ps[1], 0, playerSpeed(), "player");
   ghosts.forEach((g, i) => {
     const sp = GHOST_SPAWN[i];
+    if (!sp){
+      // gato extra (o clone secreto surge depois): fica onde esta,
+      // so volta a cacar -- antes isso quebrava o jogo ao morrer
+      g.prog = 0; g.ox = 0; g.oy = 0; g.blocked = true;
+      g.who = "ghostLeave"; g.state = "leaving"; g.releaseAt = clock + 1;
+      return;
+    }
     g.r = sp[0]; g.c = sp[1]; g.dir = 2; g.want = 2; g.prog = 0; g.ox = 0; g.oy = 0;
     g.who = "ghostLeave"; g.state = "leaving"; g.blocked = true;
     g.baseSpeed = ghostSpeed();
@@ -1659,6 +1680,7 @@ function renderHelp(){
       <span style="color:#facc15">&#9679; fruta bônus</span> (dourada 500 &bull; ovo 750 &bull; estrela 1000 &bull; coração +1 vida)
     </div>
     <div class="legend" style="opacity:.7">power-ups: <span style="color:#c084fc">&#9679; ímã</span> &nbsp;<span style="color:#60a5fa">&#9679; escudo</span> &nbsp;<span style="color:#2dd4bf">&#9679; tempo lento</span> &nbsp;<span style="color:#fde047">&#9679; moeda</span> &nbsp;<span style="color:#f87171">&#9679; pimenta mágica</span> &nbsp;&bull;&nbsp; combo de açaí até x5</div>
+    <div class="legend" style="opacity:.85"><b style="color:#facc15">receita da fase:</b> a barrinha abaixo do placar mostra o objetivo extra (assar peixe, comer açaí, fritar gato ou derrubar o chefe). Fazer a receita vale <b>+500 pontos</b>.</div>
     <div class="keys">
       <div><kbd>&#8593;</kbd><kbd>&#8594;</kbd><kbd>&#8595;</kbd><kbd>&#8592;</kbd> ou <kbd>WASD</kbd></div>
       <div><kbd>P</kbd> pausa</div>
@@ -1925,6 +1947,7 @@ function updateModes(dt){
    10. UPDATE
    ============================================================ */
 function die(){
+  if (state === "dying" || state === "over" || state === "clear") return;  // nao morre duas vezes
   state = "dying"; stateTimer = isZen() ? 0.9 : 1.8;
   deathsThisLevel++;
   mstSync();
@@ -3015,6 +3038,8 @@ window.addEventListener("load", () => {
       if (state === "play" || state === "paused") return;   // nao mexe no meio da partida
       const c = await checkContentUpdate();
       if (!c) return;
+      // a verificacao demora um pouco: se o jogador comecou a jogar, espera a proxima abertura
+      if (state === "play" || state === "paused" || state === "ready") return;
       window.AndroidUpdate.saveContent(c.text);   // o app salva e recarrega
     } catch (e) { }
   }, 2500);
@@ -3407,6 +3432,7 @@ function renderStats(){
         ${row("Pimentas douradas", fmt(PROG.fruits || 0))}
         ${row("Moedas", fmt(PROG.coins))}
         ${row("Pimentas mágicas", fmt(PROG.chilis))}
+        ${row("Receitas concluídas", fmt(PROG.recipes || 0))}
         ${row("Escudos usados", fmt(PROG.shields))}
         ${row("Ímãs usados", fmt(PROG.magnets))}
         ${row("Tempos lentos", fmt(PROG.slows))}
@@ -3948,6 +3974,7 @@ window.__galinha = {
   setDiff(d){ CFG.diff = d; best = bestByDiff[d] || 0; refreshAll(); },
   cfgCycle(k){ cfgCycle(k); },
   checkUpdates, appVersionCode, openSettings,
+  checkContentUpdate, applyContentUpdate,
   get ghostSpeed(){ return ghostSpeed(); },
   get playerSpeed(){ return playerSpeed(); },
   get recipe(){ return recipe; },

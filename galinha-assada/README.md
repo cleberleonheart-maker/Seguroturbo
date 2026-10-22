@@ -28,47 +28,15 @@ computador, o Chrome funciona; no celular use o app Android.
 O jogo roda em Node com um DOM mínimo, sem navegador e sem rede:
 
 ```bash
-node test/harness.js
+node test/harness.js   # 37 verificacoes (curva, capitulos, receitas, ciclo do jogo)
+node test/bugs.js      # stress: 30 fases, invariantes e o atualizador
 ```
 
-Cobre o modo Zen (dificuldade nova, ciclo do menu, HUD, morte sem perder vida,
-chefe e clone continuam valendo) e a regressão das outras dificuldades.
-
-## Fases, capítulos e receitas
-
-- **Curva de dificuldade sem teto**: a velocidade dos gatos cresce até a fase
-  30 (`ghostSpeed()`/`playerSpeed()` em `index.html`) — antes ela saturava na
-  fase 11 e as fases 12-30 eram só repetição. O tempo de pimentinha e o
-  momento em que os gatos ficam famintos também apertam com a fase.
-- **Capítulos**: 5 fases por capítulo, cada um com nome e paleta própria
-  (`CHAPTERS`): Cozinha do açaí, Forno aceso, Pista da madrugada, Horta do
-  bairro, Maré de peixe, Festa da galinha.
-- **Receita da fase**: cada fase tem um objetivo extra (assar peixes, comer
-  açaí, fritar gatos, combo x3 ou derrotar o chefe das fases múltiplas de 5).
-  Fica numa barra abaixo do HUD com o progresso e vale **+500 pontos** quando
-  concluída (conquistas "Chef de Receita" e "Mestre Culinário").
-
-## Atualizar o jogo sem baixar APK
-
-O botão **Atualizações: verificar** no CONFIG faz duas coisas, nesta ordem:
-
-1. **O jogo em si**: o app Android baixa só o `index.html` novo (o código do
-   jogo), salva no armazenamento do app e recarrega a página. Não há download
-   de APK nem tela de instalador — o jogo se atualiza em 1 segundo e o
-   progresso continua salvo (as duas páginas são `file://`, mesma origem).
-   A versão do conteúdo fica no marcador `GAME_BUILD` do `index.html`; o app
-   compara e só troca se a publicada for mais nova.
-2. **O aplicativo**: se o APK em si ficou velho (isso é raro), aí sim aparece
-   o download do APK com o instalador.
-
-O `index.html` do jogo é publicado em dois lugares, e a atualização usa o mais
-novo dos dois (cada um tem seu próprio cache):
-
-- `https://cleberleonheart-maker.github.io/seguraturbo-fdroid/galinha/index.html`
-- `https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html`
-
-No CONFIG tem também **usar a versão original do APK**, que apaga a cópia
-atualizada e volta para o arquivo embutido.
+O `harness.js` cobre o modo Zen (dificuldade nova, ciclo do menu, HUD, morte
+sem perder vida, chefe e clone continuam valendo) e a regressão das outras
+dificuldades. O `bugs.js` roda 30 fases normal e zen, checa posicoes/NaN/velocidade,
+a vida nunca ficar negativa e o fluxo de atualizacao (probe barato, URL valida e
+download do jogo novo).
 
 ## Ranking online
 

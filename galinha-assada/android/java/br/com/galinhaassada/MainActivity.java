@@ -84,8 +84,6 @@ public class MainActivity extends Activity {
                 try {
                     view.evaluateJavascript("window.__galinhaVC='" + appVersionCode() + "';", null);
                 } catch (Throwable t) { }
-
-
             }
 
             @Override
