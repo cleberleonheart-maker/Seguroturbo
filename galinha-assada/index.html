@@ -521,7 +521,10 @@ const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/"
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
 const GAME_BUILD = "2026-10-21.2";
-const GAME_CONTENT_URL = "https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html";
+const GAME_CONTENT_URLS = [
+  "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/galinha/index.html",
+  "https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html"
+];
 let updateInfo = null;
 let updateState = "";
 function updateLabel(){ return updateState || "verificar"; }
@@ -546,18 +549,29 @@ function buildOf(text){
   return m ? m[1] : "";
 }
 async function fetchGameContent(){
-  const r = await fetchOnline(GAME_CONTENT_URL + "?t=" + Date.now(), { method: "GET", cache: "no-store" }, 30000);
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  return await r.text();
+  // duas fontes: o cache de cada uma e separado, entao pegamos a mais nova
+  const res = await Promise.allSettled(GAME_CONTENT_URLS.map(function(u){
+    return fetchOnline(u + "?t=" + Date.now(), { method: "GET", cache: "no-store" }, 30000)
+      .then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); });
+  }));
+  let melhor = null;
+  for (let i = 0; i < res.length; i++){
+    if (res[i].status !== "fulfilled") continue;
+    const txt = res[i].value;
+    const b = buildOf(txt);
+    if (!b) continue;
+    if (!melhor || b > melhor.build) melhor = { build: b, text: txt, url: GAME_CONTENT_URLS[i] };
+  }
+  if (!melhor) throw new Error("não consegui baixar o jogo novo");
+  return melhor;
 }
 // o app Android sabe salvar o arquivo novo e recarregar sozinho
 function canSelfUpdate(){ return !!(window.AndroidUpdate && typeof window.AndroidUpdate.saveContent === "function"); }
 async function checkContentUpdate(){
   if (!canSelfUpdate()) return null;
-  const txt = await fetchGameContent();
-  const b = buildOf(txt);
-  if (!b || b === GAME_BUILD) return null;
-  return { build: b, text: txt };
+  const c = await fetchGameContent();
+  if (!c || c.build === GAME_BUILD) return null;
+  return c;
 }
 function applyContentUpdate(){
   if (!updateContent){ toast("Nada novo para atualizar", "#94a3b8"); return; }

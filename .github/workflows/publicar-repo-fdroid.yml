@@ -166,6 +166,10 @@ jobs:
           python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/index.html ""
           python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/fdroid/repo/index.html "/fdroid/repo"
           python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/repo/index.html "/repo"
+          # o jogo em si (index.html): o app Android usa esse arquivo para
+          # atualizar o jogo direto, sem baixar nem instalar APK
+          mkdir -p pages/galinha
+          cp galinha-assada/index.html pages/galinha/index.html
           cd pages
           git add -A
           if git diff --cached --quiet; then

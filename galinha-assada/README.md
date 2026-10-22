@@ -48,6 +48,28 @@ chefe e clone continuam valendo) e a regressão das outras dificuldades.
   Fica numa barra abaixo do HUD com o progresso e vale **+500 pontos** quando
   concluída (conquistas "Chef de Receita" e "Mestre Culinário").
 
+## Atualizar o jogo sem baixar APK
+
+O botão **Atualizações: verificar** no CONFIG faz duas coisas, nesta ordem:
+
+1. **O jogo em si**: o app Android baixa só o `index.html` novo (o código do
+   jogo), salva no armazenamento do app e recarrega a página. Não há download
+   de APK nem tela de instalador — o jogo se atualiza em 1 segundo e o
+   progresso continua salvo (as duas páginas são `file://`, mesma origem).
+   A versão do conteúdo fica no marcador `GAME_BUILD` do `index.html`; o app
+   compara e só troca se a publicada for mais nova.
+2. **O aplicativo**: se o APK em si ficou velho (isso é raro), aí sim aparece
+   o download do APK com o instalador.
+
+O `index.html` do jogo é publicado em dois lugares, e a atualização usa o mais
+novo dos dois (cada um tem seu próprio cache):
+
+- `https://cleberleonheart-maker.github.io/seguraturbo-fdroid/galinha/index.html`
+- `https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html`
+
+No CONFIG tem também **usar a versão original do APK**, que apaga a cópia
+atualizada e volta para o arquivo embutido.
+
 ## Ranking online
 
 O placar online usa um servidor HTTP próprio, exposto publicamente por
