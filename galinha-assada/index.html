@@ -520,7 +520,7 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.2";
+const GAME_BUILD = "2026-10-22.3";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -534,6 +534,17 @@ const GAME_CONTENT_URLS = [
 let updateInfo = null;
 let updateState = "";
 function updateLabel(){ return updateState || "verificar"; }
+// de onde veio o jogo que esta rodando (APK ou atualizacao baixada)
+function contentOrigem(){
+  const o = (typeof window !== "undefined" && window.__galinhaOrigem) ? String(window.__galinhaOrigem) : "";
+  if (o === "update") return "versão baixada (atualizada)";
+  if (o === "apk") return "versão do APK";
+  return "";
+}
+function appVersionName(){
+  const v = (typeof window !== "undefined" && window.__galinhaVN) ? String(window.__galinhaVN) : "";
+  return v || "—";
+}
 function appVersionCode(){
   const v = (typeof window !== "undefined" && window.__galinhaVC != null) ? parseInt(window.__galinhaVC, 10) : 0;
   return isNaN(v) ? 0 : v;
@@ -1662,9 +1673,8 @@ function titleScreen(){
       ${PROG.bonusClears >= 1 ? `<button class="iconbtn" data-act="bonus" style="border-color:#f472b6">FASE BÔNUS</button>` : ""}
     </div>
     <div class="row" id="installRow" style="display:none;margin-top:10px">
-      <button class="iconbtn" data-act="install">INSTALAR NO CELULAR</button>
+      <button class="iconbtn" data-act="install">BAIXAR O APK</button>
     </div>
-    <div class="sub" id="installHint" style="display:none;font-size:11px;opacity:.6;margin-top:6px"></div>
   `);
 }
 
@@ -2987,40 +2997,16 @@ function chickenIcon(){
 /* ============================================================
    12. INSTALAÇÃO NO CELULAR (PWA)
    ============================================================ */
-let deferredPrompt = null;
-
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
          window.navigator.standalone === true;
 }
 
+// baixa o APK de verdade (no app Android o proprio jogo baixa e abre o instalador)
+// assim nao se cria atalho/PWA duplicado na tela inicial do celular
 function doInstall(){
-  if (deferredPrompt){
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-    return;
-  }
-  const hint = document.getElementById("installHint");
-  if (!hint) return;
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  hint.style.display = "block";
-  hint.innerHTML = ios
-    ? "No Safari: toque em <b>Compartilhar</b> (quadrado com seta) e depois em <b>Adicionar à Tela de Início</b>."
-    : "No Chrome: abra o menu <b>⋮</b> e toque em <b>Instalar app</b> ou <b>Adicionar à tela de início</b>.";
+  openExternal(FDOID_BASE + "br.com.galinhaassada.apk", "galinha-assada.apk");
 }
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const row = document.getElementById("installRow");
-  if (row) row.style.display = "flex";
-});
-
-window.addEventListener("appinstalled", () => {
-  deferredPrompt = null;
-  const row = document.getElementById("installRow");
-  if (row) row.style.display = "none";
-});
 
 if ("serviceWorker" in navigator && location.protocol !== "file:"){
   window.addEventListener("load", () => {
@@ -3058,7 +3044,6 @@ window.addEventListener("load", () => {
 window.addEventListener("load", () => {
   if (location.protocol === "file:") return;      // dentro do APK nao ha o que instalar
   if (isStandalone()) return;
-  if (!/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)) return;
   const row = document.getElementById("installRow");
   if (row) row.style.display = "flex";
 });
@@ -3319,6 +3304,10 @@ function renderSettings(){
       <button class="iconbtn" data-cfg="nick">Apelido online: ${cfgLabel("nick")}</button>
       <button class="iconbtn" data-cfg="server">Servidor online: ${cfgLabel("server")}</button>
       <button class="iconbtn" data-act="update">Atualiza&ccedil;&otilde;es: ${updateLabel()}</button>
+    </div>
+    <div style="text-align:center;font-size:11px;opacity:.65;margin:10px 0 4px;line-height:1.6">
+      Jogo: <b>${GAME_BUILD}</b>${contentOrigem() ? ' &bull; ' + contentOrigem() : ''}<br>
+      APK: <b>${appVersionName()}</b> (código ${appVersionCode() || "—"})
     </div>
     ${canSelfUpdate() ? '<div style="text-align:center;margin:-4px 0 10px"><button class="iconbtn" data-act="updatereset">usar a versão original do APK</button></div>' : ''}
     <div class="row"><button class="btn" data-act="cfgback">VOLTAR</button></div>

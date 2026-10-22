@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -82,7 +83,10 @@ public class MainActivity extends Activity {
                 Log.d("GalinhaJS", "pagina carregada: " + url);
                 // o jogo compara a versao publicada com a instalada
                 try {
-                    view.evaluateJavascript("window.__galinhaVC='" + appVersionCode() + "';", null);
+                    String origem = (url != null && url.contains("/files/")) ? "update" : "apk";
+                    view.evaluateJavascript("window.__galinhaVC='" + appVersionCode() + "';"
+                        + "window.__galinhaVN='" + appVersionName() + "';"
+                        + "window.__galinhaOrigem='" + origem + "';", null);
                 } catch (Throwable t) { }
             }
 
@@ -225,6 +229,12 @@ public class MainActivity extends Activity {
         });
     }
 
+    private String appVersionName(){
+        try {
+            PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return pi.versionName == null ? "" : pi.versionName;
+        } catch (Throwable t) { return ""; }
+    }
     private int appVersionCode(){
         try {
             android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
