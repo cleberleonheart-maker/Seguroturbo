@@ -520,7 +520,7 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-21.2";
+const GAME_BUILD = "2026-10-21.3";
 const GAME_CONTENT_URLS = [
   "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/galinha/index.html",
   "https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html"
@@ -2991,6 +2991,19 @@ if ("serviceWorker" in navigator && location.protocol !== "file:"){
     });
   });
 }
+
+// atualiza o jogo sozinho ao abrir o app (sem prompt e sem instalar nada)
+window.addEventListener("load", () => {
+  setTimeout(async function(){
+    try {
+      if (!canSelfUpdate()) return;
+      if (state === "play" || state === "paused") return;   // nao mexe no meio da partida
+      const c = await checkContentUpdate();
+      if (!c) return;
+      window.AndroidUpdate.saveContent(c.text);   // o app salva e recarrega
+    } catch (e) { }
+  }, 2500);
+});
 
 // avisa quando o jogo foi atualizado direto no app (sem reinstalar)
 window.addEventListener("load", () => {
