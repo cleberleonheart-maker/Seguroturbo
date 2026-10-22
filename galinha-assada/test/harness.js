@@ -106,6 +106,13 @@ ok("a galinha continua mais rapida que os gatos na fase 30", p30 > v30, "p30=" +
 g.setLevel(1);
 const v1 = g.ghostSpeed;
 ok("a fase 1 e mais lenta que a fase 30", v30 > v1, "v1=" + v1);
+g.setLevel(50);
+const v50 = g.ghostSpeed, p50 = g.playerSpeed;
+ok("gatos aceleram entre a fase 30 e a 50", v50 > v30, "v30=" + v30 + " v50=" + v50);
+ok("a galinha continua mais rapida que os gatos na fase 50", p50 > v50, "p50=" + p50.toFixed(2) + " v50=" + v50.toFixed(2));
+ok("o jogo tem 50 fases", g.totalLevels === 50, g.totalLevels);
+g.setLevel(50); ok("a fase 50 fica no ultimo capitulo (Banquete final)", g.chapter === "Banquete final", g.chapter);
+g.setLevel(31); ok("a fase 31 abre o capitulo do mercado", g.chapter === "Mercado da esquina", g.chapter);
 
 // 9) capitulos: 5 fases por capitulo e paleta por capitulo
 g.setLevel(1);

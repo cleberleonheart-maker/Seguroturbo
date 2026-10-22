@@ -27,12 +27,12 @@ O jogo roda em Node com um DOM mínimo, sem navegador e sem rede:
 
 ```bash
 node test/harness.js   # 37 verificações (curva, capítulos, receitas, ciclo do jogo)
-node test/bugs.js      # stress: 30 fases, invariantes e o atualizador
+node test/bugs.js      # stress: 50 fases, invariantes e o atualizador
 ```
 
 O `harness.js` cobre o modo Zen (dificuldade nova, ciclo do menu, HUD, morte
 sem perder vida, chefe e clone continuam valendo) e a regressão das outras
-dificuldades. O `bugs.js` roda 30 fases no normal e no Zen, checa
+dificuldades. O `bugs.js` roda 50 fases no normal e no Zen, checa
 posições/NaN/velocidade, se a vida nunca fica negativa e o fluxo de atualização
 (consulta barata, URL válida e download do jogo novo).
 

@@ -19,7 +19,7 @@ const num = (v) => typeof v === "number" && isFinite(v);
 // 1) muitas fases em todas as dificuldades
 for (const diff of ["normal", "zen"]) {
   g.setDiff(diff);
-  for (let lv = 1; lv <= 30; lv++) {
+  for (let lv = 1; lv <= g.totalLevels; lv++) {
     g.start();
     g.setLevel(lv);
     for (let i = 0; i < 1200; i++) {
@@ -71,12 +71,12 @@ g.setLevel(1); const c1 = g.chapter;
 g.setLevel(5); check("fases 1-5 no mesmo capitulo", g.chapter === c1, g.chapter);
 g.setLevel(6); check("fase 6 em outro capitulo", g.chapter !== c1, g.chapter);
 g.setLevel(30); check("fase 30 em algum capitulo", !!g.chapter, g.chapter);
-g.setLevel(30); check("fase 30 e a ultima", g.chapter === (g.setLevel(30), g.chapter), "");
+g.setLevel(30); check("fase 30 nao e mais a ultima", g.totalLevels > 30, g.totalLevels);
 
 // 6) velocidades crescem e a galinha nunca fica mais lenta que os gatos
 g.setDiff("normal");
 let anterior = 0;
-for (let lv = 1; lv <= 30; lv++) {
+for (let lv = 1; lv <= g.totalLevels; lv++) {
   g.setLevel(lv);
   check("gatos nao voltam a ficar lentos na fase " + lv, g.ghostSpeed > 0, g.ghostSpeed);
   check("galinha mais rapida que os gatos na fase " + lv, g.playerSpeed > g.ghostSpeed,

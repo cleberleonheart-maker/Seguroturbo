@@ -293,7 +293,11 @@ const CHAPTERS = [
   { name:"Pista da madrugada", pal:1 },
   { name:"Horta do bairro",    pal:4 },
   { name:"Maré de peixe",      pal:6 },
-  { name:"Festa da galinha",   pal:2 }
+  { name:"Festa da galinha",   pal:2 },
+  { name:"Mercado da esquina", pal:5 },
+  { name:"Praça da igreja",    pal:7 },
+  { name:"Beira do rio",       pal:8 },
+  { name:"Banquete final",     pal:0 }
 ];
 function chapterOf(lv){ return Math.min(CHAPTERS.length - 1, Math.floor((lv - 1) / 5)); }
 function chapter(){ return CHAPTERS[chapterOf(level)]; }
@@ -302,8 +306,8 @@ function chapter(){ return CHAPTERS[chapterOf(level)]; }
 /* ---- receita da fase: objetivo extra de cada fase ---- */
 const RECIPES = [
   { id:"fish",   txt:(n) => "assar " + n + " peixe" + (n > 1 ? "s" : ""), need:(lv) => 2 + Math.floor(lv / 8) },
-  { id:"pellet", txt:(n) => "comer " + n + " açaí" + (n > 1 ? "s" : ""),     need:(lv) => 25 + lv * 2 },
-  { id:"ghost",  txt:(n) => "fritar " + n + " gato" + (n > 1 ? "s" : ""),     need:(lv) => 1 + Math.floor(lv / 6) },
+  { id:"pellet", txt:(n) => "comer " + n + " açaí" + (n > 1 ? "s" : ""),     need:(lv) => 25 + Math.min(lv, 30) * 2 },
+  { id:"ghost",  txt:(n) => "fritar " + n + " gato" + (n > 1 ? "s" : ""),     need:(lv) => 1 + Math.floor(Math.min(lv, 30) / 6) },
   { id:"combo",  txt:(n) => "combo de açaí x" + n,                           need:(lv) => 3 }
 ];
 let recipe = null;
@@ -498,7 +502,8 @@ const ACH = [
   { id:"magic",    name:"Pimenteira",       desc:"Use a pimenta mágica",           color:"#f87171", got:()=> PROG.chilis >= 1 },
   { id:"boss5",    name:"Terror dos Gatos", desc:"Derrote 5 chefes",               color:"#a16207", got:()=> PROG.bossKills >= 5 },
   { id:"master",   name:"Mestre do Forno",  desc:"Derrote o Mestre (fase 10)",     color:"#7c3aed", got:()=> PROG.masters >= 1 },
-  { id:"final",    name:"Forno Real",       desc:"Zere as 30 fases do jogo",        color:"#fb923c", got:()=> PROG.maxLevel >= MAX_LEVEL },
+  { id:"lvl40",    name:"Panelão",          desc:"Chegue à fase 40",               color:"#f59e0b", got:()=> PROG.maxLevel >= 40 },
+  { id:"final",    name:"Forno Real",       desc:"Zere as 50 fases do jogo",        color:"#fb923c", got:()=> PROG.maxLevel >= MAX_LEVEL },
   { id:"party",    name:"Festa da Galinha", desc:"Complete a fase bônus",           color:"#f472b6", got:()=> PROG.bonusClears >= 1 },
   { id:"clone",    name:"Espelho Quebrado", desc:"Derrote o clone secreto da galinha", color:"#a855f7", got:()=> PROG.clones >= 1 }
 ];
@@ -534,7 +539,7 @@ async function fetchOnline(url, opts, ms){
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.8";
+const GAME_BUILD = "2026-10-22.9";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -882,7 +887,7 @@ let freezeTimer = 0, farolTimer = 0;   // relogio e farol
 let deathsThisLevel = 0, bossLevel = false;
 let secretBoss = null, cloneAt = 0;
 let bonus = false;
-const MAX_LEVEL = 30;
+const MAX_LEVEL = 50;
 let streak = Number(store.get(DAY_KEY + "_streak") || 0);
 let lastDay = store.get(DAY_KEY + "_last") || "";
 let score = 0, lives = 3, level = 1, best = 0, extraAt = 1000;
@@ -1253,14 +1258,14 @@ function buildLevel(){
     g.dog = false;
     g.active = !(i === 3 && level < 3);           // o cachorro entra na fase 3
     if (bossLevel && i === 3){                   // fase de chefe: o cachorro vira o chefe
-      if (level % 10 === 0){ g.boss = true; g.master = true; g.hp = 5 + Math.floor(level / 5);
+      if (level % 10 === 0){ g.boss = true; g.master = true; g.hp = 5 + Math.min(6, Math.floor(level / 5));
         g.name = "Mestre"; g.color = "#6d28d9"; }
-      else { g.boss = true; g.hp = 3 + Math.floor(level / 5);
+      else { g.boss = true; g.hp = 3 + Math.min(6, Math.floor(level / 5));
         g.name = "Chefe"; g.color = "#7c2d12"; }
       g.active = true;
     }
     if (s.name === "Cachorro" && !g.boss) g.dog = true;
-    g.releaseAt = clock + (i === 0 ? 0.4 : 2.5 + (i - 1) * 5) + (level - 1) * 0.5;
+    g.releaseAt = clock + (i === 0 ? 0.4 : 2.5 + (i - 1) * 5) + Math.min(14.5, (level - 1) * 0.5);
     return g;
   });
 
@@ -1275,8 +1280,8 @@ function buildLevel(){
   trail = []; Sound.startMusic(level); buildMazeLayer();
 }
 
-// a curva nao satura: a pressao continua subindo ate a fase 30
-function playerSpeed(){ return (7.4 + Math.min(level, 9) * 0.13 + Math.max(0, level - 9) * 0.06) * DIFF[CFG.diff].player; }
+// a curva nao satura: a pressao continua subindo ate a fase 50
+function playerSpeed(){ return (7.4 + Math.min(level, 9) * 0.13 + Math.max(0, level - 9) * 0.06 + Math.max(0, level - 30) * 0.04) * DIFF[CFG.diff].player; }
 function ghostSpeed(){ return (4.9 + Math.min(level, 11) * 0.24 + Math.max(0, level - 11) * 0.10) * DIFF[CFG.diff].ghost * (bonus ? 0.55 : 1); }
 
 // boss secreto: um clone corrompido da galinha assada. Reaproveita a IA/colisão dos chefes.
@@ -2464,9 +2469,9 @@ function drawClone(x, y, rot, R, g){
   if (g && g.boss && !eaten){
     ctx.save();
     ctx.translate(x, y);
-    for (let i = 0; i < g.hp; i++){
+    for (let i = 0; i < g.hp; i++){ const psp = Math.min(R * 0.4, (R * 1.8) / g.hp);
       ctx.beginPath();
-      ctx.arc((i - (g.hp - 1) / 2) * R * 0.4, R * 1.15, R * 0.13, 0, Math.PI * 2);
+      ctx.arc((i - (g.hp - 1) / 2) * psp, R * 1.15, R * 0.13, 0, Math.PI * 2);
       ctx.fillStyle = "#fca5a5"; ctx.fill();
     }
     ctx.restore();
@@ -2604,9 +2609,9 @@ function drawGhost(x, y, g, R){
     ctx.closePath();
     ctx.fillStyle = "#facc15"; ctx.fill();
     ctx.strokeStyle = "#a16207"; ctx.lineWidth = 1.2; ctx.stroke();
-    for (let i = 0; i < g.hp; i++){
+    for (let i = 0; i < g.hp; i++){ const psp = Math.min(R * 0.4, (R * 1.8) / g.hp);
       ctx.beginPath();
-      ctx.arc((i - (g.hp - 1) / 2) * R * 0.4, R * 1.05, R * 0.13, 0, Math.PI * 2);
+      ctx.arc((i - (g.hp - 1) / 2) * psp, R * 1.05, R * 0.13, 0, Math.PI * 2);
       ctx.fillStyle = "#fca5a5"; ctx.fill();
     }
   }
@@ -4112,6 +4117,7 @@ window.__galinha = {
   get state(){ return state; },
   get lives(){ return lives; },
   get level(){ return level; },
+  get totalLevels(){ return MAX_LEVEL; },
   get score(){ return score; },
   get best(){ return best; },
   get player(){ return player; },
