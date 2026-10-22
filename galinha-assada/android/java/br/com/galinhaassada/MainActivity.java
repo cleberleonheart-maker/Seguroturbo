@@ -29,6 +29,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.util.Log;
+import java.io.File;
 
 public class MainActivity extends Activity {
 
@@ -36,6 +37,7 @@ public class MainActivity extends Activity {
     private GamepadBridge bridge;
     private long lastDownloadId = -1;
     private BroadcastReceiver dlReceiver;
+    private boolean loadedFromFile = false;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -82,6 +84,8 @@ public class MainActivity extends Activity {
                 try {
                     view.evaluateJavascript("window.__galinhaVC='" + appVersionCode() + "';", null);
                 } catch (Throwable t) { }
+
+
             }
 
             @Override
@@ -97,8 +101,15 @@ public class MainActivity extends Activity {
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                if (request != null && request.isForMainFrame())
+                if (request != null && request.isForMainFrame()){
                     Log.d("GalinhaJS", "erro de rede: " + request.getUrl() + " -> " + error.getDescription());
+                    // se a copia salva estiver corrompida, volta para a embutida
+                    if (loadedFromFile){
+                        loadedFromFile = false;
+                        try { File f = contentFile(); if (f.exists()) f.delete(); } catch (Throwable t) {}
+                        view.loadUrl("file:///android_asset/index.html");
+                    }
+                }
             }
         });
         web.setWebChromeClient(new WebChromeClient() {
@@ -145,7 +156,7 @@ public class MainActivity extends Activity {
         bridge = new GamepadBridge();
         web.addJavascriptInterface(bridge, "AndroidGamepad");
         web.addJavascriptInterface(new UpdateBridge(), "AndroidUpdate");
-        web.loadUrl("file:///android_asset/index.html");
+        loadGame();
 
         setContentView(web);
         immersive();
@@ -172,6 +183,49 @@ public class MainActivity extends Activity {
     }
 
     private static final String onlineServer = "https://iptv-srv.tail045fd4.ts.net/galinha";
+
+    /* ---- atualizacao do proprio jogo, sem baixar nem instalar APK ----
+       o jogo novo (so o index.html) fica no armazenamento do app e e
+       carregado por cima do arquivo embutido. */
+    private File contentFile(){ return new File(getFilesDir(), "index.html"); }
+
+    private void loadGame(){
+        File f = contentFile();
+        boolean tem = f.exists() && f.length() > 20000;
+        loadedFromFile = tem;
+        if (tem) web.loadUrl("file://" + f.getAbsolutePath());
+        else web.loadUrl("file:///android_asset/index.html");
+    }
+
+    private void saveContentFile(final String html){
+        if (html == null || html.length() < 20000){
+            postJs("window.__galinhaUpdateFail&&window.__galinhaUpdateFail('arquivo invalido')");
+            return;
+        }
+        try {
+            File f = contentFile();
+            File tmp = new File(getFilesDir(), "index.new");
+            java.io.FileWriter w = new java.io.FileWriter(tmp);
+            w.write(html);
+            w.close();
+            if (f.exists()) f.delete();
+            if (!tmp.renameTo(f)){
+                java.io.FileInputStream in = new java.io.FileInputStream(tmp);
+                java.io.FileOutputStream out = new java.io.FileOutputStream(f);
+                byte[] buf = new byte[8192]; int n;
+                while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+                in.close(); out.close();
+                tmp.delete();
+            }
+        } catch (Throwable t){
+            Log.d("GalinhaJS", "saveContent falhou: " + t);
+            postJs("window.__galinhaUpdateFail&&window.__galinhaUpdateFail('erro ao salvar')");
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            public void run() { loadGame(); }
+        });
+    }
 
     private int appVersionCode(){
         try {
@@ -280,6 +334,19 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void versionCode() {
             postJs("window.__galinhaVC='" + appVersionCode() + "'");
+        }
+        // o jogo novo: o app salva e recarrega sozinho, sem instalar nada
+        @JavascriptInterface
+        public void saveContent(String html) {
+            saveContentFile(html);
+        }
+        // volta para a versao que veio embutida no APK
+        @JavascriptInterface
+        public void resetContent() {
+            try { File f = contentFile(); if (f.exists()) f.delete(); } catch (Throwable t) {}
+            runOnUiThread(new Runnable() {
+                public void run() { loadGame(); }
+            });
         }
     }
 

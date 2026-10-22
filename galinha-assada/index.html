@@ -518,6 +518,10 @@ async function fetchOnline(url, opts, ms){
 /* ---- verificador de atualizacao (repo F-Droid no GitHub Pages) ---- */
 const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/index.xml";
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
+// versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
+// o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
+const GAME_BUILD = "2026-10-21.2";
+const GAME_CONTENT_URL = "https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html";
 let updateInfo = null;
 let updateState = "";
 function updateLabel(){ return updateState || "verificar"; }
@@ -536,8 +540,57 @@ function openExternal(url, fileName){
   try { window.location.href = url; }
   catch (e){ try { window.open(url, "_blank"); } catch (e2){} }
 }
+let updateContent = null;
+function buildOf(text){
+  const m = /GAME_BUILD\s*=\s*["']([^"']+)["']/.exec(String(text || ""));
+  return m ? m[1] : "";
+}
+async function fetchGameContent(){
+  const r = await fetchOnline(GAME_CONTENT_URL + "?t=" + Date.now(), { method: "GET", cache: "no-store" }, 30000);
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return await r.text();
+}
+// o app Android sabe salvar o arquivo novo e recarregar sozinho
+function canSelfUpdate(){ return !!(window.AndroidUpdate && typeof window.AndroidUpdate.saveContent === "function"); }
+async function checkContentUpdate(){
+  if (!canSelfUpdate()) return null;
+  const txt = await fetchGameContent();
+  const b = buildOf(txt);
+  if (!b || b === GAME_BUILD) return null;
+  return { build: b, text: txt };
+}
+function applyContentUpdate(){
+  if (!updateContent){ toast("Nada novo para atualizar", "#94a3b8"); return; }
+  const c = updateContent;
+  updateContent = null;
+  try {
+    window.AndroidUpdate.saveContent(c.text);
+    toast("Atualizando o jogo…", "#38bdf8");
+  } catch (e){
+    toast("Não consegui atualizar agora", "#f87171");
+  }
+}
 async function checkUpdates(){
   toast("Verificando atualizações…", "#38bdf8");
+  // 1o) o proprio jogo (atualiza direto, sem instalar nada)
+  try {
+    const upd = await checkContentUpdate();
+    if (upd){
+      updateContent = upd;
+      updateState = "nova " + upd.build;
+      const fromCfg = !!(ui.panel && ui.panel.querySelector('[data-act="update"]'));
+      showOverlay(`
+        <h1>NOVO JOGO<em>${upd.build}</em></h1>
+        <div class="sub">Atualiza direto no app, sem baixar nem instalar APK.</div>
+        <div class="row">
+          <button class="btn" data-act="updateapply">ATUALIZAR</button>
+          <button class="iconbtn" data-act="updateclose">FECHAR</button>
+        </div>`);
+      if (fromCfg) ui.panel.querySelector('[data-act="update"]').textContent = updateLabel();
+      return;
+    }
+  } catch (e){ /* sem internet: cai no teste do APK */ }
+  // 2o) o aplicativo em si (APK)
   try {
     const r = await fetchOnline(FDOID_INDEX, { method: "GET" }, 25000);
     if (!r.ok) throw new Error("HTTP " + r.status);
@@ -1645,6 +1698,8 @@ ui.overlay.addEventListener("click", (ev) => {
   else if (act === "helpback") titleScreen();
   else if (act === "update") checkUpdates();
   else if (act === "updatedl"){ if (updateInfo){ toast("Baixando o APK…", "#38bdf8"); openExternal(updateInfo.url, updateInfo.file); } }
+  else if (act === "updateapply"){ applyContentUpdate(); }
+  else if (act === "updatereset"){ try { window.AndroidUpdate.resetContent(); toast("Voltando para a versão original…", "#38bdf8"); } catch (e){ toast("Falhou", "#f87171"); } }
   else if (act === "updateclose"){ if (updateInfo && updateInfo.fromCfg) renderSettings(); else closeSettings(); }
   else if (act === "cfg") openSettings();
   else if (act === "cfgback") closeSettings();
@@ -2923,6 +2978,15 @@ if ("serviceWorker" in navigator && location.protocol !== "file:"){
   });
 }
 
+// avisa quando o jogo foi atualizado direto no app (sem reinstalar)
+window.addEventListener("load", () => {
+  try {
+    const ant = localStorage.getItem("gbuild");
+    if (ant && ant !== GAME_BUILD) toast("Jogo atualizado! " + GAME_BUILD, "#4ade80");
+    localStorage.setItem("gbuild", GAME_BUILD);
+  } catch (e) { }
+});
+
 // oferece instalar se estiver no celular e ainda nao instalado
 window.addEventListener("load", () => {
   if (location.protocol === "file:") return;      // dentro do APK nao ha o que instalar
@@ -3189,6 +3253,7 @@ function renderSettings(){
       <button class="iconbtn" data-cfg="server">Servidor online: ${cfgLabel("server")}</button>
       <button class="iconbtn" data-act="update">Atualiza&ccedil;&otilde;es: ${updateLabel()}</button>
     </div>
+    ${canSelfUpdate() ? '<div style="text-align:center;margin:-4px 0 10px"><button class="iconbtn" data-act="updatereset">usar a versão original do APK</button></div>' : ''}
     <div class="row"><button class="btn" data-act="cfgback">VOLTAR</button></div>
   `;
   ui.overlay.classList.remove("hidden");
