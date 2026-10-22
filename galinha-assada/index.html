@@ -455,14 +455,14 @@ function addScoreEntry(){
 const ONLINE_SERVER_DEFAULT = "https://iptv-srv.tail045fd4.ts.net/galinha";
 function onlineServer(){ return String(CFG.server || ONLINE_SERVER_DEFAULT).replace(/\/+$/, ""); }
 function onlineNick(){
-  if (!CFG.nick){ try { CFG.nick = (window.prompt("Apelido no ranking online:", "Player") || "Player").slice(0, 14); } catch (e) { CFG.nick = "Player"; } }
-  if (!CFG.nick || !CFG.nick.trim()) CFG.nick = "Player";
-  saveCfg();
-  return CFG.nick;
+  // nunca pergunta nada aqui: o prompt trava o jogo durante a partida.
+  // o apelido se define no CONFIG.
+  const n = String(CFG.nick || "").trim();
+  return n ? n.slice(0, 14) : "Player";
 }
-async function fetchOnline(url, opts){
+async function fetchOnline(url, opts, ms){
   const ctrl = new AbortController();
-  const timer = setTimeout(function(){ ctrl.abort(); }, 7000);
+  const timer = setTimeout(function(){ ctrl.abort(); }, ms || 7000);
   try { return await fetch(url, Object.assign({ signal: ctrl.signal }, opts || {})); }
   finally { clearTimeout(timer); }
 }
@@ -472,7 +472,7 @@ async function uploadScore(silencioso){
     const r = await fetchOnline(onlineServer() + "/api/scores", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nick: onlineNick(), score: score, diff: CFG.diff, level: level })
-    });
+    }, 20000);
     if (!r.ok) return;
     const d = await r.json();
     if (d && d.rank && !silencioso) toast("Ranking online: #" + d.rank, "#34d399");
@@ -3127,6 +3127,7 @@ function renderRanking(){
     </div>
     <div class="sub" style="opacity:.7">Recorde geral: ${fmt(globalBest())} &nbsp;&bull;&nbsp; Conquistas: ${Object.keys(ACH_UNLOCKED).length}/${ACH.length}</div>
     <div style="margin-top:8px;font-size:12px;opacity:.85">Ranking online (${DIFF[CFG.diff].label})</div>
+    ${(!CFG.nick || !String(CFG.nick).trim()) ? `<div style="font-size:11px;opacity:.55;margin-bottom:4px">Você entra como "Player": defina seu apelido no CONFIG.</div>` : ""}
     <div id="rankOnline" style="max-width:340px;margin:6px auto 10px;min-height:18px;font-size:12px;text-align:left;display:flex;flex-direction:column;gap:4px"></div>
     <div class="row">
       <button class="iconbtn" data-act="share">COMPARTILHAR</button>

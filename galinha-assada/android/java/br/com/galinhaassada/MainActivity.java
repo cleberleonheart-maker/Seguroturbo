@@ -129,9 +129,6 @@ public class MainActivity extends Activity {
             web.postDelayed(new Runnable() {
                 public void run() {
                     web.evaluateJavascript("String(typeof window.__galinha)", jsLog("hook"));
-                    web.evaluateJavascript(
-                            "fetch('" + onlineServer + "/health').then(r=>console.log('DIAG_GET_OK '+r.status)).catch(e=>console.log('DIAG_GET_ERRO '+e))",
-                            jsLog("fetch"));
                 }
             }, 6000);
         }
