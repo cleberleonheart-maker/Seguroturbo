@@ -99,13 +99,6 @@
   @media (max-width:340px){ .cfg-grid{grid-template-columns:1fr} }
   body.big-text .cfg-grid .iconbtn{font-size:14px;padding:11px 8px}
 
-  #pad{display:none;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,52px);gap:8px;justify-content:center}
-  #pad button{
-    border:1px solid rgba(255,255,255,.2);background:rgba(123,47,247,.28);color:#fff;
-    border-radius:14px;font-size:20px;font-family:inherit;box-shadow:0 4px 0 rgba(0,0,0,.35)
-  }
-  #pad button:active{background:rgba(192,38,211,.6);transform:translateY(3px)}
-  @media (pointer:coarse){#pad{display:grid}}
   footer{text-align:center;font-size:10px;opacity:.45;letter-spacing:1px}
 
   /* bolinha de controle no canto */
@@ -158,7 +151,6 @@
   /* telas largas / modo paisagem */
   #stage{outline:1px solid rgba(123,47,247,.28);border-radius:16px}
   @media (orientation: landscape) and (max-height: 560px){
-    #pad{display:none}
     footer{display:none}
     #app{padding:6px;gap:8px}
   }
@@ -225,12 +217,7 @@
     <div id="overlay"><div class="panel" id="panel"></div></div>
   </div>
 
-  <div id="pad">
-    <span></span><button data-dir="0" aria-label="cima">&#9650;</button><span></span>
-    <button data-dir="3" aria-label="esquerda">&#9664;</button><button data-dir="1" aria-label="direita">&#9654;</button><button data-dir="2" aria-label="baixo">&#9660;</button>
-  </div>
-
-  <footer>Bolinha no canto / analógico do controle / setas / WASD / swipe &nbsp;&bull;&nbsp; P pausa &nbsp;&bull;&nbsp; M som</footer>
+  <footer>Bolinha no canto / analógico do controle / setas do teclado / WASD / swipe &nbsp;&bull;&nbsp; P pausa &nbsp;&bull;&nbsp; M som</footer>
 </div>
 
 <div id="stick" role="application" aria-label="Controle da galinha"><div id="knob"></div></div>
@@ -1523,7 +1510,7 @@ function renderHelp(){
       <div><kbd>&#8593;</kbd><kbd>&#8594;</kbd><kbd>&#8595;</kbd><kbd>&#8592;</kbd> ou <kbd>WASD</kbd></div>
       <div><kbd>P</kbd> pausa</div>
       <div><kbd>M</kbd> som</div>
-      <div>arraste ou use os bot&otilde;es</div>
+      <div>arraste na tela para a galinha ir</div>
     </div>
     <div class="row" style="margin-top:10px"><button class="btn" data-act="helpback">VOLTAR</button></div>
   `);
@@ -2988,11 +2975,6 @@ window.addEventListener("keydown", (e) => {
     if (state === "title" || state === "over") startGame();
     else if (state === "paused") resumeGame();
   }
-});
-
-document.getElementById("pad").addEventListener("click", (e) => {
-  const b = e.target.closest("[data-dir]");
-  if (b) pressDir(Number(b.dataset.dir));
 });
 
 /* ---- bolinha de controle no canto (joystick) ---- */
