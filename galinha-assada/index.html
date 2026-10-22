@@ -466,7 +466,7 @@ async function fetchOnline(url, opts){
   try { return await fetch(url, Object.assign({ signal: ctrl.signal }, opts || {})); }
   finally { clearTimeout(timer); }
 }
-async function uploadScore(){
+async function uploadScore(silencioso){
   if (score <= 0) return;
   try {
     const r = await fetchOnline(onlineServer() + "/api/scores", {
@@ -475,7 +475,7 @@ async function uploadScore(){
     });
     if (!r.ok) return;
     const d = await r.json();
-    if (d && d.rank) toast("Ranking online: #" + d.rank, "#34d399");
+    if (d && d.rank && !silencioso) toast("Ranking online: #" + d.rank, "#34d399");
   } catch (e) {}
 }
 async function loadOnlineRank(){
@@ -683,6 +683,7 @@ const MAX_LEVEL = 30;
 let streak = Number(store.get(DAY_KEY + "_streak") || 0);
 let lastDay = store.get(DAY_KEY + "_last") || "";
 let score = 0, lives = 3, level = 1, best = 0, extraAt = 1000;
+let ultimoUpload = 0;
 let mode = "scatter", modeTimer = 7, frightTimer = 0, frightCombo = 0;
 let turbo = 0, pelletEat = 0, countBeep = 0;
 let chain = 0, chainT = 0, chainMult = 1;
@@ -1254,6 +1255,9 @@ function refreshAll(){ refreshScore(); refreshStats(); }
 function addScore(n){
   score += n;
   bumpBest();
+  // manda o placar durante a partida: no modo Zen a partida nao acaba sozinha,
+  // entao sem isso a pontuacao so subiria para o ranking no fim de jogo
+  if (score - ultimoUpload >= 10000){ ultimoUpload = score; uploadScore(true); }
   while (extraAt > 0 && score >= extraAt){
     extraAt += 2000;
     lives++;
@@ -1271,6 +1275,7 @@ function startGame(){
   firstRun = PROG.games === 0;
   tips = {};
   score = 0; lives = DIFF[CFG.diff].lives; level = 1; extraAt = 1000;
+  ultimoUpload = 0;
   PROG.games++; saveProg(); checkAch();
   newLevel(true);
 }
@@ -1377,7 +1382,7 @@ function gameOver(){
   bumpBest();
   refreshAll();
   addScoreEntry();
-  try { uploadScore(); } catch (e) {}
+  try { if (score > ultimoUpload){ ultimoUpload = score; uploadScore(false); } } catch (e) {}
   const isNew = score > 0 && score > prevBest;
   clearRun();
   checkAch();
@@ -1391,6 +1396,8 @@ function gameOver(){
 
 function titleScreen(){
   state = "title";
+  // se saiu da partida com pontos (por exemplo no modo Zen), manda o placar
+  if (score > 0 && score > ultimoUpload){ ultimoUpload = score; uploadScore(false); }
   const run = loadRun();
   const rec = bestByDiff[CFG.diff] || 0;
   if (!mst || mst.day !== dayKey()) mstLoad();
@@ -3683,6 +3690,7 @@ window.__galinha = {
   get cloneAt(){ return cloneAt; },
   setLives(n){ lives = n; refreshStats(); },
   setLevel(n){ level = n; newLevel(false); },
+  addScore(n){ addScore(n); },
   start(){ startGame(); },
   die(){ die(); },
   step(dt){ update(dt); },

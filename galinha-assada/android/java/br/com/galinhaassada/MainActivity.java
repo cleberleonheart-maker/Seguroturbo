@@ -88,6 +88,35 @@ public class MainActivity extends Activity {
             public void onConsoleMessage(String message, int lineNumber, String sourceID) {
                 Log.d("GalinhaJS", message + "  (" + sourceID + ":" + lineNumber + ")");
             }
+
+            @Override
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue,
+                                      android.webkit.JsPromptResult result) {
+                // o WebView do Android nao tem prompt nativo: sem isto o jogo
+                // nunca consegue pedir o apelido do ranking online
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        android.widget.EditText input = new android.widget.EditText(MainActivity.this);
+                        input.setSingleLine(true);
+                        input.setText(defaultValue == null ? "" : defaultValue);
+                        new android.app.AlertDialog.Builder(MainActivity.this)
+                                .setTitle(message == null ? "" : message)
+                                .setView(input)
+                                .setPositiveButton("OK", new android.content.DialogInterface.OnClickListener() {
+                                    public void onClick(android.content.DialogInterface d, int w) {
+                                        result.confirm(input.getText().toString());
+                                    }
+                                })
+                                .setNegativeButton("Cancelar", new android.content.DialogInterface.OnClickListener() {
+                                    public void onClick(android.content.DialogInterface d, int w) {
+                                        result.cancel();
+                                    }
+                                })
+                                .show();
+                    }
+                });
+                return true;
+            }
         });
         bridge = new GamepadBridge();
         web.addJavascriptInterface(bridge, "AndroidGamepad");
@@ -101,7 +130,7 @@ public class MainActivity extends Activity {
                 public void run() {
                     web.evaluateJavascript("String(typeof window.__galinha)", jsLog("hook"));
                     web.evaluateJavascript(
-                            "fetch('" + onlineServer + "/health').then(r=>r.text()).then(t=>'OK:'+t).catch(e=>'ERRO:'+e)",
+                            "fetch('" + onlineServer + "/health').then(r=>console.log('DIAG_GET_OK '+r.status)).catch(e=>console.log('DIAG_GET_ERRO '+e))",
                             jsLog("fetch"));
                 }
             }, 6000);
