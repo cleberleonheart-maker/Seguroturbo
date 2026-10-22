@@ -216,6 +216,7 @@
     <div class="stat"><i>Recorde</i><b id="best">0</b></div>
     <div class="stat"><i>Fase</i><b id="level">1</b></div>
     <div class="stat"><i>Vidas</i><div id="lives"></div></div>
+    <button class="iconbtn" id="pausebtn" style="font-size:11px;padding:8px 10px;border-color:rgba(96,165,250,.6);color:#93c5fd" aria-label="pausar">PAUSA</button>
     <button class="iconbtn" id="gpdbgbtn" style="font-size:11px;padding:8px 10px;border-color:rgba(245,158,11,.6);color:#fcd34d" aria-label="diagnostico do controle">CTRL</button>
   </header>
 
@@ -467,7 +468,7 @@ const ACH = [
   { id:"ghost1",   name:"Gato no Espeto",   desc:"Coma um gato",                  color:"#38bdf8", got:()=> PROG.ghosts >= 1 },
   { id:"ghost4",   name:"Buffet de Gatos",  desc:"Coma 3 gatos com uma pimenta",  color:"#22d3ee", got:()=> PROG.bestFrightCombo >= 3 },
   { id:"fish10",   name:"Pescador",         desc:"Coma 10 peixes",                color:"#38bdf8", got:()=> PROG.fish >= 10 },
-  { id:"combo5",   name:"Combo Master",     desc:"Chegue ao combo x5",            color:"#facc15", got:()=> PROG.maxCombo >= 5 },
+  { id:"combo5",   name:"Combo Mestre",     desc:"Chegue ao combo x5",            color:"#facc15", got:()=> PROG.maxCombo >= 5 },
   { id:"lvl5",     name:"Aquecendo o Forno",desc:"Chegue à fase 5",               color:"#f97316", got:()=> PROG.maxLevel >= 5 },
   { id:"lvl10",    name:"Chef de Cozinha",  desc:"Chegue à fase 10",              color:"#f43f5e", got:()=> PROG.maxLevel >= 10 },
   { id:"boss1",    name:"Domador de Gatos", desc:"Derrote um gato chefe",         color:"#a16207", got:()=> PROG.bossKills >= 1 },
@@ -520,7 +521,7 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.4";
+const GAME_BUILD = "2026-10-22.5";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -918,8 +919,20 @@ const ui = {
   lives: document.getElementById("lives"),
   overlay: document.getElementById("overlay"),
   panel: document.getElementById("panel"),
-  recipe: document.getElementById("recipeBar")
+  recipe: document.getElementById("recipeBar"),
+  pauseBtn: document.getElementById("pausebtn")
 };
+
+let pauseBtnShown = null;
+function syncPauseBtn(){
+  const on = state === "play" || state === "ready";
+  if (on === pauseBtnShown) return;
+  pauseBtnShown = on;
+  ui.pauseBtn.style.display = on ? "" : "none";
+}
+ui.pauseBtn.addEventListener("click", () => {
+  if (state === "paused") resumeGame(); else pauseGame();
+});
 
 /* ============================================================
    5. LABIRINTO
@@ -1464,10 +1477,10 @@ const DAILY_REWARDS = [
   { name: "VIDA EXTRA", color: "#f59e0b", give: () => { lives++; refreshStats(); Sound.extra(); } },
   { name: "TURBO CURTO", color: "#22d3ee", give: () => { turbo = Math.max(turbo, 6); } },
   { name: "PONTOS +500", color: "#fde68a", give: () => { addScore(500); } },
-  { name: "FRIGHT LONGO", color: "#93c5fd", give: () => { frightTimer = Math.max(frightTimer, 8); Sound.power(); } },
+  { name: "SUSTO LONGO", color: "#93c5fd", give: () => { frightTimer = Math.max(frightTimer, 8); Sound.power(); } },
   { name: "PONTOS +1000", color: "#facc15", give: () => { addScore(1000); } },
   { name: "VIDAS +2", color: "#a3e635", give: () => { lives += 2; refreshStats(); Sound.extra(); } },
-  { name: "SKIN DO GATO!", color: "#a16207", give: () => { CFG.skin = "cat"; saveCfg(); } }
+  { name: "VISUAL DO GATO!", color: "#a16207", give: () => { CFG.skin = "cat"; saveCfg(); } }
 ];
 
 
@@ -1671,7 +1684,7 @@ function titleScreen(){
       <button class="iconbtn" data-act="cfg">CONFIG</button>
       <button class="iconbtn" data-act="mute">SOM: ${Sound.muted ? "OFF" : "ON"}</button>
       <button class="iconbtn" data-act="gp">CONTROLE</button>
-      <button class="iconbtn" data-act="cheats">CHEATS</button>
+      <button class="iconbtn" data-act="cheats">TRAPAÇAS</button>
       <button class="iconbtn" data-act="stats">DADOS</button>
       <button class="iconbtn" data-act="save">SALVAR</button>
       <button class="iconbtn" data-act="snap">FOTO</button>
@@ -1695,11 +1708,11 @@ function renderHelp(){
       <span style="color:#ef4444">&#9679; pimenta = 50</span> (assusta os gatos + turbo) &nbsp;&bull;&nbsp;
       <span style="color:#facc15">&#9679; fruta bônus</span> (dourada 500 &bull; ovo 750 &bull; estrela 1000 &bull; coração +1 vida)
     </div>
-    <div class="legend" style="opacity:.7">power-ups: <span style="color:#c084fc">&#9679; ímã</span> &nbsp;<span style="color:#60a5fa">&#9679; escudo</span> &nbsp;<span style="color:#2dd4bf">&#9679; tempo lento</span> &nbsp;<span style="color:#fde047">&#9679; moeda</span> &nbsp;<span style="color:#f87171">&#9679; pimenta mágica</span> &nbsp;<span style="color:#93c5fd">&#9679; relógio</span> (gatos parados) &nbsp;<span style="color:#f8fafc">&#9679; farol</span> (afasta os gatos) &nbsp;&bull;&nbsp; combo de açaí até x5</div>
+    <div class="legend" style="opacity:.7">itens de poder: <span style="color:#c084fc">&#9679; ímã</span> &nbsp;<span style="color:#60a5fa">&#9679; escudo</span> &nbsp;<span style="color:#2dd4bf">&#9679; tempo lento</span> &nbsp;<span style="color:#fde047">&#9679; moeda</span> &nbsp;<span style="color:#f87171">&#9679; pimenta mágica</span> &nbsp;<span style="color:#93c5fd">&#9679; relógio</span> (gatos parados) &nbsp;<span style="color:#f8fafc">&#9679; farol</span> (afasta os gatos) &nbsp;&bull;&nbsp; combo de açaí até x5</div>
     <div class="legend" style="opacity:.85"><b style="color:#facc15">receita da fase:</b> a barrinha abaixo do placar mostra o objetivo extra (assar peixe, comer açaí, fritar gato ou derrubar o chefe). Fazer a receita vale <b>+500 pontos</b>.</div>
     <div class="keys">
       <div><kbd>&#8593;</kbd><kbd>&#8594;</kbd><kbd>&#8595;</kbd><kbd>&#8592;</kbd> ou <kbd>WASD</kbd></div>
-      <div><kbd>P</kbd> pausa</div>
+      <div><kbd>P</kbd> pausa (ou o botão PAUSA no topo)</div>
       <div><kbd>M</kbd> som</div>
       <div>arraste na tela para a galinha ir</div>
     </div>
@@ -1729,7 +1742,7 @@ function renderPause(){
       <button class="iconbtn" data-act="daily">PRESENÇA</button>
       <button class="iconbtn" data-act="ach">CONQUISTAS</button>
       <button class="iconbtn" data-act="rank">RANKING</button>
-      <button class="iconbtn" data-act="cheats">CHEATS</button>
+      <button class="iconbtn" data-act="cheats">TRAPAÇAS</button>
       <button class="iconbtn" data-act="cfg">CONFIG</button>
       <button class="iconbtn" data-act="gp">CONTROLE</button>
     </div>
@@ -3687,7 +3700,7 @@ function openCheats(){
   cfgBack = state;
   const btn = (c, label, hl) => `<button class="iconbtn" data-act="cheat" data-c="${c}" ${hl ? 'style="border-color:#a3e635"' : ""}>${label}</button>`;
   ui.panel.innerHTML = `
-    <h1>CHEATS<em>teste rápido</em></h1>
+    <h1>TRAPAÇAS<em>teste rápido</em></h1>
     <div class="sub" style="max-width:340px;margin:8px auto">Ação imediata — sem salvar conquistas roubadas, só pra testar.</div>
     <div class="row" style="max-width:360px;margin:6px auto;flex-wrap:wrap;justify-content:center">
       ${btn("lvl1", "FASE 1")}
@@ -3697,7 +3710,7 @@ function openCheats(){
       ${btn("nextlv", "PRÓXIMA FASE")}
       ${btn("life", "+VIDA")}
       ${btn("pts", "+1000")}
-      ${btn("power", "POWER-UP")}
+      ${btn("power", "ITEM DE PODER")}
       ${btn("chili", "PIMENTA")}
       ${btn("clock", "RELÓGIO")}
       ${btn("farol", "FAROL")}
@@ -4051,6 +4064,7 @@ function frame(now){
   pollGamepad();
   if (state === "title") tGlobal += dt;
   else if (state !== "paused" && state !== "over") update(dt);
+  syncPauseBtn();
   render();
   requestAnimationFrame(frame);
 }
@@ -4093,7 +4107,9 @@ window.__galinha = {
   checkUpdates, appVersionCode, openSettings,
   checkContentUpdate, applyContentUpdate, autoContentUpdate, titleScreen,
   SKINS, skinById, skinUnlocked, skinPal, setSkin,
-  collectPowerup, get freezeTimer(){ return freezeTimer; }, get farolTimer(){ return farolTimer; },
+  collectPowerup,
+  get freezeTimer(){ return freezeTimer; }, set freezeTimer(v){ freezeTimer = v; },
+  get farolTimer(){ return farolTimer; }, set farolTimer(v){ farolTimer = v; },
   get skin(){ return CFG.skin; },
   get prog(){ return PROG; },
   get ghostSpeed(){ return ghostSpeed(); },

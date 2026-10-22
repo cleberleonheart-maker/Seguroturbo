@@ -98,6 +98,8 @@ for (let i = 0; i < 5; i++) g.step(0.05);
 check("relogio congela os gatos", cat.r === pos0[0] && cat.c === pos0[1] && cat.prog === pos0[2],
   JSON.stringify([cat.r, cat.c, cat.prog]) + " era " + JSON.stringify(pos0));
 
+g.freezeTimer = 0;   // o relogio do teste anterior ainda congelava os gatos
+
 // 8) farol: protege e afasta os gatos
 const antesVidas = g.lives;
 cat.r = g.player.r; cat.c = g.player.c; cat.prog = 0;   // gato em cima da galinha
@@ -105,9 +107,15 @@ g.collectPowerup("farol");
 check("farol liga a luz", g.farolTimer > 0, g.farolTimer);
 g.step(0.1);
 check("farol protege a galinha", g.state === "play" && g.lives === antesVidas, g.state + " vidas " + g.lives);
-g.step(0.8);
-const d = Math.abs(cat.r - g.player.r) + Math.abs(cat.c - g.player.c);
-check("farol afasta o gato", d >= 1, "distancia " + d);
+let maxD = 0;
+for (let i = 0; i < 12 && g.farolTimer > 0; i++){
+  g.step(0.1);
+  maxD = Math.max(maxD, Math.abs(cat.r - g.player.r) + Math.abs(cat.c - g.player.c));
+}
+check("farol afasta o gato", maxD >= 1,
+  "distancia maxima " + maxD + " | cat=" + JSON.stringify({st:cat.state,r:cat.r,c:cat.c,dir:cat.dir,want:cat.want,prog:cat.prog,sp:cat.speed}) +
+  " | player=" + JSON.stringify({r:g.player.r,c:g.player.c,st:g.state}) +
+  " | farol=" + g.farolTimer + " freeze=" + g.freezeTimer + " diff=" + g.CFG.diff);
 
 // 9) skins
 check("a skin padrao e a classica", g.skin === "classica" && g.skinUnlocked(g.skinById("classica")), g.skin);
