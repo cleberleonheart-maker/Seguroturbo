@@ -520,9 +520,13 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-21.3";
+const GAME_BUILD = "2026-10-21.4";
 const GAME_CONTENT_URLS = [
+  // API do GitHub: cache curtinho (1 min), e a que ve a novelty mais rapido
+  "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/contents/galinha-assada/index.html?ref=main",
+  // Pages do repo F-Droid (o mesmo arquivo, outra CDN)
   "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/galinha/index.html",
+  // raw do GitHub
   "https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html"
 ];
 let updateInfo = null;
@@ -548,6 +552,17 @@ function buildOf(text){
   const m = /GAME_BUILD\s*=\s*["']([^"']+)["']/.exec(String(text || ""));
   return m ? m[1] : "";
 }
+function decodeContent(txt){
+  const t = String(txt || "");
+  // a API do GitHub devolve JSON com o arquivo em base64
+  if (t.charAt(0) === "{" && t.indexOf('"content"') > 0){
+    try {
+      const d = JSON.parse(t);
+      if (d && d.encoding === "base64" && d.content) return atob(d.content.replace(/\s/g, ""));
+    } catch (e) { }
+  }
+  return t;
+}
 async function fetchGameContent(){
   // duas fontes: o cache de cada uma e separado, entao pegamos a mais nova
   const res = await Promise.allSettled(GAME_CONTENT_URLS.map(function(u){
@@ -557,7 +572,7 @@ async function fetchGameContent(){
   let melhor = null;
   for (let i = 0; i < res.length; i++){
     if (res[i].status !== "fulfilled") continue;
-    const txt = res[i].value;
+    const txt = decodeContent(res[i].value);
     const b = buildOf(txt);
     if (!b) continue;
     if (!melhor || b > melhor.build) melhor = { build: b, text: txt, url: GAME_CONTENT_URLS[i] };
