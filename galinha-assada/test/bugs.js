@@ -91,11 +91,12 @@ for (let lv = 1; lv <= 30; lv++) {
   const realFetch = global.fetch;
   global.AndroidUpdate = { saveContent(){}, resetContent(){} };   // ponte do app
   let urls = [];
+  let shaAtual = "sha-novo-1";
   global.fetch = async function(u){
     urls.push(String(u));
     const s = String(u);
     if (s.indexOf("api.github.com") >= 0 && s.indexOf("commits") >= 0)
-      return { ok:true, status:200, json: async () => [{ sha:"sha-novo-1" }] };
+      return { ok:true, status:200, json: async () => [{ sha:shaAtual }] };
     if (s.indexOf("api.github.com") >= 0 && s.indexOf("contents") >= 0){
       const novo = '<html><script>const GAME_BUILD = "9999-01-01.1";</' + 'script></html>';
       return { ok:true, status:200, text: async () => JSON.stringify({ encoding:"base64", content: btoa(novo) }) };
@@ -112,6 +113,17 @@ for (let lv = 1; lv <= 30; lv++) {
   const upd2 = await g.checkContentUpdate();
   check("sem novidade, o atualizador nao baixa o jogo", urls.filter(u => u.indexOf("contents") >= 0).length === 0, urls.join(" | "));
   check("sem novidade, nao retorna nada", upd2 === null, JSON.stringify(upd2));
+  // 8) a atualizacao automatica nao pode recarregar no meio da partida
+  let salvos = 0;
+  global.AndroidUpdate = { saveContent(){ salvos++; } };
+  shaAtual = "sha-novo-2";                 // o repositorio mudou de novo
+  g.start();                                   // jogo comecado: state = ready/play
+  const auto1 = await g.autoContentUpdate();
+  check("a atualizacao automatica espera a partida terminar", auto1 === false && salvos === 0, "salvou " + salvos);
+  g.titleScreen();                          // volta pro menu
+  const auto2 = await g.autoContentUpdate();
+  check("no menu, a atualizacao automatica aplica", auto2 === true && salvos === 1, "salvou " + salvos);
+
   global.fetch = realFetch;
   delete global.AndroidUpdate;
 

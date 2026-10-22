@@ -520,7 +520,7 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.1";
+const GAME_BUILD = "2026-10-22.2";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -3031,19 +3031,19 @@ if ("serviceWorker" in navigator && location.protocol !== "file:"){
 }
 
 // atualiza o jogo sozinho ao abrir o app (sem prompt e sem instalar nada)
-window.addEventListener("load", () => {
-  setTimeout(async function(){
-    try {
-      if (!canSelfUpdate()) return;
-      if (state === "play" || state === "paused") return;   // nao mexe no meio da partida
-      const c = await checkContentUpdate();
-      if (!c) return;
-      // a verificacao demora um pouco: se o jogador comecou a jogar, espera a proxima abertura
-      if (state === "play" || state === "paused" || state === "ready") return;
-      window.AndroidUpdate.saveContent(c.text);   // o app salva e recarrega
-    } catch (e) { }
-  }, 2500);
-});
+async function autoContentUpdate(){
+  try {
+    if (!canSelfUpdate()) return false;
+    if (state === "play" || state === "paused" || state === "ready") return false;   // nao mexe no meio da partida
+    const c = await checkContentUpdate();
+    if (!c) return false;
+    // a verificacao demora um pouco: se o jogador comecou a jogar, espera a proxima abertura
+    if (state === "play" || state === "paused" || state === "ready") return false;
+    window.AndroidUpdate.saveContent(c.text);   // o app salva e recarrega
+    return true;
+  } catch (e){ return false; }
+}
+window.addEventListener("load", () => { setTimeout(autoContentUpdate, 2500); });
 
 // avisa quando o jogo foi atualizado direto no app (sem reinstalar)
 window.addEventListener("load", () => {
@@ -3974,7 +3974,7 @@ window.__galinha = {
   setDiff(d){ CFG.diff = d; best = bestByDiff[d] || 0; refreshAll(); },
   cfgCycle(k){ cfgCycle(k); },
   checkUpdates, appVersionCode, openSettings,
-  checkContentUpdate, applyContentUpdate,
+  checkContentUpdate, applyContentUpdate, autoContentUpdate, titleScreen,
   get ghostSpeed(){ return ghostSpeed(); },
   get playerSpeed(){ return playerSpeed(); },
   get recipe(){ return recipe; },
