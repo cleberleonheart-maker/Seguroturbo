@@ -86,7 +86,38 @@ for (let lv = 1; lv <= 30; lv++) {
   anterior = g.ghostSpeed;
 }
 
-// 7) o atualizador: probe barato, URL valida e download do jogo novo
+// 7) relogio: congela os gatos no lugar
+g.start();
+g.step(3.4);                       // termina a contagem: state = play
+const cat = g.ghosts[0];
+cat.active = true; cat.state = "chase"; cat.releaseAt = 0;
+g.collectPowerup("clock");
+check("relogio liga o gelo", g.freezeTimer > 0, g.freezeTimer);
+const pos0 = [cat.r, cat.c, cat.prog];
+for (let i = 0; i < 5; i++) g.step(0.05);
+check("relogio congela os gatos", cat.r === pos0[0] && cat.c === pos0[1] && cat.prog === pos0[2],
+  JSON.stringify([cat.r, cat.c, cat.prog]) + " era " + JSON.stringify(pos0));
+
+// 8) farol: protege e afasta os gatos
+const antesVidas = g.lives;
+cat.r = g.player.r; cat.c = g.player.c; cat.prog = 0;   // gato em cima da galinha
+g.collectPowerup("farol");
+check("farol liga a luz", g.farolTimer > 0, g.farolTimer);
+g.step(0.1);
+check("farol protege a galinha", g.state === "play" && g.lives === antesVidas, g.state + " vidas " + g.lives);
+g.step(0.8);
+const d = Math.abs(cat.r - g.player.r) + Math.abs(cat.c - g.player.c);
+check("farol afasta o gato", d >= 1, "distancia " + d);
+
+// 9) skins
+check("a skin padrao e a classica", g.skin === "classica" && g.skinUnlocked(g.skinById("classica")), g.skin);
+check("skin bloqueada nao entra", g.setSkin("fantasma") === false && g.skin === "classica", g.skin);
+g.prog.clones = 5;
+check("skin desbloqueada entra", g.setSkin("fantasma") === true && g.skin === "fantasma", g.skin);
+check("a skin troca a paleta", !!g.skinPal() && g.skinPal().g1 === "#cbd5e1", JSON.stringify(g.skinPal()));
+g.setSkin("classica");
+
+// 10) o atualizador: probe barato, URL valida e download do jogo novo
 (async function(){
   const realFetch = global.fetch;
   global.AndroidUpdate = { saveContent(){}, resetContent(){} };   // ponte do app

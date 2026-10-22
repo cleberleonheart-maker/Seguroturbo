@@ -336,7 +336,7 @@ const DIFF = {
 function isZen(){ return CFG.diff === "zen"; }
 const CFG = Object.assign(
   { stick: true, side: "left", size: "normal", vol: 0.7, muted: false, vibrate: true, diff: "normal",
-    reduceMotion: false, contrast: false, bigText: false, nick: null, server: null },
+    reduceMotion: false, contrast: false, bigText: false, nick: null, server: null, skin: "classica" },
   readCfg()
 );
 const DIFF_KEYS = ["easy", "normal", "hard", "zen"];
@@ -520,7 +520,7 @@ const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.3";
+const GAME_BUILD = "2026-10-22.4";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -895,6 +895,7 @@ const Sound = {
 let maze, food, pepper, fish, popups, feathers, ghosts, player;
 let fruit = null, fruitSpawned = false, sparks = [], shake = 0, trail = [];
 let powerup = null, powerAt = 0, magnetTimer = 0, magnetAcc = 0, slowTimer = 0, shield = 0;
+let freezeTimer = 0, farolTimer = 0;   // relogio e farol
 let deathsThisLevel = 0, bossLevel = false;
 let secretBoss = null, cloneAt = 0;
 let bonus = false;
@@ -1237,7 +1238,7 @@ function buildLevel(){
   frightTimer = 0; frightCombo = 0; turbo = 0; pelletEat = 0;
   chain = 0; chainT = 0; chainMult = 1; fruit = null; fruitSpawned = false;
   mode = "scatter"; modeTimer = 7;
-  powerup = null; powerAt = clock + (bonus ? 4 : 6); magnetTimer = 0; magnetAcc = 0; slowTimer = 0; shield = 0;
+  powerup = null; powerAt = clock + (bonus ? 4 : 6); magnetTimer = 0; magnetAcc = 0; slowTimer = 0; shield = 0; freezeTimer = 0; farolTimer = 0;
   deathsThisLevel = 0;
   bossLevel = !bonus && level % 5 === 0;
 
@@ -1355,7 +1356,8 @@ function updatePowerup(){
   if (!cand.length) return;
   const p = cand[(Math.random() * cand.length) | 0];
   const r = Math.random();
-  const kinds = r < 0.26 ? "magnet" : r < 0.50 ? "shield" : r < 0.72 ? "slow" : r < 0.88 ? "coin" : "chili";
+  const kinds = r < 0.22 ? "magnet" : r < 0.42 ? "shield" : r < 0.58 ? "slow" : r < 0.72 ? "coin"
+    : r < 0.85 ? "chili" : r < 0.94 ? "clock" : "farol";
   powerup = { r: p[0], c: p[1], kind: kinds, born: clock, left: 12 };
 }
 
@@ -1371,6 +1373,10 @@ function collectPowerup(kind){
     popups.push({ r: player.r, c: player.c, text: "+200 MOEDA", t: 0, color: "#fde047" }); }
   else if (kind === "chili"){ Sound.power(); frightTimer = Math.max(frightTimer, 8) * DIFF[CFG.diff].fright; turbo = Math.max(turbo, 5); frightCombo = 0; PROG.chilis++;
     popups.push({ r: player.r, c: player.c, text: "PIMENTA MÁGICA!", t: 0, color: "#f87171" }); }
+  else if (kind === "clock"){ Sound.powerup(); freezeTimer = 3.2; PROG.clocks = (PROG.clocks || 0) + 1;
+    popups.push({ r: player.r, c: player.c, text: "RELÓGIO — GATOS PARADOS!", t: 0, color: "#93c5fd" }); }
+  else if (kind === "farol"){ Sound.powerup(); farolTimer = 4.5; PROG.farols = (PROG.farols || 0) + 1;
+    popups.push({ r: player.r, c: player.c, text: "FAROL ACESO!", t: 0, color: "#f8fafc" }); }
   saveProg(); checkAch();
 }
 
@@ -1425,7 +1431,7 @@ function respawn(){
     g.releaseAt = clock + (i === 0 ? 0.4 : 2.5 + (i - 1) * 5);
   });
   frightTimer = 0; frightCombo = 0; turbo = 0; mode = "scatter"; modeTimer = 7;
-  magnetTimer = 0; slowTimer = 0; shield = 0;
+  magnetTimer = 0; slowTimer = 0; shield = 0; freezeTimer = 0; farolTimer = 0;
   state = "ready"; stateTimer = 3.0; countBeep = 0;
   hideOverlay();
   saveRun();
@@ -1689,7 +1695,7 @@ function renderHelp(){
       <span style="color:#ef4444">&#9679; pimenta = 50</span> (assusta os gatos + turbo) &nbsp;&bull;&nbsp;
       <span style="color:#facc15">&#9679; fruta bônus</span> (dourada 500 &bull; ovo 750 &bull; estrela 1000 &bull; coração +1 vida)
     </div>
-    <div class="legend" style="opacity:.7">power-ups: <span style="color:#c084fc">&#9679; ímã</span> &nbsp;<span style="color:#60a5fa">&#9679; escudo</span> &nbsp;<span style="color:#2dd4bf">&#9679; tempo lento</span> &nbsp;<span style="color:#fde047">&#9679; moeda</span> &nbsp;<span style="color:#f87171">&#9679; pimenta mágica</span> &nbsp;&bull;&nbsp; combo de açaí até x5</div>
+    <div class="legend" style="opacity:.7">power-ups: <span style="color:#c084fc">&#9679; ímã</span> &nbsp;<span style="color:#60a5fa">&#9679; escudo</span> &nbsp;<span style="color:#2dd4bf">&#9679; tempo lento</span> &nbsp;<span style="color:#fde047">&#9679; moeda</span> &nbsp;<span style="color:#f87171">&#9679; pimenta mágica</span> &nbsp;<span style="color:#93c5fd">&#9679; relógio</span> (gatos parados) &nbsp;<span style="color:#f8fafc">&#9679; farol</span> (afasta os gatos) &nbsp;&bull;&nbsp; combo de açaí até x5</div>
     <div class="legend" style="opacity:.85"><b style="color:#facc15">receita da fase:</b> a barrinha abaixo do placar mostra o objetivo extra (assar peixe, comer açaí, fritar gato ou derrubar o chefe). Fazer a receita vale <b>+500 pontos</b>.</div>
     <div class="keys">
       <div><kbd>&#8593;</kbd><kbd>&#8594;</kbd><kbd>&#8595;</kbd><kbd>&#8592;</kbd> ou <kbd>WASD</kbd></div>
@@ -1744,6 +1750,8 @@ function showOverlay(html, keepSiren){
 function hideOverlay(){ ui.overlay.classList.add("hidden"); }
 
 ui.overlay.addEventListener("click", (ev) => {
+  const sk = ev.target.closest("[data-skinset]");
+  if (sk){ if (setSkin(sk.dataset.skinset)) renderSkins(); return; }
   const cf = ev.target.closest("[data-cfg]");
   if (cf){ cfgCycle(cf.dataset.cfg); return; }
   const btn = ev.target.closest("[data-act]");
@@ -1755,6 +1763,7 @@ ui.overlay.addEventListener("click", (ev) => {
   else if (act === "title") titleScreen();
   else if (act === "resume") resumeGame();
   else if (act === "install") doInstall();
+  else if (act === "skins") renderSkins();
   else if (act === "help") renderHelp();
   else if (act === "helpback") titleScreen();
   else if (act === "update") checkUpdates();
@@ -1902,6 +1911,7 @@ function ghostDecide(g){
     setWantToGoal(g, g.state === "eaten" ? HOUSE_CENTER : EXIT_TILE);
     return;
   }
+  if (farolTimer > 0 && Math.abs(g.r - player.r) + Math.abs(g.c - player.c) <= 6){ flee(g); return; }  // farol empurra
   if (g.boss){ setWantToGoal(g, [player.r, player.c]); return; }
   if (scared(g)){ flee(g); return; }                 // assustado: foge com estrategia
   if (mode === "rand"){ wander(g); return; }         // fase media+: descanso com personalidade
@@ -1911,6 +1921,7 @@ function ghostDecide(g){
 function updateGhost(g, dt){
   if (!g.active) return;
   if (g.state === "leaving" && clock < g.releaseAt) return;
+  if (freezeTimer > 0){ g.speed = 0; g.who = (g.state === "leaving" || g.state === "eaten") ? "ghostLeave" : "ghost"; return; }  // relogio
 
   const fr = scared(g);
   g.baseSpeed = ghostSpeed();
@@ -2062,6 +2073,8 @@ function update(dt){
     }
   }
   if (slowTimer > 0) slowTimer = Math.max(0, slowTimer - dt);
+  if (freezeTimer > 0) freezeTimer = Math.max(0, freezeTimer - dt);
+  if (farolTimer > 0) farolTimer = Math.max(0, farolTimer - dt);
 
   // pimenta
   if (pepper){
@@ -2132,6 +2145,7 @@ function update(dt){
   const pp = entPos(player);
   for (const g of ghosts){
     if (!g.active || g.state === "eaten" || g.state === "leaving") continue;
+    if (farolTimer > 0) continue;   // a luz do farol afasta os gatos
     const gp = entPos(g);
     const dx = gp.x - pp.x, dy = gp.y - pp.y;
     const hitR = g.boss ? T * 0.72 : T * 0.55;
@@ -2326,11 +2340,63 @@ function drawChicken(x, y, rot, R, opts){
 
   ctx.save();
   ctx.translate(x, y);
-  drawChickenBody(ctx, rot, R, opts.wobble || 0);
+  drawChickenBody(ctx, rot, R, opts.wobble || 0, opts.pal);
   ctx.restore();
 }
 
 // boss secreto: o clone corrompido da galinha assada (mesma silhueta, cores sombrias + aura)
+// ---- skins da galinha (desbloqueadas jogando) ----
+const SKINS = [
+  { id: "classica", name: "Clássica",  desc: "a original",
+    need: () => true, pal: null },
+  { id: "dourada",  name: "Dourada",   desc: "conclua 5 fases",
+    need: p => (p.clears || 0) >= 5,
+    pal: { bone: "#fff7cc", g0: "#fffbe6", g1: "#fbbf24", g2: "#b45309",
+           line: "#78350f", wing: "rgba(180,83,9,.4)", wingEdge: "rgba(120,53,15,.6)",
+           grill: "rgba(180,83,9,.35)", shine: "rgba(255,255,255,.55)",
+           beak: "#f59e0b", beakEdge: "#92400e" } },
+  { id: "sombria",  name: "Sombria",   desc: "derrote 8 chefes",
+    need: p => (p.bossKills || 0) >= 8,
+    pal: { bone: "#cbd5e1", g0: "#94a3b8", g1: "#475569", g2: "#1e293b",
+           line: "#0f172a", wing: "rgba(30,41,59,.68)", wingEdge: "rgba(2,6,23,.65)",
+           grill: "rgba(0,0,0,.5)", shine: "rgba(255,255,255,.2)",
+           beak: "#dc2626", beakEdge: "#7f1d1d", eye: "#fee2e2", pupil: "#b91c1c" } },
+  { id: "gelo",     name: "Gelo",      desc: "use 12 lentidões ou relógios",
+    need: p => ((p.slows || 0) + (p.clocks || 0)) >= 12,
+    pal: { bone: "#f0f9ff", g0: "#e0f2fe", g1: "#7dd3fc", g2: "#1d4ed8",
+           line: "#0c4a6e", wing: "rgba(125,211,252,.45)", wingEdge: "rgba(12,74,110,.55)",
+           grill: "rgba(29,78,216,.25)", shine: "rgba(255,255,255,.6)",
+           beak: "#38bdf8", beakEdge: "#0369a1", eye: "#fff", pupil: "#0c4a6e" } },
+  { id: "neon",     name: "Neon",      desc: "complete 8 receitas",
+    need: p => (p.recipes || 0) >= 8,
+    pal: { bone: "#fdf2f8", g0: "#fce7f3", g1: "#f472b6", g2: "#9d174d",
+           line: "#831843", wing: "rgba(244,114,182,.45)", wingEdge: "rgba(131,24,67,.6)",
+           grill: "rgba(157,23,77,.3)", shine: "rgba(255,255,255,.65)",
+           beak: "#ec4899", beakEdge: "#9d174d", eye: "#fff", pupil: "#831843" } },
+  { id: "brasa",    name: "Brasa",     desc: "use 15 pimentas mágicas",
+    need: p => (p.chilis || 0) >= 15,
+    pal: { bone: "#fff7ed", g0: "#fee2e2", g1: "#f97316", g2: "#7f1d1d",
+           line: "#450a0a", wing: "rgba(249,115,22,.45)", wingEdge: "rgba(69,10,10,.6)",
+           grill: "rgba(127,29,29,.35)", shine: "rgba(255,255,255,.45)",
+           beak: "#ef4444", beakEdge: "#7f1d1d", eye: "#fff", pupil: "#450a0a" } },
+  { id: "fantasma", name: "Fantasma",  desc: "derrote 2 clones secretos",
+    need: p => (p.clones || 0) >= 2,
+    pal: { bone: "#f8fafc", g0: "#f8fafc", g1: "#cbd5e1", g2: "#64748b",
+           line: "#334155", wing: "rgba(148,163,184,.4)", wingEdge: "rgba(51,65,85,.5)",
+           grill: "rgba(100,116,139,.2)", shine: "rgba(255,255,255,.75)",
+           beak: "#e2e8f0", beakEdge: "#94a3b8", eye: "#fff", pupil: "#94a3b8" } }
+];
+function skinById(id){ return SKINS.find(k => k.id === id) || SKINS[0]; }
+function skinUnlocked(k){ try { return !!k.need(PROG); } catch (e){ return false; } }
+function skinPal(){ const k = skinById(CFG.skin); return k.pal; }
+function setSkin(id){
+  const k = skinById(id);
+  if (!skinUnlocked(k)){ toast("Ainda não desbloqueou a " + k.name + " (" + k.desc + ")", "#f87171"); return false; }
+  CFG.skin = k.id; saveCfg(); refreshAll();
+  toast("Galinha " + k.name + "!", "#facc15");
+  return true;
+}
+
 const CLONE_PAL = {
   bone: "#cbd5e1", g0: "#94a3b8", g1: "#475569", g2: "#1e293b",
   line: "#0f172a", wing: "rgba(30,41,59,.68)", wingEdge: "rgba(2,6,23,.65)",
@@ -2509,6 +2575,15 @@ function drawGhost(x, y, g, R){
       ctx.fillStyle = "#fca5a5"; ctx.fill();
     }
   }
+  if (freezeTimer > 0){
+    ctx.save();
+    ctx.globalAlpha = 0.35 + Math.sin(tGlobal * 8) * 0.08;
+    ctx.fillStyle = "#bfdbfe";
+    ctx.beginPath(); ctx.arc(0, 0, R * 1.05, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 0.9; ctx.strokeStyle = "#e0f2fe"; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(0, 0, R * 1.05, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
   ctx.restore();
 }
 
@@ -2563,7 +2638,8 @@ function drawFish(x, y){
   ctx.restore();
 }
 
-const PW_COLOR = { magnet: "#c084fc", shield: "#60a5fa", slow: "#2dd4bf", coin: "#fde047", chili: "#f87171" };
+const PW_COLOR = { magnet: "#c084fc", shield: "#60a5fa", slow: "#2dd4bf", coin: "#fde047", chili: "#f87171",
+  clock: "#93c5fd", farol: "#f8fafc" };
 function drawPowerup(x, y, kind){
   ctx.save();
   ctx.translate(x, y);
@@ -2595,6 +2671,18 @@ function drawPowerup(x, y, kind){
     ctx.beginPath(); ctx.arc(0, 0, 8.5, 0, Math.PI * 2); ctx.fill();
     ctx.shadowBlur = 0; ctx.strokeStyle = "#b45309"; ctx.lineWidth = 1.6;
     ctx.beginPath(); ctx.arc(0, 0, 4.6, 0, Math.PI * 2); ctx.stroke();
+  } else if (kind === "clock"){
+    ctx.beginPath(); ctx.arc(0, 0, 8.5, 0, Math.PI * 2); ctx.stroke();
+    ctx.shadowBlur = 0; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -5.5);
+    ctx.moveTo(0, 0); ctx.lineTo(4, 2.4); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, 1.2, 0, Math.PI * 2); ctx.fill();
+  } else if (kind === "farol"){
+    ctx.beginPath(); ctx.moveTo(0, -8); ctx.lineTo(6, 7); ctx.lineTo(-6, 7); ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0; ctx.strokeStyle = "rgba(120,53,15,.8)"; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.strokeStyle = col; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(-11, -2); ctx.lineTo(-7.5, 1); ctx.moveTo(11, -2); ctx.lineTo(7.5, 1);
+    ctx.moveTo(0, -12); ctx.lineTo(0, -9.5); ctx.stroke();
   } else if (kind === "chili"){
     ctx.beginPath();
     ctx.moveTo(0, 9);
@@ -2631,6 +2719,8 @@ function drawPowerHud(){
   if (shield > 0) badge("ESCUDO x" + shield, PW_COLOR.shield);
   if (magnetTimer > 0) badge("ÍMÃ " + Math.ceil(magnetTimer) + "s", PW_COLOR.magnet);
   if (slowTimer > 0) badge("LENTO " + Math.ceil(slowTimer) + "s", PW_COLOR.slow);
+  if (freezeTimer > 0) badge("GELO " + Math.ceil(freezeTimer) + "s", PW_COLOR.clock);
+  if (farolTimer > 0) badge("FAROL " + Math.ceil(farolTimer) + "s", "#f8fafc");
   ctx.restore();
 }
 
@@ -2830,7 +2920,7 @@ function drawAttract(){
   ctx.save();
   ctx.translate(W / 2, H / 2);
   ctx.rotate(Math.sin(tGlobal * 0.8) * 0.05);
-  drawChicken(0, -40, 0, 34, { wobble: Math.sin(tGlobal * 6) });
+  drawChicken(0, -40, 0, 34, { wobble: Math.sin(tGlobal * 6), pal: skinPal() });
   drawPepper(130, 30);
   drawFish(-140, 34);
   ctx.restore();
@@ -2892,14 +2982,30 @@ function drawScene(){
     ctx.translate(p.x, p.y);
     ctx.rotate(k * 9);
     ctx.globalAlpha = 1 - k * 0.55;
-    drawChickenBody(ctx, 0, Math.max(2, 14 * (1 - k * 0.8)), 0);
+    drawChickenBody(ctx, 0, Math.max(2, 14 * (1 - k * 0.8)), 0, skinPal());
     ctx.restore();
   } else {
     const p = entPos(player);
+    if (farolTimer > 0){
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      const pul = 0.75 + Math.sin(tGlobal * 9) * 0.12;
+      const rr = T * 5.5 * pul;
+      const g2 = ctx.createRadialGradient(0, 0, T * 0.8, 0, 0, rr);
+      g2.addColorStop(0, "rgba(255,255,240,.28)");
+      g2.addColorStop(0.55, "rgba(254,240,138,.16)");
+      g2.addColorStop(1, "rgba(254,240,138,0)");
+      ctx.fillStyle = g2;
+      ctx.beginPath(); ctx.arc(0, 0, rr, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 0.55; ctx.strokeStyle = "#fef9c3"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(0, 0, T * 2.1, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
     drawChicken(p.x, p.y, ANG[player.dir], 14, {
       wobble: player.moving ? Math.sin(tGlobal * 16) : 0,
-      aura: frightTimer > 0 || turbo > 0,
-      fire: turbo > 0
+      aura: frightTimer > 0 || turbo > 0 || farolTimer > 0,
+      fire: turbo > 0,
+      pal: skinPal()
     });
   }
 
@@ -3303,6 +3409,7 @@ function renderSettings(){
       <button class="iconbtn" data-act="gp">Controle: ${gpCal ? "manche calibrado" : "padrão"}</button>
       <button class="iconbtn" data-cfg="nick">Apelido online: ${cfgLabel("nick")}</button>
       <button class="iconbtn" data-cfg="server">Servidor online: ${cfgLabel("server")}</button>
+      <button class="iconbtn" data-act="skins">Galinha: ${skinById(CFG.skin).name}</button>
       <button class="iconbtn" data-act="update">Atualiza&ccedil;&otilde;es: ${updateLabel()}</button>
     </div>
     <div style="text-align:center;font-size:11px;opacity:.65;margin:10px 0 4px;line-height:1.6">
@@ -3404,6 +3511,23 @@ function renderRanking(){
 function openRanking(){ cfgBack = state; renderRanking(); }
 
 /* ---- dados / estatisticas do jogador ---- */
+function renderSkins(){
+  const cards = SKINS.map(k => {
+    const on = skinUnlocked(k);
+    const sel = CFG.skin === k.id;
+    return `<button class="iconbtn" data-skinset="${k.id}" style="opacity:${on ? 1 : .45};border-color:${sel ? "#facc15" : ""}">
+      <b>${on ? k.name : "🔒 " + k.name}</b><br><span style="font-size:10px;opacity:.8">${on ? (sel ? "em uso" : "usar") : k.desc}</span>
+    </button>`;
+  }).join("");
+  ui.panel.innerHTML = `
+    <h1 style="font-size:clamp(18px,4.6vw,30px)">GALINHAS<em>escolha a sua</em></h1>
+    <div style="text-align:center;font-size:11px;opacity:.65;margin-bottom:8px">desbloqueie jogando — cada uma tem uma condição</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;max-width:340px;margin:0 auto">${cards}</div>
+    <div class="row" style="margin-top:12px"><button class="btn" data-act="cfgback">VOLTAR</button></div>
+  `;
+  ui.overlay.classList.remove("hidden");
+}
+
 function renderStats(){
   const rec = DIFF_KEYS.map(k => `<div>${DIFF[k].label}: <b style="color:#facc15">${fmt(bestByDiff[k] || 0)}</b></div>`).join("");
   const row = (label, val) => `<div style="display:flex;justify-content:space-between;gap:10px"><span>${label}</span><b style="color:#fde68a">${val}</b></div>`;
@@ -3422,6 +3546,8 @@ function renderStats(){
         ${row("Moedas", fmt(PROG.coins))}
         ${row("Pimentas mágicas", fmt(PROG.chilis))}
         ${row("Receitas concluídas", fmt(PROG.recipes || 0))}
+        ${row("Relógios usados", fmt(PROG.clocks || 0))}
+        ${row("Faróis usados", fmt(PROG.farols || 0))}
         ${row("Escudos usados", fmt(PROG.shields))}
         ${row("Ímãs usados", fmt(PROG.magnets))}
         ${row("Tempos lentos", fmt(PROG.slows))}
@@ -3547,7 +3673,7 @@ function cheat(c){
   else if (c === "life"){ lives++; refreshStats(); refreshAll(); toast("+1 vida!", "#a3e635"); }
   else if (c === "pts"){ addScore(1000); toast("+1000 pontos!", "#facc15"); }
   else if (c === "power"){
-    const kinds = ["magnet", "shield", "slow", "coin", "chili"];
+    const kinds = ["magnet", "shield", "slow", "coin", "chili", "clock", "farol"];
     collectPowerup(kinds[(Math.random() * kinds.length) | 0]);
   }
   else if (c === "chili"){ frightTimer = Math.max(frightTimer, 8) * DIFF[CFG.diff].fright; turbo = Math.max(turbo, 5); frightCombo = 0;
@@ -3573,6 +3699,8 @@ function openCheats(){
       ${btn("pts", "+1000")}
       ${btn("power", "POWER-UP")}
       ${btn("chili", "PIMENTA")}
+      ${btn("clock", "RELÓGIO")}
+      ${btn("farol", "FAROL")}
       ${btn("clear", "ZERAR FASE")}
       ${btn("achall", "* CONQUISTAS")}
     </div>
@@ -3964,6 +4092,10 @@ window.__galinha = {
   cfgCycle(k){ cfgCycle(k); },
   checkUpdates, appVersionCode, openSettings,
   checkContentUpdate, applyContentUpdate, autoContentUpdate, titleScreen,
+  SKINS, skinById, skinUnlocked, skinPal, setSkin,
+  collectPowerup, get freezeTimer(){ return freezeTimer; }, get farolTimer(){ return farolTimer; },
+  get skin(){ return CFG.skin; },
+  get prog(){ return PROG; },
   get ghostSpeed(){ return ghostSpeed(); },
   get playerSpeed(){ return playerSpeed(); },
   get recipe(){ return recipe; },
