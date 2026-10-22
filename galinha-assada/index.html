@@ -560,7 +560,7 @@ async function fetchOnline(url, opts, ms){
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.11";
+const GAME_BUILD = "2026-10-22.12";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -2440,7 +2440,7 @@ const SKINS = [
            line: "#0f172a", wing: "rgba(30,41,59,.68)", wingEdge: "rgba(2,6,23,.65)",
            grill: "rgba(0,0,0,.5)", shine: "rgba(255,255,255,.2)",
            beak: "#dc2626", beakEdge: "#7f1d1d", eye: "#fee2e2", pupil: "#b91c1c" } },
-  { id: "gelo",     name: "Gelo",      desc: "use 12 lentidões ou relógios",
+  { id: "gelo",     name: "Gelo",      desc: "use 12 tempos lentos ou relógios",
     need: p => ((p.slows || 0) + (p.clocks || 0)) >= 12,
     pal: { bone: "#f0f9ff", g0: "#e0f2fe", g1: "#7dd3fc", g2: "#1d4ed8",
            line: "#0c4a6e", wing: "rgba(125,211,252,.45)", wingEdge: "rgba(12,74,110,.55)",
@@ -3891,7 +3891,7 @@ function openCheats(){
       ${btn("lvl1", "FASE 1")}
       ${btn("lvl5", "FASE 5 (CHEFE)")}
       ${btn("lvl10", "FASE 10 (MESTRE)")}
-      ${btn("lvl30", "FASE 30 (FINAL)")}
+      ${btn("lvl30", "FASE 50 (FINAL)")}
       ${btn("nextlv", "PRÓXIMA FASE")}
       ${btn("life", "+VIDA")}
       ${btn("pts", "+1000")}
@@ -4159,7 +4159,7 @@ function gpPanelRender(){
         : "Com o manche no <b>centro</b>, mova para <b>CIMA</b> e segure."}</div>
       <div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;max-width:340px;margin:12px auto;line-height:1.7;text-align:left">
         canal detectado: <b id="gpx_pick">nenhum</b><br>
-        valor: <b id="gpx_val">0.00</b>
+        valor: <b id="gpx_val">+0,00</b>
       </div>
       <div class="row">
         <button class="btn" data-act="gpcalok">CONFIRMAR</button>
@@ -4209,7 +4209,7 @@ function gpPanelLive(pad, dir){
   const pick = gpCalPick < 0 ? "nenhum"
     : (gpNative.on ? ["X", "Y"][gpCalPick] || String(gpCalPick) : String(gpCalPick));
   set("gpx_pick", pick);
-  set("gpx_val", (gpCalVal >= 0 ? "+" : "") + gpCalVal.toFixed(2));
+  set("gpx_val", ((gpCalVal >= 0 ? "+" : "−") + Math.abs(gpCalVal).toFixed(2)).replace(".", ","));
 }
 document.getElementById("gpdbgbtn").addEventListener("click", () => openGamepad("game"));
 
