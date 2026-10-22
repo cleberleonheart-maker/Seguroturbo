@@ -466,6 +466,62 @@ async function fetchOnline(url, opts, ms){
   try { return await fetch(url, Object.assign({ signal: ctrl.signal }, opts || {})); }
   finally { clearTimeout(timer); }
 }
+/* ---- verificador de atualizacao (repo F-Droid no GitHub Pages) ---- */
+const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/index.xml";
+const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
+let updateInfo = null;
+function appVersionCode(){
+  const v = (typeof window !== "undefined" && window.__galinhaVC != null) ? parseInt(window.__galinhaVC, 10) : 0;
+  return isNaN(v) ? 0 : v;
+}
+function openExternal(url, fileName){
+  // no app Android o proprio jogo baixa o APK e abre o instalador
+  try {
+    if (window.AndroidUpdate && typeof window.AndroidUpdate.downloadApk === "function"){
+      window.AndroidUpdate.downloadApk(url, fileName || "galinha-assada.apk");
+      return;
+    }
+  } catch (e){ }
+  try { window.location.href = url; }
+  catch (e){ try { window.open(url, "_blank"); } catch (e2){} }
+}
+async function checkUpdates(){
+  toast("Verificando atualizações…", "#38bdf8");
+  try {
+    const r = await fetchOnline(FDOID_INDEX, { method: "GET" }, 25000);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const xml = new DOMParser().parseFromString(await r.text(), "text/xml");
+    const pkgs = xml.getElementsByTagName("package");
+    let found = null;
+    for (let i = 0; i < pkgs.length; i++){
+      const an = pkgs[i].getElementsByTagName("apkname")[0];
+      const name = an ? String(an.textContent || "") : "";
+      if (name.indexOf("br.com.galinhaassada_") === 0){ found = pkgs[i]; break; }
+    }
+    if (!found) throw new Error("pacote nao encontrado");
+    const get = (t) => { const e = found.getElementsByTagName(t)[0]; return e ? String(e.textContent || "").trim() : ""; };
+    const vc = parseInt(get("versioncode"), 10) || 0;
+    const vn = get("version") || "?";
+    const size = parseInt(get("size"), 10) || 0;
+    const apk = get("apkname");
+    const cur = appVersionCode();
+    if (cur && vc <= cur){
+      toast("Você já está na última versão (" + vn + ")", "#4ade80");
+      return;
+    }
+    const fromCfg = !!(ui.panel && ui.panel.querySelector('[data-act="update"]'));
+    updateInfo = { url: FDOID_BASE + apk, vn: vn, vc: vc, size: size, fromCfg: fromCfg, file: apk };
+    showOverlay(`
+      <h1>NOVA VERSÃO<em>${updateInfo.vn}</em></h1>
+      <div class="sub">Código ${updateInfo.vc}${updateInfo.size ? " &bull; " + Math.round(updateInfo.size / 1024) + " KB" : ""}</div>
+      <div class="row">
+        <button class="btn" data-act="updatedl">BAIXAR</button>
+        <button class="iconbtn" data-act="updateclose">FECHAR</button>
+      </div>`);
+  } catch (e){
+    toast("Não consegui verificar agora (sem internet?)", "#f87171");
+  }
+}
 async function uploadScore(silencioso){
   if (score <= 0) return;
   try {
@@ -1464,6 +1520,7 @@ function renderPause(){
     <div class="row">
       <button class="btn" data-act="resume">CONTINUAR</button>
       <button class="iconbtn" data-act="start">RECOMEÇAR</button>
+      <button class="iconbtn" data-act="title">MENU</button>
       <button class="iconbtn" data-act="daily">PRESENÇA</button>
       <button class="iconbtn" data-act="ach">CONQUISTAS</button>
       <button class="iconbtn" data-act="rank">RANKING</button>
@@ -1499,6 +1556,9 @@ ui.overlay.addEventListener("click", (ev) => {
   else if (act === "title") titleScreen();
   else if (act === "resume") resumeGame();
   else if (act === "install") doInstall();
+  else if (act === "update") checkUpdates();
+  else if (act === "updatedl"){ if (updateInfo){ toast("Baixando o APK…", "#38bdf8"); openExternal(updateInfo.url, updateInfo.file); } }
+  else if (act === "updateclose"){ if (updateInfo && updateInfo.fromCfg) renderSettings(); else closeSettings(); }
   else if (act === "cfg") openSettings();
   else if (act === "cfgback") closeSettings();
   else if (act === "gp"){
@@ -3046,7 +3106,7 @@ function renderSettings(){
       <button class="iconbtn" data-cfg="nick">Apelido online: ${cfgLabel("nick")}</button>
       <button class="iconbtn" data-cfg="server">Servidor online: ${cfgLabel("server")}</button>
     </div>
-    <div class="row"><button class="btn" data-act="cfgback">VOLTAR</button></div>
+    <div class="row"><button class="iconbtn" data-act="update">ATUALIZAÇÕES</button><button class="btn" data-act="cfgback">VOLTAR</button></div>
   `;
   ui.overlay.classList.remove("hidden");
 }
@@ -3696,7 +3756,8 @@ window.__galinha = {
   die(){ die(); },
   step(dt){ update(dt); },
   setDiff(d){ CFG.diff = d; best = bestByDiff[d] || 0; refreshAll(); },
-  cfgCycle(k){ cfgCycle(k); }
+  cfgCycle(k){ cfgCycle(k); },
+  checkUpdates, appVersionCode, openSettings
 };
 
 })();

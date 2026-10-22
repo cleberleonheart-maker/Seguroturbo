@@ -2,9 +2,16 @@ package br.com.galinhaassada;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -27,6 +34,8 @@ public class MainActivity extends Activity {
 
     private WebView web;
     private GamepadBridge bridge;
+    private long lastDownloadId = -1;
+    private BroadcastReceiver dlReceiver;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -69,6 +78,21 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 Log.d("GalinhaJS", "pagina carregada: " + url);
+                // o jogo compara a versao publicada com a instalada
+                try {
+                    view.evaluateJavascript("window.__galinhaVC='" + appVersionCode() + "';", null);
+                } catch (Throwable t) { }
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (request == null || request.getUrl() == null) return false;
+                return openExternally(request.getUrl().toString());
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return openExternally(url);
             }
 
             @Override
@@ -120,10 +144,23 @@ public class MainActivity extends Activity {
         });
         bridge = new GamepadBridge();
         web.addJavascriptInterface(bridge, "AndroidGamepad");
+        web.addJavascriptInterface(new UpdateBridge(), "AndroidUpdate");
         web.loadUrl("file:///android_asset/index.html");
 
         setContentView(web);
         immersive();
+
+        dlReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context ctx, Intent i) {
+                if (i == null) return;
+                long id = i.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                if (id != -1 && id == lastDownloadId) openDownloadedApk(id);
+            }
+        };
+        try {
+            registerReceiver(dlReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        } catch (Throwable t) { }
 
         if ((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
             web.postDelayed(new Runnable() {
@@ -135,6 +172,28 @@ public class MainActivity extends Activity {
     }
 
     private static final String onlineServer = "https://iptv-srv.tail045fd4.ts.net/galinha";
+
+    private int appVersionCode(){
+        try {
+            android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) return (int) pi.getLongVersionCode();
+            return pi.versionCode;
+        } catch (Throwable t){ return 0; }
+    }
+
+    // links externos (download do APK, repositorio) saem do WebView para o navegador
+    private boolean openExternally(String url){
+        if (url == null || url.isEmpty()) return false;
+        if (url.startsWith("file://") || url.startsWith("about:") || url.startsWith("data:")) return false;
+        try {
+            Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(it);
+        } catch (Throwable t){
+            Log.d("GalinhaJS", "nao consegui abrir fora: " + url);
+        }
+        return true;
+    }
 
     private android.webkit.ValueCallback<String> jsLog(final String label) {
         return new android.webkit.ValueCallback<String>() {
@@ -183,10 +242,13 @@ public class MainActivity extends Activity {
         super.onResume();
         if (web != null) web.onResume();
         immersive();
+        // se o APK ja terminou de baixar enquanto o app estava em segundo plano
+        if (lastDownloadId != -1) openDownloadedApk(lastDownloadId);
     }
 
     @Override
     protected void onDestroy() {
+        try { if (dlReceiver != null) unregisterReceiver(dlReceiver); } catch (Throwable t) {}
         if (web != null) {
             web.loadUrl("about:blank");
             web.destroy();
@@ -204,6 +266,56 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void btn(int id, boolean down) {
             postJs("window.__gpBtn&&window.__gpBtn(" + id + "," + down + ")");
+        }
+    }
+
+    // ponte do verificador de atualizacao: baixa o APK dentro do app
+    private class UpdateBridge {
+        @JavascriptInterface
+        public void downloadApk(final String url, final String fileName) {
+            runOnUiThread(new Runnable() {
+                public void run() { startApkDownload(url, fileName); }
+            });
+        }
+        @JavascriptInterface
+        public void versionCode() {
+            postJs("window.__galinhaVC='" + appVersionCode() + "'");
+        }
+    }
+
+    private void startApkDownload(String url, String fileName){
+        if (url == null || url.trim().isEmpty()) return;
+        String name = (fileName == null || fileName.trim().isEmpty()) ? "galinha-assada.apk" : fileName.trim();
+        try {
+            DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url.trim()));
+            req.setTitle("Galinha Assada");
+            req.setDescription("Baixando " + name);
+            req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            req.setMimeType("application/vnd.android.package-archive");
+            req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name);
+            lastDownloadId = dm.enqueue(req);
+            android.widget.Toast.makeText(this, "Baixando " + name + "…", android.widget.Toast.LENGTH_LONG).show();
+        } catch (Throwable t){
+            Log.d("GalinhaJS", "download falhou: " + t);
+            openExternally(url);
+        }
+    }
+
+    private void openDownloadedApk(long id){
+        try {
+            DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            Uri uri = dm.getUriForDownloadedFile(id);
+            if (uri == null) return;
+            lastDownloadId = -1;
+            Intent inst = new Intent(Intent.ACTION_VIEW);
+            inst.setDataAndType(uri, "application/vnd.android.package-archive");
+            inst.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(inst);
+        } catch (Throwable t){
+            Log.d("GalinhaJS", "instalador nao abriu: " + t);
+            android.widget.Toast.makeText(this, "APK baixado em Downloads. Abra o arquivo para instalar.",
+                    android.widget.Toast.LENGTH_LONG).show();
         }
     }
 
