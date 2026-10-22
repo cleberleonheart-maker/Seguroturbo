@@ -199,6 +199,13 @@
     text-align:center;transition:transform .28s ease,opacity .28s ease;
   }
   #toast.on{transform:translate(-50%,0);opacity:1}
+
+  #recipeBar{
+    display:none;margin:0 auto;max-width:560px;width:100%;text-align:center;font-size:11.5px;line-height:1.4;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 12px
+  }
+  #recipeBar.done{color:#facc15;border-color:rgba(250,204,21,.55);background:rgba(250,204,21,.10)}
+  body.big-text #recipeBar{font-size:13px}
 </style>
 </head>
 <body>
@@ -211,6 +218,8 @@
     <div class="stat"><i>Vidas</i><div id="lives"></div></div>
     <button class="iconbtn" id="gpdbgbtn" style="font-size:11px;padding:8px 10px;border-color:rgba(245,158,11,.6);color:#fcd34d" aria-label="diagnostico do controle">CTRL</button>
   </header>
+
+  <div id="recipeBar"></div>
 
   <div id="stage">
     <canvas id="game" width="672" height="672"></canvas>
@@ -263,6 +272,47 @@ const PAL = [
 ];
 const C = Object.assign({}, PAL[0], { pellet: "#b56cff", pepper: "#ef4444", pepperStem: "#22c55e", fish: "#38bdf8", fishDark: "#0369a1" });
 
+/* capitulos: 5 fases com a mesma cara (paleta) e um nome proprio */
+const CHAPTERS = [
+  { name:"Cozinha do açaí",    pal:0 },
+  { name:"Forno aceso",        pal:3 },
+  { name:"Pista da madrugada", pal:1 },
+  { name:"Horta do bairro",    pal:4 },
+  { name:"Maré de peixe",      pal:6 },
+  { name:"Festa da galinha",   pal:2 }
+];
+function chapterOf(lv){ return Math.min(CHAPTERS.length - 1, Math.floor((lv - 1) / 5)); }
+function chapter(){ return CHAPTERS[chapterOf(level)]; }
+
+
+/* ---- receita da fase: objetivo extra de cada fase ---- */
+const RECIPES = [
+  { id:"fish",   txt:(n) => "assar " + n + " peixe" + (n > 1 ? "s" : ""), need:(lv) => 2 + Math.floor(lv / 8) },
+  { id:"pellet", txt:(n) => "comer " + n + " açaí" + (n > 1 ? "s" : ""),     need:(lv) => 25 + lv * 2 },
+  { id:"ghost",  txt:(n) => "fritar " + n + " gato" + (n > 1 ? "s" : ""),     need:(lv) => 1 + Math.floor(lv / 6) },
+  { id:"combo",  txt:(n) => "combo de açaí x" + n,                           need:(lv) => 3 }
+];
+let recipe = null;
+function makeRecipe(lv){
+  if (bonus){ recipe = null; return; }
+  if (lv % 5 === 0){ recipe = { id:"boss", txt:"derrotar o gato chefe", need:1, cur:0, done:false }; return; }
+  const pick = RECIPES[(lv * 3 + 1) % RECIPES.length];
+  const need = Math.max(1, pick.need(lv));
+  recipe = { id:pick.id, txt:pick.txt(need), need:need, cur:0, done:false };
+}
+function recipeBump(id, n){
+  if (!recipe || recipe.done || recipe.id !== id) return;
+  recipe.cur = Math.min(recipe.need, recipe.cur + n);
+  if (recipe.cur >= recipe.need){
+    recipe.done = true;
+    PROG.recipes = (PROG.recipes || 0) + 1;
+    addScore(500);
+    popups.push({ r:player.r, c:player.c, text:"RECEITA PRONTA!", t:0, color:"#facc15" });
+    toast("RECEITA PRONTA! +500 pontos", "#facc15");
+    saveProg(); checkAch();
+  }
+  refreshRecipe();
+}
 
 const BEST_KEY = "galinhaAssadaBest";
 const DAY_KEY = "galinhaAssadaDay";
@@ -326,7 +376,7 @@ const PROG_KEY = "galinhaAssadaProg";
 const ACH_KEY = "galinhaAssadaAch";
 const RUN_KEY = "galinhaAssadaRun";
 const PROG_KIND_DEFAULT = { games:0, clears:0, ghosts:0, fish:0, fruits:0, maxCombo:1, maxLevel:1,
-  bossKills:0, shields:0, magnets:0, slows:0, bestFrightCombo:0, noDeathClear:0, coins:0, chilis:0, masters:0, bonusClears:0, clones:0 };
+  bossKills:0, shields:0, magnets:0, slows:0, bestFrightCombo:0, noDeathClear:0, coins:0, chilis:0, masters:0, bonusClears:0, clones:0, recipes:0 };
 const PROG_DEFAULT = PROG_KIND_DEFAULT;
 let PROG = Object.assign({}, PROG_DEFAULT, readJSON(PROG_KEY, {}));
 let ACH_UNLOCKED = readJSON(ACH_KEY, {}) || {};
@@ -423,6 +473,8 @@ const ACH = [
   { id:"boss1",    name:"Domador de Gatos", desc:"Derrote um gato chefe",         color:"#a16207", got:()=> PROG.bossKills >= 1 },
   { id:"score5k",  name:"Cinco Mil",        desc:"Faça 5.000 pontos",             color:"#fde68a", got:()=> globalBest() >= 5000 },
   { id:"score20k", name:"Vinte Mil",        desc:"Faça 20.000 pontos",            color:"#ffd76a", got:()=> globalBest() >= 20000 },
+  { id:"recipe3",  name:"Chef de Receita", desc:"Complete 3 receitas",   color:"#f59e0b", got:()=> (PROG.recipes || 0) >= 3 },
+  { id:"recipe15", name:"Mestre Culinário", desc:"Complete 15 receitas",  color:"#fb923c", got:()=> (PROG.recipes || 0) >= 15 },
   { id:"shield",   name:"Blindada",         desc:"Sobreviva usando um escudo",    color:"#60a5fa", got:()=> PROG.shields >= 1 },
   { id:"magnet",   name:"Ímã de Açaí",      desc:"Use o ímã de açaí",             color:"#c084fc", got:()=> PROG.magnets >= 1 },
   { id:"slow",     name:"Tempo de Forno",   desc:"Use o tempo lento",             color:"#2dd4bf", got:()=> PROG.slows >= 1 },
@@ -757,7 +809,8 @@ const ui = {
   level: document.getElementById("level"),
   lives: document.getElementById("lives"),
   overlay: document.getElementById("overlay"),
-  panel: document.getElementById("panel")
+  panel: document.getElementById("panel"),
+  recipe: document.getElementById("recipeBar")
 };
 
 /* ============================================================
@@ -1051,6 +1104,7 @@ const GHOST_SPECS = [
 function isTunnel(r, c){ return r === 10 && (c === 0 || c === COLS - 1); }
 
 function buildLevel(){
+  makeRecipe(level);
   maze = generateMaze();
 
   const grid = [];
@@ -1107,13 +1161,14 @@ function buildLevel(){
 
   fish = null;
   fishAt = clock + 1.0;
-  const p = PAL[(level - 1) % PAL.length];
+  const p = PAL[chapter().pal];
   C.bg = p.bg; C.wall = p.wall; C.wallEdge = p.wallEdge;
   trail = []; Sound.startMusic(level); buildMazeLayer();
 }
 
-function playerSpeed(){ return (7.4 + Math.min(level, 9) * 0.13) * DIFF[CFG.diff].player; }
-function ghostSpeed(){ return (4.9 + Math.min(level, 11) * 0.24) * DIFF[CFG.diff].ghost * (bonus ? 0.55 : 1); }
+// a curva nao satura: a pressao continua subindo ate a fase 30
+function playerSpeed(){ return (7.4 + Math.min(level, 9) * 0.13 + Math.max(0, level - 9) * 0.06) * DIFF[CFG.diff].player; }
+function ghostSpeed(){ return (4.9 + Math.min(level, 11) * 0.24 + Math.max(0, level - 11) * 0.10) * DIFF[CFG.diff].ghost * (bonus ? 0.55 : 1); }
 
 // boss secreto: um clone corrompido da galinha assada. Reaproveita a IA/colisão dos chefes.
 function spawnSecretBoss(){
@@ -1233,9 +1288,11 @@ function eatPellet(pr, pc, quiet){
   chainMult = Math.min(5, 1 + Math.floor((chain - 1) / 5));
   if (chainMult > PROG.maxCombo) PROG.maxCombo = chainMult;
   addScore((bonus ? 20 : 10) * chainMult);
+  recipeBump("pellet", 1);
+  if (chainMult >= 3) recipeBump("combo", 1);
   if (chainMult > 1 && chain % 5 === 1)
     popups.push({ r: pr, c: pc, text: "COMBO x" + chainMult, t: 0, color: "#facc15" });
-  if (food.left < 20 && !hurry){ hurry = true; if (state === "play") Sound.sirenHurry(); }
+  if (food.left < Math.max(6, 24 - level) && !hurry){ hurry = true; if (state === "play") Sound.sirenHurry(); }
   if (firstRun && !tips.pellet && pelletEat === 8){
     tips.pellet = true;
     toast("Açaí +10 por açaí • limpe o labirinto para zerar a fase!", "#facc15");
@@ -1310,7 +1367,20 @@ function refreshStats(){
   const n = Math.max(0, lives - 1);
   for (let i = 0; i < n; i++) ui.lives.appendChild(chickenIcon());
 }
-function refreshAll(){ refreshScore(); refreshStats(); }
+function refreshAll(){ refreshScore(); refreshStats(); refreshRecipe(); }
+function refreshRecipe(){
+  const el = ui.recipe;
+  if (!el) return;
+  if (!recipe){ el.style.display = "none"; return; }
+  el.style.display = "block";
+  if (recipe.done){
+    el.classList.add("done");
+    el.textContent = "RECEITA PRONTA! " + recipe.txt;
+    return;
+  }
+  el.classList.remove("done");
+  el.textContent = "RECEITA: " + recipe.txt + "  (" + recipe.cur + "/" + recipe.need + ")";
+}
 
 function addScore(n){
   score += n;
@@ -1382,6 +1452,7 @@ function levelClear(){
   showOverlay(`
     <h1>${bonus ? "FESTA DA GALINHA!" : "FASE " + level + " PRONTA"}<em>${bonus ? "o açaí virou sobremesa" : "labirinto limpo"}</em></h1>
     <div class="sub">Bônus: <b style="color:#f59e0b">+${200 + lives * 100 + bonusPts}</b></div>
+    <div class="sub">Capítulo: <b style="color:#f472b6">${chapter().name}</b></div>
     <div class="sub" style="opacity:.7">${bonus ? "…e ainda dá pra repetir!" : "os gatos estão mais rápidos agora…"}</div>
   `, true);
 }
@@ -1529,6 +1600,7 @@ function renderPause(){
   showOverlay(`
     <h1>PAUSA<em>forno desligado</em></h1>
     <div class="sub">Pontos: <b style="color:#f59e0b">${fmt(score)}</b> &nbsp;&bull;&nbsp; Fase ${level} &nbsp;&bull;&nbsp; ${DIFF[CFG.diff].label}</div>
+    <div class="sub">Capítulo: <b style="color:#f472b6">${chapter().name}</b> (fases ${chapterOf(level) * 5 + 1}-${Math.min(MAX_LEVEL, chapterOf(level) * 5 + 5)})</div>
     <div class="sub" style="opacity:.7">${shield > 0 ? "Escudo: " + shield + " &nbsp;&bull;&nbsp; " : ""}${loadRun() ? "progresso salvo" : ""}</div>
     <div class="row">
       <button class="btn" data-act="resume">CONTINUAR</button>
@@ -1880,7 +1952,7 @@ function update(dt){
       const p = pepper[i];
       if (!p || p.r !== pr || p.c !== pc) continue;
       pepper[i] = null;
-      frightTimer = Math.max(3.5, 9 - level * 0.55) * DIFF[CFG.diff].fright;
+      frightTimer = Math.max(2.2, 9 - level * 0.45) * DIFF[CFG.diff].fright;
       frightCombo = 0;
       turbo = 5.2;
       Buzz.ok(45);
@@ -1920,6 +1992,7 @@ function update(dt){
   if (fish && fish.r === pr && fish.c === pc){
     addScore(100);
     PROG.fish++;
+    recipeBump("fish", 1);
     mstBump("f");
     Buzz.ok(26);
     Sound.eatFish();
@@ -1956,6 +2029,7 @@ function update(dt){
       } else {
         const val = g.clone ? 2500 : (g.boss ? 1000 : 200 * Math.pow(2, frightCombo));
         frightCombo = Math.min(3, frightCombo + 1);
+        recipeBump("ghost", 1);
         addScore(val);
         g.state = "eaten"; g.who = "ghostLeave";
         Buzz.ok(g.boss ? 90 : 60);
@@ -1973,6 +2047,7 @@ function update(dt){
           PROG.bossKills++;
           if (g.master) PROG.masters++;
           if (g.clone){ PROG.clones = (PROG.clones || 0) + 1; secretBoss = null; }
+          else recipeBump("boss", 1);
           shake = Math.max(shake, CFG.reduceMotion ? 0 : 0.6);
           popups.push({ r: g.r, c: g.c, text: g.clone ? "CLONE DERROTADO!" : (g.master ? "MESTRE DERROTADO!" : "CHEFE DERROTADO!"), t: 0, color: g.clone ? "#c084fc" : "#f59e0b" });
           toast(g.clone ? "O clone da galinha foi frito! Espelho quebrado." : (g.master ? "Mestre derrotado!" : "Chefe derrotado!"), g.clone ? "#a855f7" : "#f59e0b");
@@ -3765,7 +3840,12 @@ window.__galinha = {
   step(dt){ update(dt); },
   setDiff(d){ CFG.diff = d; best = bestByDiff[d] || 0; refreshAll(); },
   cfgCycle(k){ cfgCycle(k); },
-  checkUpdates, appVersionCode, openSettings
+  checkUpdates, appVersionCode, openSettings,
+  get ghostSpeed(){ return ghostSpeed(); },
+  get playerSpeed(){ return playerSpeed(); },
+  get recipe(){ return recipe; },
+  bumpRecipe(id, n){ recipeBump(id, n); },
+  get chapter(){ return chapter().name; }
 };
 
 })();

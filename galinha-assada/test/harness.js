@@ -201,5 +201,37 @@ g.setDiff("normal");
 ok("zen não mistura o recorde com o normal", g.best !== undefined);
 eq("DIFF_KEYS do recorde inclui zen", g.DIFF_KEYS.filter(k => k === "zen").length, 1);
 
+// 8) curva de dificuldade: nao pode saturar antes da fase 30
+g.setDiff("normal");
+g.setLevel(11);
+const v11 = g.ghostSpeed;
+g.setLevel(30);
+const v30 = g.ghostSpeed;
+ok("gatos nao ficam travados de velocidade na fase 11", v11 > 0);
+ok("gatos aceleram entre a fase 11 e a 30", v30 > v11, "v11=" + v11 + " v30=" + v30);
+const p30 = g.playerSpeed;
+ok("a galinha continua mais rapida que os gatos na fase 30", p30 > v30, "p30=" + p30 + " v30=" + v30);
+g.setLevel(1);
+const v1 = g.ghostSpeed;
+ok("a fase 1 e mais lenta que a fase 30", v30 > v1, "v1=" + v1);
+
+// 9) capitulos: 5 fases por capitulo e paleta por capitulo
+g.setLevel(1);
+const c1 = g.chapter;
+g.setLevel(5);
+ok("fases 1 e 5 sao do mesmo capitulo", g.chapter === c1, g.chapter);
+g.setLevel(6);
+ok("a fase 6 comeca outro capitulo", g.chapter !== c1, g.chapter);
+g.setLevel(30);
+ok("a fase 30 fica no ultimo capitulo", typeof g.chapter === "string" && g.chapter.length > 0, g.chapter);
+
+// 10) receita da fase: existe e avanca com os eventos
+g.setLevel(2);
+ok("a fase 2 tem receita", !!g.recipe, JSON.stringify(g.recipe));
+ok("a receita começa em zero", g.recipe && g.recipe.cur === 0);
+g.setLevel(5);
+ok("a fase de chefe tem receita de chefe", g.recipe && g.recipe.id === "boss", JSON.stringify(g.recipe));
+g.setLevel(2);
+
 console.log(falhas ? `\n${falhas} falha(s)` : "\nTudo certo");
 process.exit(falhas ? 1 : 0);

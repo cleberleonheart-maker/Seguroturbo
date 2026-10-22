@@ -34,6 +34,20 @@ node test/harness.js
 Cobre o modo Zen (dificuldade nova, ciclo do menu, HUD, morte sem perder vida,
 chefe e clone continuam valendo) e a regressão das outras dificuldades.
 
+## Fases, capítulos e receitas
+
+- **Curva de dificuldade sem teto**: a velocidade dos gatos cresce até a fase
+  30 (`ghostSpeed()`/`playerSpeed()` em `index.html`) — antes ela saturava na
+  fase 11 e as fases 12-30 eram só repetição. O tempo de pimentinha e o
+  momento em que os gatos ficam famintos também apertam com a fase.
+- **Capítulos**: 5 fases por capítulo, cada um com nome e paleta própria
+  (`CHAPTERS`): Cozinha do açaí, Forno aceso, Pista da madrugada, Horta do
+  bairro, Maré de peixe, Festa da galinha.
+- **Receita da fase**: cada fase tem um objetivo extra (assar peixes, comer
+  açaí, fritar gatos, combo x3 ou derrotar o chefe das fases múltiplas de 5).
+  Fica numa barra abaixo do HUD com o progresso e vale **+500 pontos** quando
+  concluída (conquistas "Chef de Receita" e "Mestre Culinário").
+
 ## Ranking online
 
 O placar online usa um servidor HTTP próprio, exposto publicamente por
