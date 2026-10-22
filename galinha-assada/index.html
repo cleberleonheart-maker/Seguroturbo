@@ -531,11 +531,10 @@ async function fetchOnline(url, opts, ms){
   finally { clearTimeout(timer); }
 }
 /* ---- verificador de atualizacao (repo F-Droid no GitHub Pages) ---- */
-const FDOID_INDEX = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/index.xml";
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.7";
+const GAME_BUILD = "2026-10-22.8";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -546,8 +545,7 @@ const GAME_CONTENT_URLS = [
   // raw do GitHub
   "https://raw.githubusercontent.com/cleberleonheart-maker/Seguroturbo/main/galinha-assada/index.html"
 ];
-let updateInfo = null;
-let updateState = "";
+let updateState = "", updateBusy = false, updateFromCfg = false;
 function updateLabel(){ return updateState || "verificar"; }
 // de onde veio o jogo que esta rodando (APK ou atualizacao baixada)
 function contentOrigem(){
@@ -640,14 +638,15 @@ function applyContentUpdate(){
   }
 }
 async function checkUpdates(){
+  if (updateBusy) return;
+  updateBusy = true;
+  updateFromCfg = !!(ui.panel && ui.panel.querySelector('[data-act="update"]'));
   toast("Verificando atualizações…", "#38bdf8");
-  // 1o) o proprio jogo (atualiza direto, sem instalar nada)
   try {
-    const upd = await checkContentUpdate();
+    const upd = await checkContentUpdate();     // só o jogo, direto no app
     if (upd){
       updateContent = upd;
       updateState = "nova " + upd.build;
-      const fromCfg = !!(ui.panel && ui.panel.querySelector('[data-act="update"]'));
       showOverlay(`
         <h1>NOVO JOGO<em>${upd.build}</em></h1>
         <div class="sub">Atualiza direto no app, sem baixar nem instalar APK.</div>
@@ -655,49 +654,17 @@ async function checkUpdates(){
           <button class="btn" data-act="updateapply">ATUALIZAR</button>
           <button class="iconbtn" data-act="updateclose">FECHAR</button>
         </div>`);
-      if (fromCfg) renderSettings(); else updateState = updateLabel();
       return;
     }
-  } catch (e){ /* sem internet: cai no teste do APK */ }
-  // 2o) o aplicativo em si (APK)
-  try {
-    const r = await fetchOnline(FDOID_INDEX, { method: "GET" }, 25000);
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    const xml = new DOMParser().parseFromString(await r.text(), "text/xml");
-    const pkgs = xml.getElementsByTagName("package");
-    let found = null;
-    for (let i = 0; i < pkgs.length; i++){
-      const an = pkgs[i].getElementsByTagName("apkname")[0];
-      const name = an ? String(an.textContent || "") : "";
-      if (name.indexOf("br.com.galinhaassada_") === 0){ found = pkgs[i]; break; }
-    }
-    if (!found) throw new Error("pacote nao encontrado");
-    const get = (t) => { const e = found.getElementsByTagName(t)[0]; return e ? String(e.textContent || "").trim() : ""; };
-    const vc = parseInt(get("versioncode"), 10) || 0;
-    const vn = get("version") || "?";
-    const size = parseInt(get("size"), 10) || 0;
-    const apk = get("apkname");
-    const cur = appVersionCode();
-    if (cur && vc <= cur){
-      updateState = "atualizado";
-      toast("Você já está na última versão (" + vn + ")", "#4ade80");
-      if (ui.panel && ui.panel.querySelector('[data-act="update"]')) renderSettings();
-      return;
-    }
-    updateState = "nova " + vn;
-    const fromCfg = !!(ui.panel && ui.panel.querySelector('[data-act="update"]'));
-    updateInfo = { url: FDOID_BASE + apk, vn: vn, vc: vc, size: size, fromCfg: fromCfg, file: apk };
-    showOverlay(`
-      <h1>NOVA VERSÃO<em>${updateInfo.vn}</em></h1>
-      <div class="sub">Código ${updateInfo.vc}${updateInfo.size ? " &bull; " + Math.round(updateInfo.size / 1024) + " KB" : ""}</div>
-      <div class="row">
-        <button class="btn" data-act="updatedl">BAIXAR</button>
-        <button class="iconbtn" data-act="updateclose">FECHAR</button>
-      </div>`);
+    updateState = "atualizado";
+    toast("Jogo já está na última versão (" + GAME_BUILD + ")", "#4ade80");
+    if (updateFromCfg) renderSettings();
   } catch (e){
     updateState = "sem net";
     toast("Não consegui verificar agora (sem internet?)", "#f87171");
-    if (ui.panel && ui.panel.querySelector('[data-act="update"]')) renderSettings();
+    if (updateFromCfg) renderSettings();
+  } finally {
+    updateBusy = false;
   }
 }
 async function uploadScore(silencioso){
@@ -1802,10 +1769,9 @@ ui.overlay.addEventListener("click", (ev) => {
   else if (act === "help") renderHelp();
   else if (act === "helpback") titleScreen();
   else if (act === "update") checkUpdates();
-  else if (act === "updatedl"){ if (updateInfo){ toast("Baixando o APK…", "#38bdf8"); openExternal(updateInfo.url, updateInfo.file); } }
   else if (act === "updateapply"){ applyContentUpdate(); }
   else if (act === "updatereset"){ try { window.AndroidUpdate.resetContent(); toast("Voltando para a versão original…", "#38bdf8"); } catch (e){ toast("Falhou", "#f87171"); } }
-  else if (act === "updateclose"){ if (updateInfo && updateInfo.fromCfg) renderSettings(); else closeSettings(); }
+  else if (act === "updateclose"){ if (updateFromCfg) renderSettings(); else closeSettings(); }
   else if (act === "cfg") openSettings();
   else if (act === "cfgback") closeSettings();
   else if (act === "gp"){
