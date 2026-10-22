@@ -260,7 +260,7 @@
     <div id="overlay"><div class="panel" id="panel"></div></div>
   </div>
 
-  <footer>Bolinha no canto / analógico do controle / setas do teclado / WASD / swipe &nbsp;&bull;&nbsp; P pausa &nbsp;&bull;&nbsp; M som</footer>
+  <footer>Bolinha no canto / analógico do controle / setas do teclado / WASD / arrastar &nbsp;&bull;&nbsp; P pausa &nbsp;&bull;&nbsp; M som</footer>
 </div>
 
 <div id="stick" role="application" aria-label="Controle da galinha"><div id="knob"></div></div>
@@ -560,7 +560,7 @@ async function fetchOnline(url, opts, ms){
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.10";
+const GAME_BUILD = "2026-10-22.11";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -3536,18 +3536,18 @@ function applyCfg(){
   if (player) mate && (mate.baseSpeed = playerSpeed());
 }
 function cfgLabel(key){
-  if (key === "stick") return CFG.stick ? "SIM" : "NAO";
+  if (key === "stick") return CFG.stick ? "SIM" : "NÃO";
   if (key === "side") return CFG.side === "left" ? "ESQUERDA" : "DIREITA";
   if (key === "size") return { small: "PEQUENA", normal: "MEDIA", large: "GRANDE" }[CFG.size];
   if (key === "vol") return Math.round(CFG.vol * 100) + "%";
-  if (key === "vibrate") return CFG.vibrate ? "SIM" : "NAO";
+  if (key === "vibrate") return CFG.vibrate ? "SIM" : "NÃO";
   if (key === "diff") return DIFF[CFG.diff].label;
   if (key === "players") return CFG.players === 2 ? "2 (coop)" : "1";
-  if (key === "reduceMotion") return CFG.reduceMotion ? "SIM" : "NAO";
-  if (key === "contrast") return CFG.contrast ? "SIM" : "NAO";
-  if (key === "bigText") return CFG.bigText ? "SIM" : "NAO";
+  if (key === "reduceMotion") return CFG.reduceMotion ? "SIM" : "NÃO";
+  if (key === "contrast") return CFG.contrast ? "SIM" : "NÃO";
+  if (key === "bigText") return CFG.bigText ? "SIM" : "NÃO";
   if (key === "nick") return (CFG.nick && String(CFG.nick).trim()) ? String(CFG.nick).trim().slice(0, 12) : "Player";
-  if (key === "server") return (CFG.server && String(CFG.server).trim()) ? "custom" : "padrao";
+  if (key === "server") return (CFG.server && String(CFG.server).trim()) ? "personalizado" : "padrão";
   return "";
 }
 function cfgCycle(key){
@@ -3597,7 +3597,7 @@ function renderSettings(){
       <button class="iconbtn" data-cfg="size">Tamanho: ${cfgLabel("size")}</button>
       <button class="iconbtn" data-cfg="diff">Dificuldade: ${cfgLabel("diff")}</button>
       <button class="iconbtn" data-cfg="vol">Volume: ${cfgLabel("vol")}</button>
-      <button class="iconbtn" data-cfg="music">Música: ${CFG.music !== false ? "SIM" : "NAO"}</button>
+      <button class="iconbtn" data-cfg="music">Música: ${CFG.music !== false ? "SIM" : "NÃO"}</button>
       <button class="iconbtn" data-cfg="vibrate">Vibra&ccedil;&atilde;o: ${cfgLabel("vibrate")}</button>
       <button class="iconbtn" data-cfg="reduceMotion">Reduzir animações: ${cfgLabel("reduceMotion")}</button>
       <button class="iconbtn" data-cfg="contrast">Alto contraste: ${cfgLabel("contrast")}</button>
