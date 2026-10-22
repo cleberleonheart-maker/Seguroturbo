@@ -117,6 +117,14 @@ check("farol afasta o gato", maxD >= 1,
   " | player=" + JSON.stringify({r:g.player.r,c:g.player.c,st:g.state}) +
   " | farol=" + g.farolTimer + " freeze=" + g.freezeTimer + " diff=" + g.CFG.diff);
 
+// 8b) painel de conquistas: tudo listado, em duas colunas
+g.openAchievements();
+const achHtml = document.getElementById("panel").innerHTML || "";
+check("conquistas em grade", achHtml.indexOf("ach-grid") >= 0, "sem grade");
+const achCards = (achHtml.match(/class="ach[ "]/g) || []).length;
+check("todas as conquistas aparecem", achCards === g.ACH.length, achCards + " de " + g.ACH.length);
+check("nomes das conquistas no painel", g.ACH.every(a => achHtml.indexOf(a.name) >= 0), "faltou nome");
+
 // 9) skins
 check("a skin padrao e a classica", g.skin === "classica" && g.skinUnlocked(g.skinById("classica")), g.skin);
 check("skin bloqueada nao entra", g.setSkin("fantasma") === false && g.skin === "classica", g.skin);
