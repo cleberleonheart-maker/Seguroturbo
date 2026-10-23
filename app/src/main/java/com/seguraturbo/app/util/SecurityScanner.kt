@@ -452,15 +452,29 @@ object SecurityScanner {
             )
         }
         val meses = mesesDesde(patch) ?: return null
-        if (meses <= 6) return null
+        if (meses <= 6) {
+            // Mesmo se recente, avisa quando estiver muito próximo (mais de 3 meses)
+            if (meses >= 4) {
+                return Threat(
+                    nome = "Patch de segurança próximo do vencimento",
+                    tipo = "SISTEMA",
+                    risco = "BAIXO",
+                    descricao = "Últimas correções de segurança de $patch (~$meses meses atrás). " +
+                        "Fique atento a atualizações do sistema.",
+                    acao = AcaoConfig.ATUALIZACAO_SISTEMA,
+                    peso = 3
+                )
+            }
+            return null
+        }
         return Threat(
             nome = "Sistema desatualizado",
             tipo = "SISTEMA",
-            risco = "MÉDIO",
+            risco = "ALTO",
             descricao = "Últimas correções de segurança de $patch (~$meses meses atrás). " +
-                "Procure atualizações do sistema.",
+                "Há mais de 6 meses sem correções — procure atualizações do sistema com urgência.",
             acao = AcaoConfig.ATUALIZACAO_SISTEMA,
-            peso = 12
+            peso = 20
         )
     }
 
