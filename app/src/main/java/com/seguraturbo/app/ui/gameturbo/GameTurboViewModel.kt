@@ -51,6 +51,11 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     var travaTelaSistema by mutableStateOf(true)
     /** true = silenciar só a mídia enquanto o Modo Jogo está ativo. */
     var silenciarMidia by mutableStateOf(false)
+    /** true = limpar RAM automaticamente ao ligar o Modo Jogo. */
+    var autoLimparRamJogo by mutableStateOf(false)
+    /** Sessão de foco Pomodoro ligada ao Não Perturbe. */
+    var sessaoFocoAtiva by mutableStateOf(false)
+    var sessaoFocoRestanteSeg by mutableStateOf(0L)
     /** Perfil de desempenho atual do Game Turbo. */
     var perfil by mutableStateOf(PerfilDesempenho.EQUILIBRADO)
     /** Temperatura da bateria em °C (null se o sistema não informar). */
@@ -80,6 +85,8 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         travaTelaJogo = Preferencias.travaTelaJogo(getApplication<Application>())
         atualizarTravaTela()
         silenciarMidia = Preferencias.silenciarMidia(getApplication<Application>())
+        autoLimparRamJogo = Preferencias.autoLimparRamJogo(getApplication<Application>())
+        carregarSessaoFoco()
     }
 
     private fun carregarHistorico() {
@@ -168,6 +175,67 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Liga/desliga a limpeza automática de RAM ao ativar o Modo Jogo. */
+    fun definirAutoLimparRamJogo(ativo: Boolean) {
+        val app = getApplication<Application>()
+        autoLimparRamJogo = ativo
+        Preferencias.definirAutoLimparRamJogo(app, ativo)
+    }
+
+    private fun carregarSessaoFoco() {
+        val app = getApplication<Application>()
+        sessaoFocoAtiva = Preferencias.sessaoFocoAtiva(app)
+        if (sessaoFocoAtiva) {
+            val fim = Preferencias.sessaoFocoFim(app)
+            val restante = (fim - System.currentTimeMillis()) / 1000L
+            if (restante <= 0) {
+                encerrarSessaoFoco()
+            } else {
+                sessaoFocoRestanteSeg = restante
+            }
+        } else {
+            sessaoFocoRestanteSeg = 0L
+        }
+    }
+
+    /** Inicia uma sessão de foco Pomodoro (25 min) ligada ao Não Perturbe. */
+    fun iniciarSessaoFoco(minutos: Int = 25) {
+        val app = getApplication<Application>()
+        if (!ModoConcentracao.temAcesso(app)) {
+            ModoConcentracao.pedirAcesso(app)
+            mensagem = "Conceda acesso ao Não Perturbe para usar a sessão de foco"
+            return
+        }
+        val fim = System.currentTimeMillis() + minutos * 60_000L
+        Preferencias.definirSessaoFocoAtiva(app, true)
+        Preferencias.definirSessaoFocoFim(app, fim)
+        sessaoFocoAtiva = true
+        sessaoFocoRestanteSeg = minutos * 60L
+        ModoConcentracao.ativar(app)
+        mensagem = "Sessão de foco iniciada ($minutos min)"
+        HistoricoStore.adicionar(
+            app,
+            HistoricoEntrada(
+                tipo = HistoricoEntrada.Tipo.TURBO,
+                data = System.currentTimeMillis(),
+                titulo = "Sessão de foco",
+                detalhe = "$minutos minutos - Não Perturbe ativado"
+            )
+        )
+        carregarHistorico()
+    }
+
+    /** Encerra a sessão de foco e restaura o Não Perturbe. */
+    fun encerrarSessaoFoco() {
+        val app = getApplication<Application>()
+        Preferencias.definirSessaoFocoAtiva(app, false)
+        Preferencias.definirSessaoFocoFim(app, 0L)
+        sessaoFocoAtiva = false
+        sessaoFocoRestanteSeg = 0L
+        ModoConcentracao.restaurar(app)
+        mensagem = "Sessão de foco encerrada"
+    }
+
     /** Liga/desliga o Não Perturbe automático. Sem acesso, abre as configurações. */
     fun definirDndAuto(ativo: Boolean) {
         val app = getApplication<Application>()
@@ -208,23 +276,31 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     /** Recebe o valor real do Switch (evita dessincronizar em toques rápidos). */
     fun definirModoJogo(ativo: Boolean) {
         if (ativo == modoJogo) return
+        val app = getApplication<Application>()
         modoJogo = ativo
         if (dndAuto) {
             if (ativo) {
-                if (!ModoConcentracao.ativar(getApplication<Application>())) {
+                if (!ModoConcentracao.ativar(app)) {
                     dndAcesso = false
-                    ModoConcentracao.pedirAcesso(getApplication<Application>())
+                    ModoConcentracao.pedirAcesso(app)
                 }
             } else {
-                ModoConcentracao.restaurar(getApplication<Application>())
+                ModoConcentracao.restaurar(app)
             }
         }
         if (silenciarMidia) {
-            if (ativo) SilenciarMidia.silenciar(getApplication<Application>())
-            else SilenciarMidia.restaurar(getApplication<Application>())
+            if (ativo) SilenciarMidia.silenciar(app)
+            else SilenciarMidia.restaurar(app)
+        }
+        if (ativo && autoLimparRamJogo) {
+            val apps = GerenciadorRam.appsFechaveis(app)
+            if (apps.isNotEmpty()) {
+                GerenciadorRam.liberar(app, apps.map { it.pacote })
+                memoriasEncerradas(apps.size)
+            }
         }
         HistoricoStore.adicionar(
-            getApplication<Application>(),
+            app,
             HistoricoEntrada(
                 tipo = HistoricoEntrada.Tipo.TURBO,
                 data = System.currentTimeMillis(),

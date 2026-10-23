@@ -120,6 +120,8 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         item { CartaoBarraJogo(contexto) }
         item { CartaoTravaTela(vm) }
         item { CartaoSilenciarMidia(vm) }
+        item { CartaoAutoLimparRam(vm) }
+        item { CartaoSessaoFoco(vm) }
 
         item {
             BotaoNeon(
@@ -534,6 +536,58 @@ private fun CartaoSilenciarMidia(vm: GameTurboViewModel) {
             Switch(
                 checked = vm.silenciarMidia,
                 onCheckedChange = { vm.definirSilenciarMidia(it) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CartaoAutoLimparRam(vm: GameTurboViewModel) {
+    CartaoFuturista {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.gt_auto_limpar_ram),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.ram_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
+            Switch(
+                checked = vm.autoLimparRamJogo,
+                onCheckedChange = { vm.definirAutoLimparRamJogo(it) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CartaoSessaoFoco(vm: GameTurboViewModel) {
+    CartaoFuturista {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.gt_sessao_foco),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    if (vm.sessaoFocoAtiva) "${vm.sessaoFocoRestanteSeg / 60}m ${(vm.sessaoFocoRestanteSeg % 60)}s"
+                    else stringResource(R.string.gt_sessao_foco_desc),
+                    color = if (vm.sessaoFocoAtiva) Cores.Verde else Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
+            BotaoNeon(
+                texto = stringResource(if (vm.sessaoFocoAtiva) R.string.gt_sessao_foco_encerrar else R.string.gt_sessao_foco_iniciar),
+                onClick = { if (vm.sessaoFocoAtiva) vm.encerrarSessaoFoco() else vm.iniciarSessaoFoco() },
+                habilitado = true
             )
         }
     }

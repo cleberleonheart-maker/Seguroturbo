@@ -117,6 +117,11 @@
 
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
+    <string name="gt_auto_limpar_ram">Auto-clear RAM when enabling Game Mode</string>
+    <string name="gt_sessao_foco">Focus session (Pomodoro)</string>
+    <string name="gt_sessao_foco_desc">25 minutes with Do Not Disturb enabled</string>
+    <string name="gt_sessao_foco_iniciar">Start</string>
+    <string name="gt_sessao_foco_encerrar">Stop</string>
     <string name="gt_game_mode_on">Game Mode ON</string>
     <string name="gt_game_mode_off">Game Mode off</string>
     <string name="gt_mode_desc">System resources prioritized for games</string>

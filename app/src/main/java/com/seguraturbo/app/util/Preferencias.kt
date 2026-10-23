@@ -29,6 +29,9 @@ object Preferencias {
     private const val K_ONBOARDING_VISTO = "onboarding_visto"
     private const val K_ATUALIZACAO_AUTO = "atualizacao_automatica"
     private const val K_ULTIMA_VERSAO_VISTA = "ultima_versao_vista"
+    private const val K_AUTO_LIMPAR_RAM_JOGO = "auto_limpar_ram_jogo"
+    private const val K_SESSAO_FOCO_ATIVO = "sessao_foco_ativo"
+    private const val K_SESSAO_FOCO_FIM = "sessao_foco_fim"
 
     // ---- Tema ----
     fun temaEscuro(ctx: Context): Boolean =
@@ -119,6 +122,29 @@ object Preferencias {
 
     fun definirSilenciarMidia(ctx: Context, ativo: Boolean) {
         prefs(ctx).edit().putBoolean(K_SILENCIAR_MIDIA, ativo).apply()
+    }
+
+    // ---- Auto-limpeza de RAM ao abrir o jogo ----
+    fun autoLimparRamJogo(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(K_AUTO_LIMPAR_RAM_JOGO, false)
+
+    fun definirAutoLimparRamJogo(ctx: Context, ativo: Boolean) {
+        prefs(ctx).edit().putBoolean(K_AUTO_LIMPAR_RAM_JOGO, ativo).apply()
+    }
+
+    // ---- Sessão de foco (Pomodoro) ----
+    fun sessaoFocoAtiva(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(K_SESSAO_FOCO_ATIVO, false)
+
+    fun definirSessaoFocoAtiva(ctx: Context, ativo: Boolean) {
+        prefs(ctx).edit().putBoolean(K_SESSAO_FOCO_ATIVO, ativo).apply()
+    }
+
+    fun sessaoFocoFim(ctx: Context): Long =
+        prefs(ctx).getLong(K_SESSAO_FOCO_FIM, 0L)
+
+    fun definirSessaoFocoFim(ctx: Context, fim: Long) {
+        prefs(ctx).edit().putLong(K_SESSAO_FOCO_FIM, fim).apply()
     }
 
     /** Volume de mídia guardado antes de silenciar (-1 = nenhum). */

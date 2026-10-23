@@ -86,6 +86,8 @@ dependencies {
     implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
     // Tarefas periódicas em segundo plano (checagem automática de atualizações).
     implementation 'androidx.work:work-runtime-ktx:2.9.0'
+    // Migração gradual para DataStore (em andamento).
+    implementation 'androidx.datastore:datastore-preferences:1.1.1'
 
     testImplementation 'junit:junit:4.13.2'
     // Implementação real de org.json para os testes unitários (o stub do Android não funciona na JVM).

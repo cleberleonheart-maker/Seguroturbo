@@ -117,6 +117,11 @@
 
     <!-- Game Turbo -->
     <string name="gt_title">Game Turbo</string>
+    <string name="gt_auto_limpar_ram">Limpiar RAM automáticamente al activar Modo Juego</string>
+    <string name="gt_sessao_foco">Sesión de enfoque (Pomodoro)</string>
+    <string name="gt_sessao_foco_desc">25 minutos con No molestar activado</string>
+    <string name="gt_sessao_foco_iniciar">Iniciar</string>
+    <string name="gt_sessao_foco_encerrar">Finalizar</string>
     <string name="gt_game_mode_on">Modo Juego ACTIVADO</string>
     <string name="gt_game_mode_off">Modo Juego desactivado</string>
     <string name="gt_mode_desc">Recursos del sistema priorizados para los juegos</string>
