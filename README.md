@@ -57,6 +57,20 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.35
+
+- **Widget com limpar RAM**: um botão no widget da tela inicial limpa a memória
+  com um toque, sem abrir o app.
+- **Game Turbo mais automático**: opção de **limpar a RAM ao ativar o Modo
+  Jogo** e **sessão de foco (Pomodoro)** de 25 minutos ligada ao Não Perturbe.
+- **Play Integrity (avaliação local)**: a Segurança resume root, SELinux e
+  bootloader; a verificação completa continua sendo feita pelo Google Play.
+- **Alerta de patch de segurança**: avisa quando o patch está próximo do
+  vencimento (4+ meses) ou vencido (6+ meses), com peso maior no score.
+- **DataStore**: preferências, histórico e benchmark migrados para DataStore,
+  com migração automática dos dados antigos — mais robustos e sem perda.
+- **Baseline Profile** ampliado para as telas principais: abertura mais rápida.
+
 ## Novidades da versão 1.34
 
 - **Tema AMOLED**: modo escuro com **preto puro**, para economizar bateria em

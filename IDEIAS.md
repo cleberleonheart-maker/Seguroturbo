@@ -9,14 +9,14 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       câmera, microfone, SMS, localização etc.
 - [x] **Root/SELinux/bootloader** (v1.23): detecção ampliada de root, estado do SELinux
       (Enforcing/Permissive) e indícios de bootloader desbloqueado, com explicações.
-- [ ] **Play Integrity**: checar a integridade do dispositivo (quando integrável).
+- [x] **Play Integrity**: checar a integridade do dispositivo (quando integrável).
 - [x] **Detector de stalkerware/ratware** (v1.31): compara os pacotes instalados com
       uma lista local de apps espiões conhecidos e sinaliza combinações incomuns de
       permissões (SMS + localização + contatos/microfone); só usa PackageManager, sem
       permissão extra e sem enviar dados.
 - [x] **Perfil de risco por app** (v1.33): cruza `INTERNET` + permissões sensíveis e
       destaca os apps que combinam as duas coisas, sem coletar nada.
-- [ ] **Alertas temporais de segurança** (v1.31): avisar quando o patch de segurança do
+- [x] **Alertas temporais de segurança** (v1.31): avisar quando o patch de segurança do
       sistema estiver desatualizado há mais de X meses.
 - [ ] **Verificador de senhas vazadas (offline)** (v1.31): dicionário local, sem enviar
       nada pela rede — alinhado ao "sem coleta de dados".
@@ -33,10 +33,10 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       vídeos no Modo Jogo, sem afetar chamadas, alarmes e notificações.
 - [ ] **Perfil por jogo** (v1.30): salvar perfil de desempenho, Não Perturbe e trava de
       tela por app de jogo, em vez de uma configuração global.
-- [ ] **Auto-limpeza de RAM ao abrir o jogo** (v1.30): disparar a limpeza automaticamente
+- [x] **Auto-limpeza de RAM ao abrir o jogo** (v1.30): disparar a limpeza automaticamente
       quando o Modo Jogo liga (gancho no `GerenciadorRam.kt`).
 - [ ] **Turbo agendado** (v1.31): ativar o Modo Jogo automaticamente em horários definidos.
-- [ ] **Modo "Sessão de foco"** (v1.31): timer estilo Pomodoro ligado ao Não Perturbe.
+- [x] **Modo "Sessão de foco"** (v1.31): timer estilo Pomodoro ligado ao Não Perturbe.
 
 ## Benchmark
 
@@ -56,7 +56,7 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       conta nem nuvem — mantém o "sem coleta de dados".
 - [x] **Perfil de dispositivo** (v1.34): detecção read-only de work profile / Device
       Owner (aparelho gerenciado) na aba Segurança.
-- [ ] **Widgets adicionais**: mais atalhos na tela inicial (score de segurança, limpeza
+- [x] **Widgets adicionais**: mais atalhos na tela inicial (score de segurança, limpeza
       de RAM com um toque).
 - [x] **Atalhos dinâmicos** (v1.34): long-press no ícone → "Escanear", "Limpar RAM",
       "Testar rede".
@@ -66,11 +66,11 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 ## Qualidade / engenharia
 
 - [x] **Testes instrumentados** (Compose UI) para os fluxos principais (v1.27).
-- [ ] **Baseline Profiles** por módulo, para abertura ainda mais rápida.
+- [x] **Baseline Profiles** por módulo, para abertura ainda mais rápida.
 - [x] **Publicação automática do repo F-Droid no CI** (v1.31): workflow
       `.github/workflows/publicar-repo-fdroid.yml` regenera o índice assinado e publica
       no GitHub Pages logo após a release, fechando o ciclo sem passo manual.
-- [ ] **Migrar SharedPreferences → DataStore** (v1.31): manter os 3 stores, mais robustos.
+- [x] **Migrar SharedPreferences → DataStore** (v1.31): manter os 3 stores, mais robustos.
 - [ ] **Testes de snapshot Compose** (v1.31): Paparazzi/Roborazzi nos fluxos já testados.
 
 ## Distribuição / projeto

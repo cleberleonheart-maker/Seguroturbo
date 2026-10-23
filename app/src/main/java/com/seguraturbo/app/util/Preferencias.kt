@@ -7,11 +7,10 @@ import com.seguraturbo.app.model.TemaModo
 
 /**
  * Preferências simples do app (tema, tamanho da fonte e jogos otimizados),
- * persistidas em SharedPreferences.
+ * persistidas em DataStore (com migração automática das SharedPreferences antigas).
  */
 object Preferencias {
 
-    private const val PREFS = "seguraturbo_prefs"
     private const val K_TEMA_ESCURO = "tema_escuro"
     private const val K_TEMA_MODO = "tema_modo"
     private const val K_ESCALA_FONTE = "escala_fonte"
@@ -35,10 +34,10 @@ object Preferencias {
 
     // ---- Tema ----
     fun temaEscuro(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_TEMA_ESCURO, true)
+        Armazenamento.lerBooleano(ctx, K_TEMA_ESCURO, true)
 
     fun definirTemaEscuro(ctx: Context, escuro: Boolean) {
-        prefs(ctx).edit().putBoolean(K_TEMA_ESCURO, escuro).apply()
+        Armazenamento.gravarBooleano(ctx, K_TEMA_ESCURO, escuro)
     }
 
     /**
@@ -46,7 +45,7 @@ object Preferencias {
      * claro/escuro para preservar a preferência de quem já usava o app.
      */
     fun temaModo(ctx: Context): TemaModo {
-        val salvo = prefs(ctx).getString(K_TEMA_MODO, null)
+        val salvo = Armazenamento.lerTexto(ctx, K_TEMA_MODO, null)
         if (salvo != null) {
             runCatching { TemaModo.valueOf(salvo) }.getOrNull()?.let { return it }
         }
@@ -54,166 +53,168 @@ object Preferencias {
     }
 
     fun definirTemaModo(ctx: Context, modo: TemaModo) {
-        prefs(ctx).edit().putString(K_TEMA_MODO, modo.name).apply()
+        Armazenamento.gravarTexto(ctx, K_TEMA_MODO, modo.name)
     }
 
     // ---- Tamanho da fonte (1f = padrão) ----
     fun escalaFonte(ctx: Context): Float =
-        prefs(ctx).getFloat(K_ESCALA_FONTE, 1f)
+        Armazenamento.lerFloat(ctx, K_ESCALA_FONTE, 1f)
 
     fun definirEscalaFonte(ctx: Context, escala: Float) {
-        prefs(ctx).edit().putFloat(K_ESCALA_FONTE, escala).apply()
+        Armazenamento.gravarFloat(ctx, K_ESCALA_FONTE, escala)
     }
 
     // ---- Jogos otimizados (pacotes) ----
     fun jogosOtimizados(ctx: Context): Set<String> =
-        prefs(ctx).getStringSet(K_JOGOS_OTIMIZADOS, emptySet()) ?: emptySet()
+        Armazenamento.lerConjunto(ctx, K_JOGOS_OTIMIZADOS, emptySet())
 
     fun adicionarJogosOtimizados(ctx: Context, pacotes: Collection<String>) {
         val atual = jogosOtimizados(ctx).toMutableSet()
         atual.addAll(pacotes)
-        prefs(ctx).edit().putStringSet(K_JOGOS_OTIMIZADOS, atual).apply()
+        Armazenamento.gravarConjunto(ctx, K_JOGOS_OTIMIZADOS, atual)
     }
 
     // ---- Lembrete de verificação (notificação) ----
     fun lembreteAtivo(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_LEMBRETE, false)
+        Armazenamento.lerBooleano(ctx, K_LEMBRETE, false)
 
     fun definirLembreteAtivo(ctx: Context, ativo: Boolean) {
-        prefs(ctx).edit().putBoolean(K_LEMBRETE, ativo).apply()
+        Armazenamento.gravarBooleano(ctx, K_LEMBRETE, ativo)
     }
 
     // ---- Último score de segurança (usado pelo widget) ----
     /** Retorna o último score (0–100) ou -1 se nunca escaneou. */
     fun ultimoScore(ctx: Context): Int =
-        prefs(ctx).getInt(K_ULTIMO_SCORE, -1)
+        Armazenamento.lerInteiro(ctx, K_ULTIMO_SCORE, -1)
 
     fun definirUltimoScore(ctx: Context, score: Int) {
-        prefs(ctx).edit().putInt(K_ULTIMO_SCORE, score).apply()
+        Armazenamento.gravarInteiro(ctx, K_ULTIMO_SCORE, score)
     }
 
     // ---- Atualizações (versão que o usuário escolheu ignorar) ----
     fun versaoIgnorada(ctx: Context): String =
-        prefs(ctx).getString(K_VERSAO_IGNORADA, "") ?: ""
+        Armazenamento.lerTexto(ctx, K_VERSAO_IGNORADA, "") ?: ""
 
     fun definirVersaoIgnorada(ctx: Context, versao: String) {
-        prefs(ctx).edit().putString(K_VERSAO_IGNORADA, versao).apply()
+        Armazenamento.gravarTexto(ctx, K_VERSAO_IGNORADA, versao)
     }
 
     // ---- Não Perturbe automático no Game Turbo ----
     fun dndAuto(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_DND_AUTO, false)
+        Armazenamento.lerBooleano(ctx, K_DND_AUTO, false)
 
     fun definirDndAuto(ctx: Context, ativo: Boolean) {
-        prefs(ctx).edit().putBoolean(K_DND_AUTO, ativo).apply()
+        Armazenamento.gravarBooleano(ctx, K_DND_AUTO, ativo)
     }
 
     // ---- Bloqueio de tela (screen pinning) ao abrir um jogo ----
     fun travaTelaJogo(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_TRAVA_TELA_JOGO, false)
+        Armazenamento.lerBooleano(ctx, K_TRAVA_TELA_JOGO, false)
 
     fun definirTravaTelaJogo(ctx: Context, ativo: Boolean) {
-        prefs(ctx).edit().putBoolean(K_TRAVA_TELA_JOGO, ativo).apply()
+        Armazenamento.gravarBooleano(ctx, K_TRAVA_TELA_JOGO, ativo)
     }
 
     // ---- Silenciar só mídia no Modo Jogo ----
     fun silenciarMidia(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_SILENCIAR_MIDIA, false)
+        Armazenamento.lerBooleano(ctx, K_SILENCIAR_MIDIA, false)
 
     fun definirSilenciarMidia(ctx: Context, ativo: Boolean) {
-        prefs(ctx).edit().putBoolean(K_SILENCIAR_MIDIA, ativo).apply()
+        Armazenamento.gravarBooleano(ctx, K_SILENCIAR_MIDIA, ativo)
     }
 
     // ---- Auto-limpeza de RAM ao abrir o jogo ----
     fun autoLimparRamJogo(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_AUTO_LIMPAR_RAM_JOGO, false)
+        Armazenamento.lerBooleano(ctx, K_AUTO_LIMPAR_RAM_JOGO, false)
 
     fun definirAutoLimparRamJogo(ctx: Context, ativo: Boolean) {
-        prefs(ctx).edit().putBoolean(K_AUTO_LIMPAR_RAM_JOGO, ativo).apply()
+        Armazenamento.gravarBooleano(ctx, K_AUTO_LIMPAR_RAM_JOGO, ativo)
     }
 
     // ---- Sessão de foco (Pomodoro) ----
     fun sessaoFocoAtiva(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_SESSAO_FOCO_ATIVO, false)
+        Armazenamento.lerBooleano(ctx, K_SESSAO_FOCO_ATIVO, false)
 
     fun definirSessaoFocoAtiva(ctx: Context, ativo: Boolean) {
-        prefs(ctx).edit().putBoolean(K_SESSAO_FOCO_ATIVO, ativo).apply()
+        Armazenamento.gravarBooleano(ctx, K_SESSAO_FOCO_ATIVO, ativo)
     }
 
     fun sessaoFocoFim(ctx: Context): Long =
-        prefs(ctx).getLong(K_SESSAO_FOCO_FIM, 0L)
+        Armazenamento.lerLongo(ctx, K_SESSAO_FOCO_FIM, 0L)
 
     fun definirSessaoFocoFim(ctx: Context, fim: Long) {
-        prefs(ctx).edit().putLong(K_SESSAO_FOCO_FIM, fim).apply()
+        Armazenamento.gravarLongo(ctx, K_SESSAO_FOCO_FIM, fim)
     }
 
     /** Volume de mídia guardado antes de silenciar (-1 = nenhum). */
     fun volumeMidia(ctx: Context): Int =
-        prefs(ctx).getInt(K_VOLUME_MIDIA, -1)
+        Armazenamento.lerInteiro(ctx, K_VOLUME_MIDIA, -1)
 
     fun definirVolumeMidia(ctx: Context, volume: Int) {
-        prefs(ctx).edit().putInt(K_VOLUME_MIDIA, volume).apply()
+        Armazenamento.gravarInteiro(ctx, K_VOLUME_MIDIA, volume)
     }
 
     /** Modo de interrupção do sistema antes de o SeguroTurbo ativar o Não Perturbe. */
     fun filtroAnterior(ctx: Context): Int =
-        prefs(ctx).getInt(K_FILTRO_ANTERIOR, 1) // 1 = INTERRUPTION_FILTER_ALL
+        Armazenamento.lerInteiro(ctx, K_FILTRO_ANTERIOR, 1) // 1 = INTERRUPTION_FILTER_ALL
 
     fun definirFiltroAnterior(ctx: Context, filtro: Int) {
-        prefs(ctx).edit().putInt(K_FILTRO_ANTERIOR, filtro).apply()
+        Armazenamento.gravarInteiro(ctx, K_FILTRO_ANTERIOR, filtro)
     }
 
     // ---- Perfil de desempenho do Game Turbo ----
     fun perfilDesempenho(ctx: Context): PerfilDesempenho = runCatching {
         PerfilDesempenho.valueOf(
-            prefs(ctx).getString(K_PERFIL_DESEMPENHO, null) ?: PerfilDesempenho.EQUILIBRADO.name
+            Armazenamento.lerTexto(ctx, K_PERFIL_DESEMPENHO, PerfilDesempenho.EQUILIBRADO.name)
+                ?: PerfilDesempenho.EQUILIBRADO.name
         )
     }.getOrDefault(PerfilDesempenho.EQUILIBRADO)
 
     fun definirPerfilDesempenho(ctx: Context, perfil: PerfilDesempenho) {
-        prefs(ctx).edit().putString(K_PERFIL_DESEMPENHO, perfil.name).apply()
+        Armazenamento.gravarTexto(ctx, K_PERFIL_DESEMPENHO, perfil.name)
     }
 
     // ---- Perfil de uso (preset que aplica várias preferências) ----
     fun perfilUso(ctx: Context): PerfilUso = runCatching {
         PerfilUso.valueOf(
-            prefs(ctx).getString(K_PERFIL_USO, null) ?: PerfilUso.PADRAO.name
+            Armazenamento.lerTexto(ctx, K_PERFIL_USO, PerfilUso.PADRAO.name)
+                ?: PerfilUso.PADRAO.name
         )
     }.getOrDefault(PerfilUso.PADRAO)
 
     fun definirPerfilUso(ctx: Context, perfil: PerfilUso) {
-        prefs(ctx).edit().putString(K_PERFIL_USO, perfil.name).apply()
+        Armazenamento.gravarTexto(ctx, K_PERFIL_USO, perfil.name)
     }
 
     // ---- Onboarding (tela de boas-vindas exibida só no primeiro uso) ----
     fun onboardingVisto(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_ONBOARDING_VISTO, false)
+        Armazenamento.lerBooleano(ctx, K_ONBOARDING_VISTO, false)
 
     fun definirOnboardingVisto(ctx: Context, visto: Boolean) {
-        prefs(ctx).edit().putBoolean(K_ONBOARDING_VISTO, visto).apply()
+        Armazenamento.gravarBooleano(ctx, K_ONBOARDING_VISTO, visto)
     }
 
     // ---- Checagem automática de atualizações (em segundo plano) ----
     fun atualizacaoAutomatica(ctx: Context): Boolean =
-        prefs(ctx).getBoolean(K_ATUALIZACAO_AUTO, false)
+        Armazenamento.lerBooleano(ctx, K_ATUALIZACAO_AUTO, false)
 
     fun definirAtualizacaoAutomatica(ctx: Context, ativo: Boolean) {
-        prefs(ctx).edit().putBoolean(K_ATUALIZACAO_AUTO, ativo).apply()
+        Armazenamento.gravarBooleano(ctx, K_ATUALIZACAO_AUTO, ativo)
     }
 
     // ---- Última versão cujo changelog já foi mostrado (novidades "ao atualizar") ----
     fun ultimaVersaoVista(ctx: Context): String =
-        prefs(ctx).getString(K_ULTIMA_VERSAO_VISTA, "") ?: ""
+        Armazenamento.lerTexto(ctx, K_ULTIMA_VERSAO_VISTA, "") ?: ""
 
     fun definirUltimaVersaoVista(ctx: Context, versao: String) {
-        prefs(ctx).edit().putString(K_ULTIMA_VERSAO_VISTA, versao).apply()
+        Armazenamento.gravarTexto(ctx, K_ULTIMA_VERSAO_VISTA, versao)
     }
 
     // ---- Backup / restauração ----
     /** Todas as preferências, prontas para serializar em JSON. */
     internal fun paraJson(ctx: Context): org.json.JSONObject {
         val obj = org.json.JSONObject()
-        prefs(ctx).all.forEach { (chave, valor) ->
+        Armazenamento.todos(ctx).forEach { (chave, valor) ->
             when (valor) {
                 is Set<*> -> obj.put(chave, org.json.JSONArray(valor.toList()))
                 else -> obj.put(chave, valor)
@@ -224,24 +225,20 @@ object Preferencias {
 
     /** Restaura as preferências a partir do JSON (mantém o que não vier no arquivo). */
     internal fun deJson(ctx: Context, obj: org.json.JSONObject) {
-        val editor = prefs(ctx).edit()
         obj.keys().forEach { chave ->
             when (val valor = obj.get(chave)) {
-                is Boolean -> editor.putBoolean(chave, valor)
-                is Int -> editor.putInt(chave, valor)
-                is Long -> editor.putLong(chave, valor)
-                is Float -> editor.putFloat(chave, valor)
-                is Double -> editor.putFloat(chave, valor.toFloat())
-                is String -> editor.putString(chave, valor)
+                is Boolean -> Armazenamento.gravarBooleano(ctx, chave, valor)
+                is Int -> Armazenamento.gravarInteiro(ctx, chave, valor)
+                is Long -> Armazenamento.gravarLongo(ctx, chave, valor)
+                is Float -> Armazenamento.gravarFloat(ctx, chave, valor)
+                is Double -> Armazenamento.gravarFloat(ctx, chave, valor.toFloat())
+                is String -> Armazenamento.gravarTexto(ctx, chave, valor)
                 is org.json.JSONArray -> {
                     val conjunto = mutableSetOf<String>()
                     for (i in 0 until valor.length()) conjunto.add(valor.getString(i))
-                    editor.putStringSet(chave, conjunto)
+                    Armazenamento.gravarConjunto(ctx, chave, conjunto)
                 }
             }
         }
-        editor.apply()
     }
-
-    private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 }

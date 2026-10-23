@@ -5,18 +5,17 @@ import com.seguraturbo.app.model.HistoricoEntrada
 
 /**
  * Guarda o histórico de ações (scans, limpezas, benchmarks, turbo) no próprio
- * dispositivo usando SharedPreferences — sem dependências externas (Room/DataStore).
+ * dispositivo usando DataStore (com migração automática das SharedPreferences antigas).
  */
 object HistoricoStore {
 
-    private const val PREFS = "seguraturbo_historico"
     private const val CHAVE = "entradas"
     private const val MAXIMO = 20
     private const val SEP = "\u001F"
     private const val QUEBRA = "\n"
 
     fun listar(ctx: Context): List<HistoricoEntrada> {
-        val bruto = prefs(ctx).getString(CHAVE, "") ?: ""
+        val bruto = Armazenamento.lerTexto(ctx, CHAVE, "") ?: ""
         if (bruto.isBlank()) return emptyList()
         return bruto.split(QUEBRA).mapNotNull { linha ->
             val partes = linha.split(SEP)
@@ -40,11 +39,11 @@ object HistoricoStore {
             listOf(it.tipo.name, it.data.toString(), sanitizar(it.titulo), sanitizar(it.detalhe))
                 .joinToString(SEP)
         }
-        prefs(ctx).edit().putString(CHAVE, texto).apply()
+        Armazenamento.gravarTexto(ctx, CHAVE, texto)
     }
 
     fun limpar(ctx: Context) {
-        prefs(ctx).edit().remove(CHAVE).apply()
+        Armazenamento.remover(ctx, CHAVE)
     }
 
     // ---- Backup / restauração ----
@@ -60,7 +59,7 @@ object HistoricoStore {
 
     internal fun definir(ctx: Context, lista: List<HistoricoEntrada>) {
         val limitada = lista.sortedByDescending { it.data }.take(MAXIMO)
-        prefs(ctx).edit().putString(CHAVE, serializar(limitada)).apply()
+        Armazenamento.gravarTexto(ctx, CHAVE, serializar(limitada))
     }
 
     /** Converte as entradas para JSON (função pura, testável sem Android). */
@@ -99,6 +98,4 @@ object HistoricoStore {
         }
 
     private fun sanitizar(texto: String) = texto.replace(SEP, " ").replace(QUEBRA, " ")
-
-    private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 }

@@ -431,10 +431,18 @@
         <item>Alert filtering by category on the Security screen, with a count per type.</item>
         <item>Read-only detection of managed device and work profile.</item>
         <item>Icon shortcuts (long press): Scan, Free RAM and Test network.</item>
-        <item>Widget with RAM clear button.</item>
-        <item>Game Turbo: auto-clear RAM on Game Mode and Pomodoro focus session.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_35_novidades">
+        <item>Widget with a one-tap RAM clear button.</item>
+        <item>Game Turbo: automatic RAM cleanup when enabling Game Mode.</item>
+        <item>Focus session (Pomodoro): 25 minutes with Do Not Disturb enabled.</item>
+        <item>Local Play Integrity assessment on the Security screen.</item>
+        <item>Alert when the security patch is nearing expiry or expired.</item>
+        <item>Preferences, history and benchmark migrated to DataStore, more robust.</item>
+        <item>Expanded Baseline Profile for the main screens (faster startup).</item>
+    </string-array>
+    <string-array name="changelog_1_35_correcoes" />
     <string name="sec_play_integrity_titulo">Integrity (Play Integrity)</string>
     <string name="sec_play_integrity_desc">Local assessment based on root, bootloader and SELinux. Full verification is done by Google Play.</string>
     <string name="sec_play_integrity_ok">No strong signs of compromise</string>

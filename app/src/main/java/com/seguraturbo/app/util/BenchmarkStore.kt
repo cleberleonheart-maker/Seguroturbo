@@ -4,18 +4,17 @@ import android.content.Context
 
 /**
  * Guarda o histórico de pontuações do benchmark (lista de totais) para o gráfico.
- * Persistido em SharedPreferences.
+ * Persistido em DataStore (com migração automática das SharedPreferences antigas).
  */
 object BenchmarkStore {
 
-    private const val PREFS = "seguraturbo_bench"
     private const val CHAVE = "pontuacoes"
     private const val MAXIMO = 20
     private const val SEP = ","
 
     /** Retorna as pontuações da mais antiga para a mais recente. */
     fun listar(ctx: Context): List<Int> {
-        val bruto = prefs(ctx).getString(CHAVE, "") ?: ""
+        val bruto = Armazenamento.lerTexto(ctx, CHAVE, "") ?: ""
         if (bruto.isBlank()) return emptyList()
         return bruto.split(SEP).mapNotNull { it.trim().toIntOrNull() }
     }
@@ -24,12 +23,10 @@ object BenchmarkStore {
         val lista = listar(ctx).toMutableList()
         lista.add(total)
         while (lista.size > MAXIMO) lista.removeAt(0)
-        prefs(ctx).edit().putString(CHAVE, lista.joinToString(SEP)).apply()
+        Armazenamento.gravarTexto(ctx, CHAVE, lista.joinToString(SEP))
     }
 
     fun limpar(ctx: Context) {
-        prefs(ctx).edit().remove(CHAVE).apply()
+        Armazenamento.remover(ctx, CHAVE)
     }
-
-    private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 }
