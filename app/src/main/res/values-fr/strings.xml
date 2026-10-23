@@ -228,6 +228,8 @@
     <string name="notif_texto">Ouvrez SeguroTurbo et lancez une nouvelle analyse de sécurité.</string>
     <string name="widget_acao">Toucher pour ouvrir</string>
     <string name="widget_sem_dados">Aucune donnée</string>
+    <string name="widget_limpar_ram">Vider la RAM</string>
+    <string name="widget_limpar_ram_ok">RAM vidée</string>
 
     <!-- Composants / Historique -->
     <string name="hist_title">Historique</string>

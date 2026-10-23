@@ -228,6 +228,8 @@
     <string name="notif_texto">Abra o SeguroTurbo e faça uma nova varredura de segurança.</string>
     <string name="widget_acao">Toque para abrir</string>
     <string name="widget_sem_dados">Sem dados</string>
+    <string name="widget_limpar_ram">Limpar RAM</string>
+    <string name="widget_limpar_ram_ok">RAM limpa</string>
 
     <!-- Componentes / Histórico -->
     <string name="hist_title">Histórico</string>

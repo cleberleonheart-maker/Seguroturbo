@@ -228,6 +228,8 @@
     <string name="notif_texto">Abre SeguroTurbo y haz un nuevo escaneo de seguridad.</string>
     <string name="widget_acao">Toca para abrir</string>
     <string name="widget_sem_dados">Sin datos</string>
+    <string name="widget_limpar_ram">Limpiar RAM</string>
+    <string name="widget_limpar_ram_ok">RAM liberada</string>
 
     <!-- Componentes / Historial -->
     <string name="hist_title">Historial</string>

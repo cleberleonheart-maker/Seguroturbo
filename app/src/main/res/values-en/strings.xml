@@ -228,6 +228,8 @@
     <string name="notif_texto">Open SeguroTurbo and run a new security scan.</string>
     <string name="widget_acao">Tap to open</string>
     <string name="widget_sem_dados">No data</string>
+    <string name="widget_limpar_ram">Clear RAM</string>
+    <string name="widget_limpar_ram_ok">RAM cleared</string>
 
     <!-- Componentes / Histórico -->
     <string name="hist_title">History</string>

@@ -130,6 +130,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.seguraturbo.app.widget.LIMPAR_RAM" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
