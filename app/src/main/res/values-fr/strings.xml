@@ -431,6 +431,12 @@
         <item>Filtrage des alertes par catégorie sur l\'écran Sécurité, avec un compteur par type.</item>
         <item>Détection (lecture seule) d\'appareil géré et de profil de travail.</item>
         <item>Raccourcis de l\'icône (appui long) : Analyser, Libérer la RAM et Tester le réseau.</item>
+        <item>Widget avec bouton pour vider la RAM.</item>
+        <item>Game Turbo : vidage auto de la RAM en mode jeu et session de focus Pomodoro.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string name="sec_play_integrity_titulo">Intégrité (Play Integrity)</string>
+    <string name="sec_play_integrity_desc">Évaluation locale basée sur root, bootloader et SELinux. La vérification complète est faite par Google Play.</string>
+    <string name="sec_play_integrity_ok">Aucun signe fort de compromission</string>
+    <string name="sec_play_integrity_alerta">Signes pouvant affecter l\'intégrité de l\'appareil</string>
 </resources>
