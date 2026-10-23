@@ -560,7 +560,7 @@ async function fetchOnline(url, opts, ms){
 const FDOID_BASE = "https://cleberleonheart-maker.github.io/seguraturbo-fdroid/";
 // versao do CONTEUDO do jogo: muda quando eu publico uma versao nova.
 // o app Android usa esse marcador para saber se o jogo precisa ser atualizado.
-const GAME_BUILD = "2026-10-22.12";
+const GAME_BUILD = "2026-10-22.13";
 const GAME_COMMIT_API = "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/commits?path=galinha-assada/index.html&per_page=1";
 const SHA_KEY = "galinhaAssadaSha";
 const GAME_CONTENT_URLS = [
@@ -610,7 +610,13 @@ function decodeContent(txt){
   if (t.charAt(0) === "{" && t.indexOf('"content"') > 0){
     try {
       const d = JSON.parse(t);
-      if (d && d.encoding === "base64" && d.content) return atob(d.content.replace(/\s/g, ""));
+      if (d && d.encoding === "base64" && d.content){
+        // atob devolve bytes como latin-1; o arquivo e UTF-8 (acentos!)
+        const bin = atob(d.content.replace(/\s/g, ""));
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i) & 255;
+        try { return new TextDecoder("utf-8").decode(bytes); } catch (e){ return bin; }
+      }
     } catch (e) { }
   }
   return t;
@@ -627,6 +633,8 @@ async function fetchGameContent(){
       const txt = decodeContent(await r.text());
       const b = buildOf(txt);
       if (!b) throw new Error("resposta sem marcador");
+      // se os acentos vieram trocados (ex.: "MissÃ£o"), tenta a proxima URL
+      if (/[ÃÂ][\u0080-\u00BF]/.test(txt)) throw new Error("acentos corrompidos");
       return { build: b, text: txt, url: u };
     } catch (e){ erro = e; }
   }

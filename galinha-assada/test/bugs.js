@@ -222,6 +222,20 @@ g.setSkin("classica");
   const auto2 = await g.autoContentUpdate();
   check("no menu, a atualizacao automatica aplica", auto2 === true && salvos === 1, "salvou " + salvos);
 
+  // acentos no download: o JSON da API vem em base64 e o arquivo e UTF-8
+  shaAtual = "sha-acentos";
+  const comAcento = '<html><script>const GAME_BUILD = "9999-01-01.2";</' + 'script><p>Missão, coração, açaí</p></html>';
+  global.fetch = async function(u){
+    const s = String(u);
+    if (s.indexOf("commits") >= 0) return { ok:true, status:200, json: async () => [{ sha:shaAtual }] };
+    if (s.indexOf("contents") >= 0) return { ok:true, status:200, text: async () => JSON.stringify({
+      encoding:"base64", content: Buffer.from(comAcento, "utf8").toString("base64") }) };
+    return { ok:false, status:404, text: async () => "" };
+  };
+  const updAcento = await g.checkContentUpdate();
+  check("o download nao estraga os acentos", updAcento && updAcento.text.indexOf("Missão") >= 0 && updAcento.text.indexOf("Ã") < 0,
+        updAcento ? updAcento.text.slice(0, 60) : "null");
+
   global.fetch = realFetch;
   delete global.AndroidUpdate;
 
