@@ -431,6 +431,12 @@
         <item>Filtro de alertas por categoria na tela de Segurança, com contagem por tipo.</item>
         <item>Detecção (somente leitura) de aparelho gerenciado e perfil de trabalho.</item>
         <item>Atalhos no ícone (toque longo): Escanear, Limpar RAM e Testar rede.</item>
+        <item>Widget com botão Limpar RAM.</item>
+        <item>Game Turbo: auto-limpar RAM ao ativar Modo Jogo e sessão de foco Pomodoro.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string name="sec_play_integrity_titulo">Integridade (Play Integrity)</string>
+    <string name="sec_play_integrity_desc">Avaliação local com base em root, bootloader e SELinux. A verificação completa é feita pelo Google Play.</string>
+    <string name="sec_play_integrity_ok">Sem indícios fortes de comprometimento</string>
+    <string name="sec_play_integrity_alerta">Indícios que podem afetar a integridade do dispositivo</string>
 </resources>

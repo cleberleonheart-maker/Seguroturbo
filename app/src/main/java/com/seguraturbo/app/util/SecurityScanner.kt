@@ -215,6 +215,23 @@ object SecurityScanner {
         }
         val ameacas = mutableListOf<Threat>()
 
+        // Play Integrity (avaliação local baseada em integridade do sistema)
+        val integridadeOk = !diag.rooteado && diag.selinux != IntegridadeSistema.Selinux.PERMISSIVE && !diag.bootloaderSuspeito
+        ameacas += Threat(
+            nome = if (integridadeOk) "Play Integrity: OK" else "Play Integrity: Atenção",
+            tipo = "INTEGRIDADE",
+            risco = if (integridadeOk) "BAIXO" else "MÉDIO",
+            descricao = if (integridadeOk) {
+                "Avaliação local: sem indícios fortes de comprometimento (root/bootloader/SELinux). " +
+                    "A verificação completa do Play Integrity é feita pelo Google Play em apps que a exigem."
+            } else {
+                "Avaliação local encontrou indícios que podem reduzir a integridade do dispositivo " +
+                    "(root, SELinux em permissivo ou build modificado). A verificação completa " +
+                    "do Play Integrity é feita pelo Google Play em apps que a exigem."
+            },
+            peso = if (integridadeOk) 0 else 8
+        )
+
         if (diag.rooteado) {
             ameacas += Threat(
                 nome = "Acesso root detectado",
