@@ -13,6 +13,11 @@ import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.WindowManager
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import android.net.TrafficStats
+import android.view.Choreographer
 import java.io.File
 import java.io.FileOutputStream
 
@@ -193,3 +198,66 @@ object BarraJogo {
     fun duracaoGravacao(): Int =
         if (gravando) ((System.currentTimeMillis() - inicioGravacao) / 1000L).toInt() else 0
 }
+
+    // Monitor FPS e Rede em tempo real
+    var mostrarFpsRede by mutableStateOf(false)
+    private var ultimoFrameTime = 0L
+    private var frames = 0
+    private var fpsAtual = 0f
+    private val frameCallback = object : android.view.Choreographer.FrameCallback {
+        override fun doFrame(frameTimeNanos: Long) {
+            frames++
+            val agora = frameTimeNanos / 1_000_000L
+            if (ultimoFrameTime == 0L) ultimoFrameTime = agora
+            if (agora - ultimoFrameTime >= 1000) {
+                fpsAtual = frames * 1000f / (agora - ultimoFrameTime)
+                frames = 0
+                ultimoFrameTime = agora
+            }
+            android.view.Choreographer.getInstance().postFrameCallback(this)
+        }
+    }
+
+    fun iniciarMonitorFps() {
+        try {
+            android.view.Choreographer.getInstance().postFrameCallback(frameCallback)
+        } catch (_: Exception) {}
+    }
+
+    fun pararMonitorFps() {
+        try {
+            android.view.Choreographer.getInstance().removeFrameCallback(frameCallback)
+        } catch (_: Exception) {}
+        fpsAtual = 0f
+        frames = 0
+        ultimoFrameTime = 0L
+    }
+
+    fun fps(): Float = fpsAtual
+
+    private var rxAnt = 0L
+    private var txAnt = 0L
+    private var tempoRede = 0L
+    private var rxKbps = 0f
+    private var txKbps = 0f
+
+    fun atualizarRede() {
+        try {
+            val rx = android.net.TrafficStats.getTotalRxBytes()
+            val tx = android.net.TrafficStats.getTotalTxBytes()
+            val agora = System.currentTimeMillis()
+            if (tempoRede > 0 && agora - tempoRede > 0) {
+                val dt = (agora - tempoRede) / 1000f
+                rxKbps = (rx - rxAnt).toFloat() / 1024f / dt
+                txKbps = (tx - txAnt).toFloat() / 1024f / dt
+                if (rxKbps < 0) rxKbps = 0f
+                if (txKbps < 0) txKbps = 0f
+            }
+            rxAnt = rx
+            txAnt = tx
+            tempoRede = agora
+        } catch (_: Exception) {}
+    }
+
+    fun redeRxKbps(): Float = rxKbps
+    fun redeTxKbps(): Float = txKbps

@@ -17,6 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seguraturbo.app.R
 import com.seguraturbo.app.model.BenchmarkResult
@@ -36,6 +40,7 @@ import com.seguraturbo.app.ui.components.HistoricoSecao
 import com.seguraturbo.app.ui.components.LinhaInfo
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.components.TesteToqueDialog
+import com.seguraturbo.app.ui.components.TesteBateriaDialog
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.DeviceInfo
 import com.seguraturbo.app.util.AtalhoAcao
@@ -159,6 +164,8 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
         item { CartaoRede(vm) }
 
         item { CartaoToque(vm) }
+
+        item { CartaoBateriaTeste(vm) }
 
         if (vm.pontuacoes.isNotEmpty()) {
             val comparacao = Comparacao.resumo(vm.pontuacoes, vm.resultado?.total)
@@ -364,6 +371,24 @@ private fun compartilhar(ctx: Context, r: BenchmarkResult, info: DeviceInfo.Info
     } else {
         val uri = RelatorioImagem.gerar(ctx, titulo, subtitulo, null, linhas) ?: return
         RelatorioImagem.compartilhar(ctx, uri, rotulo)
+    }
+}
+
+@Composable
+private fun CartaoBateriaTeste(vm: BenchmarkViewModel) {
+    val contexto = LocalContext.current
+    var mostrar by remember { mutableStateOf(false) }
+    CartaoFuturista {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Teste de consumo de bateria", color = Cores.TextoClaro, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                Text("Mede a drenagem em 10 minutos", color = Cores.TextoCinza, fontSize = 12.sp)
+            }
+            BotaoNeon(texto = "Testar", onClick = { mostrar = true }, modifier = Modifier.height(40.dp))
+        }
+    }
+    if (mostrar) {
+        TesteBateriaDialog { mostrar = false }
     }
 }
 
