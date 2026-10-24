@@ -1,0 +1,1 @@
+# formato: PREFIXO:SUFIXO (SHA-1 k-anonymity)

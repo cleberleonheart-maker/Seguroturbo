@@ -241,4 +241,51 @@ object Preferencias {
             }
         }
     }
+
+    // ---- Turbo agendado ----
+    private const val K_TURBO_AGENDADO_ATIVO = "turbo_agendado_ativo"
+    private const val K_TURBO_AGENDADO_HORA_LIGAR = "turbo_agendado_hora_ligar"
+    private const val K_TURBO_AGENDADO_MIN_LIGAR = "turbo_agendado_min_ligar"
+    private const val K_TURBO_AGENDADO_HORA_DESLIGAR = "turbo_agendado_hora_desligar"
+    private const val K_TURBO_AGENDADO_MIN_DESLIGAR = "turbo_agendado_min_desligar"
+
+    fun turboAgendadoAtivo(ctx: Context): Boolean =
+        Armazenamento.lerBooleano(ctx, K_TURBO_AGENDADO_ATIVO, false)
+
+    fun definirTurboAgendadoAtivo(ctx: Context, ativo: Boolean) {
+        Armazenamento.gravarBooleano(ctx, K_TURBO_AGENDADO_ATIVO, ativo)
+        if (ativo) TurboAgendador.agendar(ctx) else TurboAgendador.cancelar(ctx)
+    }
+
+    fun turboAgendadoHoraLigar(ctx: Context): Int =
+        Armazenamento.lerInteiro(ctx, K_TURBO_AGENDADO_HORA_LIGAR, 18)
+
+    fun definirTurboAgendadoHoraLigar(ctx: Context, hora: Int) {
+        Armazenamento.gravarInteiro(ctx, K_TURBO_AGENDADO_HORA_LIGAR, hora)
+        if (turboAgendadoAtivo(ctx)) TurboAgendador.agendar(ctx)
+    }
+
+    fun turboAgendadoMinLigar(ctx: Context): Int =
+        Armazenamento.lerInteiro(ctx, K_TURBO_AGENDADO_MIN_LIGAR, 0)
+
+    fun definirTurboAgendadoMinLigar(ctx: Context, min: Int) {
+        Armazenamento.gravarInteiro(ctx, K_TURBO_AGENDADO_MIN_LIGAR, min)
+        if (turboAgendadoAtivo(ctx)) TurboAgendador.agendar(ctx)
+    }
+
+    fun turboAgendadoHoraDesligar(ctx: Context): Int =
+        Armazenamento.lerInteiro(ctx, K_TURBO_AGENDADO_HORA_DESLIGAR, 23)
+
+    fun definirTurboAgendadoHoraDesligar(ctx: Context, hora: Int) {
+        Armazenamento.gravarInteiro(ctx, K_TURBO_AGENDADO_HORA_DESLIGAR, hora)
+        if (turboAgendadoAtivo(ctx)) TurboAgendador.agendar(ctx)
+    }
+
+    fun turboAgendadoMinDesligar(ctx: Context): Int =
+        Armazenamento.lerInteiro(ctx, K_TURBO_AGENDADO_MIN_DESLIGAR, 0)
+
+    fun definirTurboAgendadoMinDesligar(ctx: Context, min: Int) {
+        Armazenamento.gravarInteiro(ctx, K_TURBO_AGENDADO_MIN_DESLIGAR, min)
+        if (turboAgendadoAtivo(ctx)) TurboAgendador.agendar(ctx)
+    }
 }

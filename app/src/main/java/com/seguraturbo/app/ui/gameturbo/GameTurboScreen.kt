@@ -23,6 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +48,7 @@ import com.seguraturbo.app.ui.components.BarraProgressoNeon
 import com.seguraturbo.app.ui.components.BotaoNeon
 import com.seguraturbo.app.ui.components.CartaoFuturista
 import com.seguraturbo.app.ui.components.HistoricoSecao
+import com.seguraturbo.app.ui.components.HoraDialog
 import com.seguraturbo.app.ui.components.LimpezaRamDialog
 import com.seguraturbo.app.ui.components.SeloStatus
 import com.seguraturbo.app.ui.components.TituloSecao
@@ -122,6 +127,7 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         item { CartaoSilenciarMidia(vm) }
         item { CartaoAutoLimparRam(vm) }
         item { CartaoSessaoFoco(vm) }
+        item { CartaoTurboAgendado(vm) }
 
         item {
             BotaoNeon(
@@ -563,6 +569,78 @@ private fun CartaoAutoLimparRam(vm: GameTurboViewModel) {
                 onCheckedChange = { vm.definirAutoLimparRamJogo(it) }
             )
         }
+    }
+}
+
+@Composable
+private fun CartaoTurboAgendado(vm: GameTurboViewModel) {
+    var editandoLigar by remember { mutableStateOf(false) }
+    var editandoDesligar by remember { mutableStateOf(false) }
+
+    fun fmt(h: Int, m: Int) = String.format(java.util.Locale.getDefault(), "%02d:%02d", h, m)
+
+    CartaoFuturista {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Turbo agendado",
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    "Liga o Modo Jogo no horário escolhido e desliga no fim.",
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+            }
+            Switch(
+                checked = vm.turboAgendadoAtivo,
+                onCheckedChange = { vm.definirTurboAgendadoAtivo(it) }
+            )
+        }
+        if (vm.turboAgendadoAtivo) {
+            Spacer(Modifier.height(10.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                BotaoNeon(
+                    texto = "Ligar ${fmt(vm.turboHoraLigar, vm.turboMinLigar)}",
+                    onClick = { editandoLigar = true },
+                    cor = Cores.Verde,
+                    modifier = Modifier.weight(1f)
+                )
+                BotaoNeon(
+                    texto = "Desligar ${fmt(vm.turboHoraDesligar, vm.turboMinDesligar)}",
+                    onClick = { editandoDesligar = true },
+                    cor = Cores.Amarelo,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+
+    if (editandoLigar) {
+        HoraDialog(
+            titulo = "Hora de ligar o Modo Jogo",
+            horaInicial = vm.turboHoraLigar,
+            minutoInicial = vm.turboMinLigar,
+            onConfirmar = { h, m ->
+                vm.definirTurboHoraLigar(h, m)
+                editandoLigar = false
+            },
+            onDismiss = { editandoLigar = false }
+        )
+    }
+    if (editandoDesligar) {
+        HoraDialog(
+            titulo = "Hora de desligar o Modo Jogo",
+            horaInicial = vm.turboHoraDesligar,
+            minutoInicial = vm.turboMinDesligar,
+            onConfirmar = { h, m ->
+                vm.definirTurboHoraDesligar(h, m)
+                editandoDesligar = false
+            },
+            onDismiss = { editandoDesligar = false }
+        )
     }
 }
 

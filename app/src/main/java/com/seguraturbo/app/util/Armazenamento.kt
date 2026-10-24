@@ -66,9 +66,14 @@ object Armazenamento {
 
     /** Todas as chaves/valores atuais (para backup). */
     fun todos(ctx: Context): Map<String, Any> = runBlocking {
-        dados(ctx).asMap()
-            .filterKeys { it.name != CHAVE_MIGRADO }
-            .mapValues { (_, valor) -> valor ?: "" }
+        val mapa = dados(ctx).asMap()
+        val res = mutableMapOf<String, Any>()
+        for ((k, valor) in mapa) {
+            val nome = k.name
+            if (nome == CHAVE_MIGRADO) continue
+            res[nome] = valor ?: ""
+        }
+        res
     }
 
     // ---- Escrita ----

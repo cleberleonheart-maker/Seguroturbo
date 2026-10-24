@@ -52,6 +52,7 @@ import com.seguraturbo.app.ui.components.DetalheAmeacaDialog
 import com.seguraturbo.app.ui.components.HistoricoSecao
 import com.seguraturbo.app.ui.components.PermissoesDialog
 import com.seguraturbo.app.ui.components.SeloStatus
+import com.seguraturbo.app.ui.components.SenhasVazadasDialog
 import com.seguraturbo.app.ui.components.TituloSecao
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.AcoesSistema
@@ -67,6 +68,7 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
     val contexto = LocalContext.current
     var selecionada by remember { mutableStateOf<Threat?>(null) }
     var mostrarPermissoes by remember { mutableStateOf(false) }
+    var mostrarSenhasVazadas by remember { mutableStateOf(false) }
 
     // Atalho "Escanear" do ícone: dispara a varredura ao abrir a tela.
     LaunchedEffect(Unit) {
@@ -219,6 +221,9 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
 
     if (mostrarPermissoes) {
         PermissoesDialog(onFechar = { mostrarPermissoes = false })
+    }
+    if (mostrarSenhasVazadas) {
+        SenhasVazadasDialog { mostrarSenhasVazadas = false }
     }
 }
 
@@ -378,6 +383,23 @@ private fun ChipsFiltroCategoria(vm: SegurancaViewModel) {
                     vm.categoriaFiltro = if (selecionada == categoria) null else categoria
                 }
             )
+        }
+    }
+}
+
+@Composable
+private fun CartaoSenhasVazadas(onAbrir: () -> Unit) {
+    CartaoFuturista(onClick = onAbrir) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Verificador de senhas vazadas", color = Cores.TextoClaro, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(2.dp))
+                Text("Verificação 100% offline. Compara hash SHA-1 localmente.", color = Cores.TextoCinza, fontSize = 12.sp)
+                Spacer(Modifier.height(4.dp))
+                Text("Toque para verificar", color = Cores.Ciano, fontSize = 11.sp)
+            }
+            Spacer(Modifier.width(10.dp))
+            SeloStatus("OFFLINE", Cores.Verde)
         }
     }
 }

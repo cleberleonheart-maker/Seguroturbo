@@ -61,6 +61,13 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     /** Temperatura da bateria em °C (null se o sistema não informar). */
     var temperatura by mutableStateOf<Float?>(null)
 
+    // ---- Turbo agendado ----
+    var turboAgendadoAtivo by mutableStateOf(false)
+    var turboHoraLigar by mutableStateOf(18)
+    var turboMinLigar by mutableStateOf(0)
+    var turboHoraDesligar by mutableStateOf(23)
+    var turboMinDesligar by mutableStateOf(0)
+
     /** Memória do aparelho (total/livre em MB) para o cartão de limpeza de RAM. */
     var memoria by mutableStateOf(GerenciadorRam.Memoria(0L, 0L))
 
@@ -87,6 +94,37 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         silenciarMidia = Preferencias.silenciarMidia(getApplication<Application>())
         autoLimparRamJogo = Preferencias.autoLimparRamJogo(getApplication<Application>())
         carregarSessaoFoco()
+        carregarTurboAgendado()
+    }
+
+    private fun carregarTurboAgendado() {
+        val app = getApplication<Application>()
+        turboAgendadoAtivo = Preferencias.turboAgendadoAtivo(app)
+        turboHoraLigar = Preferencias.turboAgendadoHoraLigar(app)
+        turboMinLigar = Preferencias.turboAgendadoMinLigar(app)
+        turboHoraDesligar = Preferencias.turboAgendadoHoraDesligar(app)
+        turboMinDesligar = Preferencias.turboAgendadoMinDesligar(app)
+    }
+
+    fun definirTurboAgendadoAtivo(ativo: Boolean) {
+        turboAgendadoAtivo = ativo
+        Preferencias.definirTurboAgendadoAtivo(getApplication<Application>(), ativo)
+    }
+
+    fun definirTurboHoraLigar(hora: Int, minuto: Int) {
+        turboHoraLigar = hora
+        turboMinLigar = minuto
+        val app = getApplication<Application>()
+        Preferencias.definirTurboAgendadoHoraLigar(app, hora)
+        Preferencias.definirTurboAgendadoMinLigar(app, minuto)
+    }
+
+    fun definirTurboHoraDesligar(hora: Int, minuto: Int) {
+        turboHoraDesligar = hora
+        turboMinDesligar = minuto
+        val app = getApplication<Application>()
+        Preferencias.definirTurboAgendadoHoraDesligar(app, hora)
+        Preferencias.definirTurboAgendadoMinDesligar(app, minuto)
     }
 
     private fun carregarHistorico() {

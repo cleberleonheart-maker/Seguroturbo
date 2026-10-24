@@ -83,6 +83,7 @@
     <!-- Permite encerrar os processos em segundo plano dos apps escolhidos pelo
          usuário na "Limpeza de RAM". É uma permissão normal, sem prompt. -->
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="false"
@@ -123,6 +124,17 @@
         <receiver
             android:name=".util.LembreteReceiver"
             android:exported="false" />
+
+        <!-- Recebe os alarmes do Turbo agendado (liga/desliga o Modo Jogo). -->
+        <receiver
+            android:name=".util.TurboAgendadoReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.seguraturbo.app.TURBO_AGENDADO_LIGAR" />
+                <action android:name="com.seguraturbo.app.TURBO_AGENDADO_DESLIGAR" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <!-- Widget da tela inicial. -->
         <receiver

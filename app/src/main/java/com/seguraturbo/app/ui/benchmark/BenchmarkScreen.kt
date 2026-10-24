@@ -41,6 +41,7 @@ import com.seguraturbo.app.util.DeviceInfo
 import com.seguraturbo.app.util.AtalhoAcao
 import com.seguraturbo.app.util.AtalhoPendente
 import com.seguraturbo.app.util.Comparacao
+import com.seguraturbo.app.util.ReferenciaClasse
 import com.seguraturbo.app.util.RelatorioImagem
 import com.seguraturbo.app.util.RelatorioPdf
 import java.util.Locale
@@ -187,6 +188,17 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
                             )
                         )
                     }
+                }
+            }
+        }
+        vm.resultado?.let { res ->
+            item {
+                CartaoFuturista {
+                    TituloSecao("Médias por classe de aparelho")
+                    Spacer(Modifier.height(8.dp))
+                    Text(ReferenciaClasse.resumo(res.total), color = Cores.TextoClaro, fontSize = 13.sp)
+                    Spacer(Modifier.height(4.dp))
+                    Text(ReferenciaClasse.sugestao(res.total), color = Cores.TextoCinza, fontSize = 12.sp)
                 }
             }
         }
