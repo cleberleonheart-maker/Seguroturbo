@@ -57,6 +57,7 @@ import com.seguraturbo.app.model.Changelog
 import com.seguraturbo.app.model.VersaoChangelog
 import com.seguraturbo.app.util.Atualizacao
 import com.seguraturbo.app.util.Atualizador
+import com.seguraturbo.app.util.ResultadoVerificacao
 import com.seguraturbo.app.util.Preferencias
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -87,13 +88,27 @@ fun MainScreen(abaInicial: Int = 0) {
         if (checando) return
         checando = true
         escopo.launch {
-            val encontrada = withContext(Dispatchers.IO) { Atualizador.verificar(ctx) }
-            checando = false
-            when {
-                encontrada != null && encontrada.versao != Preferencias.versaoIgnorada(ctx) ->
-                    atualizacao = encontrada
-                manual ->
-                    Toast.makeText(ctx, R.string.upd_atualizado, Toast.LENGTH_SHORT).show()
+            when (val resultado = withContext(Dispatchers.IO) { Atualizador.verificarResultado(ctx) }) {
+                is ResultadoVerificacao.Disponivel -> {
+                    checando = false
+                    if (resultado.atualizacao.versao != Preferencias.versaoIgnorada(ctx)) {
+                        atualizacao = resultado.atualizacao
+                    } else if (manual) {
+                        Toast.makeText(ctx, R.string.upd_atualizado, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                ResultadoVerificacao.Atualizado -> {
+                    checando = false
+                    if (manual) {
+                        Toast.makeText(ctx, R.string.upd_atualizado, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                ResultadoVerificacao.Erro -> {
+                    checando = false
+                    if (manual) {
+                        Toast.makeText(ctx, R.string.upd_erro_verificar, Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }
     }

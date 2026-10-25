@@ -1,6 +1,7 @@
 package com.seguraturbo.app.util
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -37,5 +38,42 @@ class AtualizadorTest {
     @Test
     fun sufixoNaoNumericoContaComoZero() {
         assertEquals(0, Atualizador.comparar("1.9", "1.9-beta"))
+    }
+
+    @Test
+    fun extraiTagDoRedirecionamento() {
+        assertEquals(
+            "1.36",
+            Atualizador.extrairTag("https://github.com/o/r/releases/tag/v1.36")
+        )
+    }
+
+    @Test
+    fun aceitaBarraNoFinal() {
+        assertEquals(
+            "1.36",
+            Atualizador.extrairTag("https://github.com/o/r/releases/tag/v1.36/")
+        )
+    }
+
+    @Test
+    fun aceitaUrlRelativa() {
+        assertEquals(
+            "2.0.1",
+            Atualizador.extrairTag("/o/r/releases/tag/v2.0.1")
+        )
+    }
+
+    @Test
+    fun rejeitaNuloOuVazio() {
+        assertNull(Atualizador.extrairTag(null))
+        assertNull(Atualizador.extrairTag(""))
+        assertNull(Atualizador.extrairTag("   "))
+    }
+
+    @Test
+    fun rejeitaSegmentoSemVersao() {
+        assertNull(Atualizador.extrairTag("https://github.com/o/r/releases"))
+        assertNull(Atualizador.extrairTag("https://github.com/o/r/releases/tag/ultima"))
     }
 }

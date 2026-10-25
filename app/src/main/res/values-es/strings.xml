@@ -315,6 +315,7 @@
     <string name="upd_baixando">Descargando… %1$d%%</string>
     <string name="upd_baixando_indeterminado">Descargando…</string>
     <string name="upd_permitir">Autoriza a SeguroTurbo a instalar apps para continuar</string>
+    <string name="upd_erro_verificar">No se pudo verificar si hay actualizaciones. Comprueba tu conexión e inténtalo de nuevo.</string>
     <string name="upd_erro_download">No se pudo descargar la actualización</string>
     <string name="upd_erro_assinatura">El archivo descargado no es válido (firma distinta)</string>
     <string name="upd_erro_instalar">No se pudo abrir el instalador. Descárgala desde la página de la versión.</string>

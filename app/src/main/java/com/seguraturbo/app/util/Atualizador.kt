@@ -26,6 +26,18 @@ data class Atualizacao(
     val pagina: String
 )
 
+/** Resultado da verificação de atualização, distinguindo "sem novidade" de falha. */
+sealed class ResultadoVerificacao {
+    /** Há uma versão mais nova publicada. */
+    data class Disponivel(val atualizacao: Atualizacao) : ResultadoVerificacao()
+
+    /** A consulta funcionou e a versão instalada já é a mais recente. */
+    object Atualizado : ResultadoVerificacao()
+
+    /** Não foi possível consultar (rede, limite da API etc.). */
+    object Erro : ResultadoVerificacao()
+}
+
 /**
  * Verifica no GitHub se há uma versão mais nova que a instalada.
  * Não baixa nem instala nada por conta própria: apenas avisa e leva o usuário
@@ -35,6 +47,14 @@ object Atualizador {
 
     private const val API =
         "https://api.github.com/repos/cleberleonheart-maker/Seguroturbo/releases/latest"
+
+    /** Página que redireciona para a última release (usada como fallback sem API). */
+    private const val ULTIMA_RELEASE =
+        "https://github.com/cleberleonheart-maker/Seguroturbo/releases/latest"
+
+    /** Base dos downloads da release, para montar a URL do APK no fallback. */
+    private const val DOWNLOAD_BASE =
+        "https://github.com/cleberleonheart-maker/Seguroturbo/releases/download"
 
     /** Quantos redirecionamentos seguimos ao baixar o APK (o GitHub usa 302 para o CDN). */
     private const val MAX_REDIRECIONAMENTOS = 6
@@ -48,15 +68,37 @@ object Atualizador {
     }
 
     /**
-     * Consulta o último release e, se for mais novo que o instalado, devolve os
-     * dados da atualização. Deve rodar fora da thread principal (rede).
-     * Em caso de erro de rede ou de leitura devolve null.
+     * Consulta o último release e devolve o resultado da verificação, distinguindo
+     * "já atualizado" de falha de rede/consulta. Deve rodar fora da thread principal.
      */
-    fun verificar(ctx: Context): Atualizacao? {
+    fun verificarResultado(ctx: Context): ResultadoVerificacao {
+        val remoto = ultimaVersaoRemota() ?: return ResultadoVerificacao.Erro
+        return if (comparar(remoto.versao, versaoInstalada(ctx)) > 0) {
+            ResultadoVerificacao.Disponivel(remoto)
+        } else {
+            ResultadoVerificacao.Atualizado
+        }
+    }
+
+    /**
+     * Consulta o último release e, se for mais novo que o instalado, devolve os
+     * dados da atualização. Em caso de erro de rede ou de leitura devolve null.
+     * Prefira [verificarResultado] quando precisar diferenciar erro de "sem novidade".
+     */
+    fun verificar(ctx: Context): Atualizacao? =
+        (verificarResultado(ctx) as? ResultadoVerificacao.Disponivel)?.atualizacao
+
+    /**
+     * Obtém a última versão publicada. Tenta a API do GitHub e, se ela falhar
+     * (limite de requisições, bloqueio, rede), cai para o redirecionamento da
+     * página `/releases/latest`, que não usa a API. Devolve null só se ambos falharem.
+     */
+    private fun ultimaVersaoRemota(): Atualizacao? = viaApi() ?: viaRedirecionamento()
+
+    private fun viaApi(): Atualizacao? {
         val json = baixar() ?: return null
         val tag = json.optString("tag_name").removePrefix("v").trim()
         if (tag.isEmpty()) return null
-        if (comparar(tag, versaoInstalada(ctx)) <= 0) return null
 
         val pagina = json.optString("html_url")
         var apk = ""
@@ -78,6 +120,51 @@ object Atualizador {
             apkUrl = apk,
             pagina = pagina
         )
+    }
+
+    /**
+     * Fallback sem API: segue o redirecionamento de `/releases/latest` para
+     * descobrir a tag e monta as URLs do APK e da página da release.
+     */
+    private fun viaRedirecionamento(): Atualizacao? {
+        val tag = tagDoRedirecionamento() ?: return null
+        return Atualizacao(
+            versao = tag,
+            notas = "",
+            apkUrl = "$DOWNLOAD_BASE/v$tag/SeguroTurbo-v$tag.apk",
+            pagina = "https://github.com/cleberleonheart-maker/SeguroTurbo/releases/tag/v$tag"
+        )
+    }
+
+    /** Lê o cabeçalho Location de `/releases/latest` e extrai a tag (ex.: "1.36"). */
+    private fun tagDoRedirecionamento(): String? {
+        var conn: HttpURLConnection? = null
+        return try {
+            conn = (URL(ULTIMA_RELEASE).openConnection() as HttpURLConnection).apply {
+                connectTimeout = 15000
+                readTimeout = 15000
+                instanceFollowRedirects = false
+                setRequestProperty("User-Agent", "SeguroTurbo-Android")
+            }
+            val codigo = conn.responseCode
+            if (codigo in 300..399) {
+                extrairTag(conn.getHeaderField("Location"))
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        } finally {
+            runCatching { conn?.disconnect() }
+        }
+    }
+
+    /** Extrai a tag de uma URL de redirecionamento, ex.: ".../releases/tag/v1.36" → "1.36". */
+    internal fun extrairTag(location: String?): String? {
+        if (location.isNullOrBlank()) return null
+        val trecho = location.trimEnd('/').substringAfterLast('/')
+        val tag = trecho.removePrefix("v")
+        return tag.takeIf { it.isNotBlank() && it.first().isDigit() }
     }
 
     /** Abre a URL no navegador do aparelho. */

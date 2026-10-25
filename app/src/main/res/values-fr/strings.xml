@@ -315,6 +315,7 @@
     <string name="upd_baixando">Téléchargement… %1$d%%</string>
     <string name="upd_baixando_indeterminado">Téléchargement…</string>
     <string name="upd_permitir">Autorisez SeguroTurbo à installer des apps pour continuer</string>
+    <string name="upd_erro_verificar">Impossible de vérifier les mises à jour. Vérifiez votre connexion et réessayez.</string>
     <string name="upd_erro_download">Impossible de télécharger la mise à jour</string>
     <string name="upd_erro_assinatura">Le fichier téléchargé est invalide (signature différente)</string>
     <string name="upd_erro_instalar">Impossible d\'ouvrir l\'installateur. Téléchargez-la depuis la page de la version.</string>

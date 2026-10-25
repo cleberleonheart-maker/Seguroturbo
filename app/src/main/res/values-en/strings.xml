@@ -315,6 +315,7 @@
     <string name="upd_baixando">Downloading… %1$d%%</string>
     <string name="upd_baixando_indeterminado">Downloading…</string>
     <string name="upd_permitir">Allow SeguroTurbo to install apps to continue</string>
+    <string name="upd_erro_verificar">Could not check for updates. Check your connection and try again.</string>
     <string name="upd_erro_download">Couldn\'t download the update</string>
     <string name="upd_erro_assinatura">The downloaded file is invalid (signature mismatch)</string>
     <string name="upd_erro_instalar">Could not open the installer. Download it from the release page.</string>
