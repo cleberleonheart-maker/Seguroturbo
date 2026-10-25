@@ -445,6 +445,17 @@
         <item>Raccourcis de l\'icône (appui long) : Analyser, Libérer la RAM et Tester le réseau.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_36_novidades">
+        <item>Historique des nettoyages de RAM avec compteur et journal des derniers nettoyages.</item>
+        <item>Métriques de session Game Turbo : temps total, sessions et nettoyages.</item>
+        <item>Mode Économie automatique lorsque la batterie est faible (20 % ou moins).</item>
+        <item>Rapport complet en ZIP (inventaire, historique, nettoyages, métriques et infos de l\'appareil).</item>
+        <item>Ne pas déranger programmé à des heures définies.</item>
+        <item>Material You : couleurs dynamiques du fond d\'écran (Android 12+).</item>
+        <item>Raccourcis par jeu sur l\'icône (appui long) qui s\'ouvrent avec le profil enregistré.</item>
+        <item>Le scanner d\'accessibilité affiche désormais les noms des services actifs.</item>
+    </string-array>
+    <string-array name="changelog_1_36_correcoes" />
     <string-array name="changelog_1_35_novidades">
         <item>Widget avec un bouton pour vider la RAM en un geste.</item>
         <item>Game Turbo : nettoyage automatique de la RAM à l\'activation du mode jeu.</item>

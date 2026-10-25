@@ -1,0 +1,8 @@
+- Historique des nettoyages de RAM avec compteur et journal des derniers nettoyages.
+- Métriques de session Game Turbo : temps total, sessions et nettoyages.
+- Mode Économie automatique lorsque la batterie est faible (20 % ou moins).
+- Rapport complet en ZIP : inventaire, historique, nettoyages, métriques et infos de l'appareil.
+- Ne pas déranger programmé à des heures définies.
+- Material You : couleurs dynamiques du fond d'écran (Android 12+).
+- Raccourcis par jeu sur l'icône (appui long) qui s'ouvrent avec le profil enregistré.
+- Le scanner d'accessibilité affiche désormais les noms des services actifs.

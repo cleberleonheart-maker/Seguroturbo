@@ -1,0 +1,8 @@
+- Histórico de limpezas de RAM com contador e registro das últimas limpezas.
+- Métricas de sessão do Game Turbo: tempo total, sessões e limpezas.
+- Modo Economia automático quando a bateria fica baixa (20% ou menos).
+- Relatório completo em ZIP: inventário, histórico, limpezas, métricas e dados do aparelho.
+- Não Perturbe agendado em horários definidos.
+- Material You: cores dinâmicas do papel de parede (Android 12+).
+- Atalhos por jogo no ícone (toque longo) que abrem já com o perfil salvo.
+- O scanner de acessibilidade agora mostra os nomes dos serviços ativos.

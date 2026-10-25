@@ -445,6 +445,17 @@
         <item>Accesos directos del icono (pulsación larga): Escanear, Liberar RAM y Probar red.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_36_novidades">
+        <item>Historial de limpiezas de RAM con contador y registro de las últimas limpiezas.</item>
+        <item>Métricas de sesión de Game Turbo: tiempo total, sesiones y limpiezas.</item>
+        <item>Modo Economía automático cuando la batería está baja (20% o menos).</item>
+        <item>Informe completo en ZIP (inventario, historial, limpiezas, métricas y datos del dispositivo).</item>
+        <item>No molestar programado en horarios definidos.</item>
+        <item>Material You: colores dinámicos del fondo de pantalla (Android 12+).</item>
+        <item>Atajos por juego en el icono (pulsación larga) que abren con el perfil guardado.</item>
+        <item>El escáner de accesibilidad ahora muestra los nombres de los servicios activos.</item>
+    </string-array>
+    <string-array name="changelog_1_36_correcoes" />
     <string-array name="changelog_1_35_novidades">
         <item>Widget con botón para limpiar la RAM con un toque.</item>
         <item>Game Turbo: limpieza automática de RAM al activar el Modo Juego.</item>
