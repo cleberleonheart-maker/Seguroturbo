@@ -81,6 +81,13 @@ object GerenciadorRam {
                 // Pacote protegido ou sem permissão: ignora e segue.
             }
         }
+        try {
+            if (encerrados > 0) {
+                Preferencias.registrarLimpezaRam(ctx, encerrados)
+                Preferencias.registrarLimpezaNaSessao(ctx)
+            }
+        } catch (_: Exception) {
+        }
         return encerrados
     }
 }

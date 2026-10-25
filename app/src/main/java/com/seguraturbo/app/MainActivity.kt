@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
                 android.content.res.Configuration.UI_MODE_NIGHT_YES
         Cores.aplicarModo(modoTema, sistemaEscuro)
         Aparencia.escalaFonte = Preferencias.escalaFonte(this)
+        try { Preferencias.aplicarEconomiaSeBaixa(this) } catch (_: Exception) {}
 
         // Prepara os canais de notificação e mantém os agendamentos coerentes.
         Notificacoes.criarCanal(this)

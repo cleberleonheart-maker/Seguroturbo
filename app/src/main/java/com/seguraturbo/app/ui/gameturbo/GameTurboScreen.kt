@@ -130,6 +130,7 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         item { CartaoSilenciarMidia(vm) }
         item { CartaoAutoLimparRam(vm) }
         item { CartaoSessaoFoco(vm) }
+        item { CartaoMetricasGameTurbo() }
         item { CartaoTurboAgendado(vm) }
 
         item {
@@ -669,6 +670,31 @@ private fun CartaoSessaoFoco(vm: GameTurboViewModel) {
                 texto = stringResource(if (vm.sessaoFocoAtiva) R.string.gt_sessao_foco_encerrar else R.string.gt_sessao_foco_iniciar),
                 onClick = { if (vm.sessaoFocoAtiva) vm.encerrarSessaoFoco() else vm.iniciarSessaoFoco() },
                 habilitado = true
+            )
+        }
+    }
+}
+
+@Composable
+private fun CartaoMetricasGameTurbo() {
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    val totalMin = com.seguraturbo.app.util.Preferencias.totalMinutosGameTurbo(ctx)
+    val totalSess = com.seguraturbo.app.util.Preferencias.totalSessoesGameTurbo(ctx)
+    val hist = com.seguraturbo.app.util.Preferencias.historicoLimpezas(ctx)
+    val totalLimpezas = hist.sumOf { it.second }
+    CartaoFuturista {
+        Column {
+            Text(
+                "Métricas Game Turbo",
+                color = Cores.TextoClaro,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "Tempo total: ${totalMin} min • Sessões: $totalSess • Limpezas: $totalLimpezas",
+                color = Cores.TextoCinza,
+                fontSize = 12.sp
             )
         }
     }

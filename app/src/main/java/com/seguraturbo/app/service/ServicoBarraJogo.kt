@@ -388,6 +388,7 @@ class ServicoBarraJogo : Service() {
     }
 
     override fun onDestroy() {
+        try { com.seguraturbo.app.util.Preferencias.finalizarSessaoGameTurbo(this) } catch (_: Exception) {}
         try { handler.removeCallbacksAndMessages(null) } catch (e: Exception) { }
         try { unregisterReceiver(receptorBateria) } catch (e: Exception) { }
         try { (getSystemService(android.content.Context.WINDOW_SERVICE) as android.view.WindowManager).removeView(barra) } catch (e: Exception) { }
@@ -403,6 +404,7 @@ class ServicoBarraJogo : Service() {
         const val EXTRA_PACOTE = "pacote"
 
         fun iniciar(ctx: android.content.Context, pacote: String?) {
+            try { com.seguraturbo.app.util.Preferencias.iniciarSessaoGameTurbo(ctx) } catch (_: Exception) {}
             val i = android.content.Intent(ctx, ServicoBarraJogo::class.java)
                 .setAction(ACTION_MOSTRAR)
                 .putExtra(EXTRA_PACOTE, pacote)

@@ -288,4 +288,76 @@ object Preferencias {
         Armazenamento.gravarInteiro(ctx, K_TURBO_AGENDADO_MIN_DESLIGAR, min)
         if (turboAgendadoAtivo(ctx)) TurboAgendador.agendar(ctx)
     }
+
+    // ---- Histórico de limpezas de RAM ----
+    private const val K_HIST_LIMPEZAS = "hist_limpezas_ram"
+
+    /** Lista de eventos de limpeza (timestamp + qtd apps). */
+    fun historicoLimpezas(ctx: Context): List<Pair<Long, Int>> {
+        val bruto = Armazenamento.lerTexto(ctx, K_HIST_LIMPEZAS, "[]")
+        return try {
+            val arr = org.json.JSONArray(bruto)
+            (0 until arr.length()).map { i ->
+                val o = arr.getJSONObject(i)
+                o.getLong("t") to o.optInt("q", 0)
+            }.sortedByDescending { it.first }
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    fun registrarLimpezaRam(ctx: Context, qtdApps: Int) {
+        val lista = historicoLimpezas(ctx).toMutableList()
+        lista.add(0, System.currentTimeMillis() to qtdApps)
+        val arr = org.json.JSONArray()
+        lista.take(100).forEach { (t, q) ->
+            arr.put(org.json.JSONObject().put("t", t).put("q", q))
+        }
+        Armazenamento.gravarTexto(ctx, K_HIST_LIMPEZAS, arr.toString())
+    }
+
+    // ---- Métricas de sessão Game Turbo ----
+    private const val K_METRICA_SESSAO_INICIO = "gt_sessao_inicio"
+    private const val K_METRICA_LIMPEZAS_SESSAO = "gt_sessao_limpezas"
+    private const val K_METRICA_TOTAL_MIN = "gt_total_minutos"
+    private const val K_METRICA_SESSOES = "gt_total_sessoes"
+
+    fun iniciarSessaoGameTurbo(ctx: Context) {
+        if (Armazenamento.lerLongo(ctx, K_METRICA_SESSAO_INICIO, 0L) == 0L) {
+            Armazenamento.gravarLongo(ctx, K_METRICA_SESSAO_INICIO, System.currentTimeMillis())
+            Armazenamento.gravarInteiro(ctx, K_METRICA_LIMPEZAS_SESSAO, 0)
+            Armazenamento.gravarInteiro(ctx, K_METRICA_SESSOES, Armazenamento.lerInteiro(ctx, K_METRICA_SESSOES, 0) + 1)
+        }
+    }
+
+    fun registrarLimpezaNaSessao(ctx: Context) {
+        if (Armazenamento.lerLongo(ctx, K_METRICA_SESSAO_INICIO, 0L) > 0L) {
+            Armazenamento.gravarInteiro(ctx, K_METRICA_LIMPEZAS_SESSAO, Armazenamento.lerInteiro(ctx, K_METRICA_LIMPEZAS_SESSAO, 0) + 1)
+        }
+    }
+
+    fun finalizarSessaoGameTurbo(ctx: Context): Pair<Long, Int> {
+        val inicio = Armazenamento.lerLongo(ctx, K_METRICA_SESSAO_INICIO, 0L)
+        if (inicio == 0L) return 0L to 0
+        val min = (System.currentTimeMillis() - inicio) / 60000L
+        val limpezas = Armazenamento.lerInteiro(ctx, K_METRICA_LIMPEZAS_SESSAO, 0)
+        Armazenamento.gravarLongo(ctx, K_METRICA_TOTAL_MIN, Armazenamento.lerLongo(ctx, K_METRICA_TOTAL_MIN, 0L) + min)
+        Armazenamento.gravarLongo(ctx, K_METRICA_SESSAO_INICIO, 0L)
+        Armazenamento.gravarInteiro(ctx, K_METRICA_LIMPEZAS_SESSAO, 0)
+        return min to limpezas
+    }
+
+    fun totalMinutosGameTurbo(ctx: Context): Long = Armazenamento.lerLongo(ctx, K_METRICA_TOTAL_MIN, 0L)
+    fun totalSessoesGameTurbo(ctx: Context): Int = Armazenamento.lerInteiro(ctx, K_METRICA_SESSOES, 0)
+
+    // ---- Perfil de uso automático por bateria ----
+    fun aplicarEconomiaSeBaixa(ctx: Context) {
+        try {
+            val bm = ctx.getSystemService(Context.BATTERY_SERVICE) as android.os.BatteryManager
+            val nivel = bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)
+            if (nivel in 1..20) {
+                definirPerfilUso(ctx, com.seguraturbo.app.model.PerfilUso.BATERIA)
+            }
+        } catch (_: Exception) {}
+    }
 }

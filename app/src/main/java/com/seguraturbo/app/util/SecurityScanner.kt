@@ -71,14 +71,17 @@ object SecurityScanner {
         verificarBloqueioAutomatico(ctx)?.let { encontradas += it }
 
         delay(350)
-        val servicosAcessibilidade = withContext(Dispatchers.IO) { servicosAcessibilidadeAtivos(ctx) }
+        val servicosAcessibilidade = withContext(Dispatchers.IO) { servicosAcessibilidadeAtivosCount(ctx) }
         if (servicosAcessibilidade > 0) {
+            val lista = withContext(Dispatchers.IO) { servicosAcessibilidadeAtivosLista(ctx) }
+            val nomes = StringBuilder()
+            for (s in lista) { if (nomes.isNotEmpty()) nomes.append(", "); nomes.append(s) }
+            val desc = "$servicosAcessibilidade serviço(s): $nomes. Habilite apenas o que você reconhece."
             encontradas += Threat(
                 nome = "Serviços de acessibilidade ativos",
                 tipo = "ACESSIBILIDADE",
                 risco = "MÉDIO",
-                descricao = "$servicosAcessibilidade serviço(s) podem ler a tela. Habilite " +
-                    "apenas o que você reconhece.",
+                descricao = desc,
                 acao = AcaoConfig.ACESSIBILIDADE,
                 peso = 15
             )
@@ -278,11 +281,19 @@ object SecurityScanner {
         true // na dúvida, não alarmar
     }
 
-    private fun servicosAcessibilidadeAtivos(ctx: Context): Int = try {
+    private fun servicosAcessibilidadeAtivosCount(ctx: Context): Int = try {
         val am = ctx.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK).size
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         0
+    }
+
+    private fun servicosAcessibilidadeAtivosLista(ctx: Context): List<String> = try {
+        val am = ctx.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        val lista = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+        lista.mapNotNull { it.resolveInfo?.serviceInfo?.packageName }
+    } catch (_: Exception) {
+        emptyList()
     }
 
     /**
