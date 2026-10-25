@@ -166,6 +166,10 @@ jobs:
           python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/index.html ""
           python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/fdroid/repo/index.html "/fdroid/repo"
           python3 fdroid/gerar-welcome.py "$REPO_DIR/repo" pages/repo/index.html "/repo"
+          # página de changelog
+          python3 fdroid/gerar-changelog.py fastlane/metadata/android pages/changelog.html ""
+          python3 fdroid/gerar-changelog.py fastlane/metadata/android pages/fdroid/repo/changelog.html "/fdroid/repo"
+          python3 fdroid/gerar-changelog.py fastlane/metadata/android pages/repo/changelog.html "/repo"
           # o jogo em si (index.html): o app Android usa esse arquivo para
           # atualizar o jogo direto, sem baixar nem instalar APK
           mkdir -p pages/galinha
