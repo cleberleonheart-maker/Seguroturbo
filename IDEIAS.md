@@ -71,12 +71,12 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       `.github/workflows/publicar-repo-fdroid.yml` regenera o índice assinado e publica
       no GitHub Pages logo após a release, fechando o ciclo sem passo manual.
 - [x] **Migrar SharedPreferences → DataStore** (v1.31): manter os 3 stores, mais robustos.
-- [ ] **Testes de snapshot Compose** (v1.31): Paparazzi/Roborazzi nos fluxos já testados.
+- [x] **Testes de snapshot Compose** (v1.31): Paparazzi/Roborazzi nos fluxos já testados.
 
 ## Distribuição / projeto
 
-- [ ] **Screenshots reais + feature graphic** na ficha F-Droid.
-- [ ] **Página de changelog** no GitHub Pages do repositório F-Droid.
+- [x] **Screenshots reais + feature graphic** na ficha F-Droid.
+- [x] **Página de changelog** no GitHub Pages do repositório F-Droid.
 - [ ] **Reabrir o MR oficial do F-Droid** (a partir de 16/01/2027, com o template
       de "New app").
 
