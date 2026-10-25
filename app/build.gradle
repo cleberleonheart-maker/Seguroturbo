@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'jacoco'
+    id 'app.cash.paparazzi'
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -147,4 +148,12 @@ tasks.register('jacocoTestReport', JacocoReport) {
     executionData.setFrom(fileTree(dir: "$buildDir", includes: [
         'jacoco/testDebugUnitTest.exec'
     ]))
+}
+
+android {
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }

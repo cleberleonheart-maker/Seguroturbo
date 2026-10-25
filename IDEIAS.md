@@ -18,7 +18,7 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
       destaca os apps que combinam as duas coisas, sem coletar nada.
 - [x] **Alertas temporais de segurança** (v1.31): avisar quando o patch de segurança do
       sistema estiver desatualizado há mais de X meses.
-- [ ] **Verificador de senhas vazadas (offline)** (v1.31): dicionário local, sem enviar
+- [x] **Verificador de senhas vazadas (offline)** (v1.31): dicionário local, sem enviar
       nada pela rede — alinhado ao "sem coleta de dados".
 - [x] **Inventário exportável de apps + permissões** (v1.32): gera CSV (`InventarioCsv.kt`,
       reaproveitando `RelatorioCsv.kt`) com os apps visíveis e seus grupos de permissão
@@ -31,21 +31,21 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Bloqueio de tela (screen pinning)** ao iniciar um jogo (v1.28).
 - [x] **Silenciar só mídia** durante o jogo (v1.29): baixa o volume de músicas e
       vídeos no Modo Jogo, sem afetar chamadas, alarmes e notificações.
-- [ ] **Perfil por jogo** (v1.30): salvar perfil de desempenho, Não Perturbe e trava de
+- [x] **Perfil por jogo** (v1.30): salvar perfil de desempenho, Não Perturbe e trava de
       tela por app de jogo, em vez de uma configuração global.
 - [x] **Auto-limpeza de RAM ao abrir o jogo** (v1.30): disparar a limpeza automaticamente
       quando o Modo Jogo liga (gancho no `GerenciadorRam.kt`).
-- [ ] **Turbo agendado** (v1.31): ativar o Modo Jogo automaticamente em horários definidos.
+- [x] **Turbo agendado** (v1.31): ativar o Modo Jogo automaticamente em horários definidos.
 - [x] **Modo "Sessão de foco"** (v1.31): timer estilo Pomodoro ligado ao Não Perturbe.
 
 ## Benchmark
 
 - [x] **Teste de rede** (v1.25): velocidade de download e latência.
 - [x] **Teste de tela/touch** (v1.26): resposta ao toque e multitouch.
-- [ ] **Monitor de FPS contínuo** (v1.30): overlay em tempo real reaproveitando a barra flutuante.
-- [ ] **Monitor de rede em tempo real** (v1.30): velocidade up/down na barra flutuante.
-- [ ] **Teste de consumo de bateria** (v1.31): mede a drenagem em X minutos por perfil.
-- [ ] **Comparação com médias de referência** (v1.31): comparar a nota com faixas por
+- [x] **Monitor de FPS contínuo** (v1.30): overlay em tempo real reaproveitando a barra flutuante.
+- [x] **Monitor de rede em tempo real** (v1.30): velocidade up/down na barra flutuante.
+- [x] **Teste de consumo de bateria** (v1.31): mede a drenagem em X minutos por perfil.
+- [x] **Comparação com médias de referência** (v1.31): comparar a nota com faixas por
       classe de aparelho, além do histórico local.
 
 ## Produto / UX

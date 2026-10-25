@@ -20,3 +20,9 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+buildscript {
+    dependencies {
+        classpath 'app.cash.paparazzi:paparazzi-gradle-plugin:1.3.2'
+    }
+}
