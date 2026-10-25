@@ -25,8 +25,15 @@ import com.seguraturbo.app.util.Agendador
 import com.seguraturbo.app.util.AgendadorAtualizacao
 import com.seguraturbo.app.util.AtalhoAcao
 import com.seguraturbo.app.util.AtalhoPendente
+import com.seguraturbo.app.util.AtalhosJogos
 import com.seguraturbo.app.util.Notificacoes
 import com.seguraturbo.app.util.Preferencias
+import com.seguraturbo.app.util.AcoesSistema
+import com.seguraturbo.app.util.PerfisJogosStore
+import com.seguraturbo.app.util.ModoConcentracao
+import com.seguraturbo.app.util.BloqueioTela
+import com.seguraturbo.app.service.PermissaoSobreposicao
+import com.seguraturbo.app.service.ServicoBarraJogo
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -65,6 +72,7 @@ class MainActivity : ComponentActivity() {
 
         abaInicial.value = abaDe(intent)
         AtalhoPendente.acao = AtalhoAcao.de(intent.getStringExtra("acao"))
+        try { AtalhosJogos.sincronizar(this) } catch (_: Exception) {}
 
         setContent {
             SeguroTurboTheme {
@@ -101,6 +109,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        window.decorView.post { tratarAtalhoJogo(intent) }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -108,6 +118,25 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
         abaInicial.value = abaDe(intent)
         AtalhoPendente.acao = AtalhoAcao.de(intent.getStringExtra("acao"))
+        tratarAtalhoJogo(intent)
+    }
+
+    /**
+     * Abre o jogo de um atalho dinâmico, aplicando o perfil salvo (barra do Game
+     * Turbo, Não Perturbe e bloqueio de tela).
+     */
+    private fun tratarAtalhoJogo(intent: Intent?) {
+        val pacote = intent?.getStringExtra("jogo") ?: return
+        intent.removeExtra("jogo")
+        val perfil = PerfisJogosStore.obter(this, pacote)
+        val fixar = perfil?.travaTela == true
+        if (perfil?.naoPerturbe == true) ModoConcentracao.ativar(this)
+        if (fixar) BloqueioTela.fixar(this)
+        if (perfil?.barraJogo != false && PermissaoSobreposicao.podeDesenhar(this)) {
+            ServicoBarraJogo.iniciar(this, pacote)
+        }
+        val abriu = AcoesSistema.abrirApp(this, pacote, noMesmoTask = fixar)
+        if (!abriu && fixar) BloqueioTela.desfixar(this)
     }
 
     /** Converte o extra "tela" dos atalhos na aba correspondente. */

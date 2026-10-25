@@ -61,13 +61,19 @@ import com.seguraturbo.app.service.ServicoBarraJogo
 import com.seguraturbo.app.util.AcoesSistema
 import com.seguraturbo.app.util.AtalhoAcao
 import com.seguraturbo.app.util.AtalhoPendente
+import com.seguraturbo.app.util.AtalhosJogos
 import com.seguraturbo.app.util.BloqueioTela
+import com.seguraturbo.app.util.PerfisJogosStore
+import com.seguraturbo.app.util.ModoConcentracao
+import com.seguraturbo.app.model.PerfilJogo
+import com.seguraturbo.app.ui.components.PerfilJogoDialog
 import android.app.Activity
 import android.widget.Toast
 
 @Composable
 fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
     val contexto = LocalContext.current
+    var jogoEditando by remember { mutableStateOf<Game?>(null) }
 
     // Atalho "Limpar RAM" do ícone: abre o diálogo de limpeza ao entrar na tela.
     LaunchedEffect(Unit) {
@@ -190,12 +196,15 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
         } else {
             items(vm.jogos) { jogo ->
                 LinhaJogo(jogo, onAbrir = {
-                    val fixar = vm.travaTelaJogo && vm.travaTelaSistema && contexto is Activity
+                    val perfil = PerfisJogosStore.obter(contexto, jogo.pacote)
+                    val querBarra = perfil?.barraJogo ?: true
+                    val fixar = (perfil?.travaTela == true || vm.travaTelaJogo) &&
+                        vm.travaTelaSistema && contexto is Activity
+                    if (perfil?.naoPerturbe == true) ModoConcentracao.ativar(contexto)
                     if (fixar) BloqueioTela.fixar(contexto as Activity)
-                    if (PermissaoSobreposicao.podeDesenhar(contexto)) {
-
+                    if (querBarra && PermissaoSobreposicao.podeDesenhar(contexto)) {
                         ServicoBarraJogo.iniciar(contexto, jogo.pacote)
-                    } else {
+                    } else if (querBarra) {
                         Toast.makeText(
                             contexto,
                             R.string.barra_precisa_acesso,
@@ -204,7 +213,7 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
                     }
                     val abriu = AcoesSistema.abrirApp(contexto, jogo.pacote, noMesmoTask = fixar)
                     if (!abriu && fixar) BloqueioTela.desfixar(contexto as Activity)
-                })
+                }, onPerfil = { jogoEditando = jogo })
             }
         }
 
@@ -213,6 +222,24 @@ fun GameTurboScreen(vm: GameTurboViewModel = viewModel()) {
                 HistoricoSecao(vm.historico, onLimpar = { vm.limparHistorico() })
             }
         }
+    }
+
+    jogoEditando?.let { jogo ->
+        PerfilJogoDialog(
+            jogo = jogo,
+            perfilAtual = PerfisJogosStore.obter(contexto, jogo.pacote),
+            onSalvar = { perfil: PerfilJogo ->
+                PerfisJogosStore.salvar(contexto, perfil)
+                AtalhosJogos.sincronizar(contexto)
+                jogoEditando = null
+            },
+            onRemover = {
+                PerfisJogosStore.remover(contexto, jogo.pacote)
+                AtalhosJogos.sincronizar(contexto)
+                jogoEditando = null
+            },
+            onDismiss = { jogoEditando = null }
+        )
     }
 
     if (vm.mostrarLimpezaRam) {
@@ -460,7 +487,7 @@ private fun CartaoBateria(vm: GameTurboViewModel) {    val contexto = LocalConte
 }
 
 @Composable
-private fun LinhaJogo(jogo: Game, onAbrir: () -> Unit) {
+private fun LinhaJogo(jogo: Game, onAbrir: () -> Unit, onPerfil: () -> Unit) {
     CartaoFuturista(onClick = onAbrir) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -493,7 +520,17 @@ private fun LinhaJogo(jogo: Game, onAbrir: () -> Unit) {
                 Spacer(Modifier.width(8.dp))
                 SeloStatus(stringResource(R.string.gt_optimized), Cores.Verde)
             }
-            Spacer(Modifier.width(10.dp))
+            Spacer(Modifier.width(6.dp))
+            Text(
+                "⚙",
+                color = Cores.TextoCinza,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { onPerfil() }
+                    .padding(horizontal = 6.dp, vertical = 4.dp)
+            )
+            Spacer(Modifier.width(6.dp))
             Text("▶", color = Cores.Ciano, fontSize = 16.sp)
         }
     }

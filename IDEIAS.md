@@ -124,7 +124,7 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 ## Novas ideias (propostas)
 
 - [x] **Widget da tela inicial** (v1.36): widget para escanear rápido, limpar RAM, ligar/desligar Game Turbo direto da home.
-- [ ] **Atalho por app para perfis** (v1.36): abrir diretamente o perfil do jogo escolhido pelo app launcher (shortcuts).
+- [x] **Atalho por app para perfis** (v1.36): abrir diretamente o perfil do jogo escolhido pelo app launcher (shortcuts).
 - [x] **Modo "Economia" automático** (v1.36): ativar perfis de economia com base em bateria baixa/temperatura.
 - [x] **Histórico de limpezas de RAM** (v1.36): registrar quando e quais apps foram encerrados, com contador.
 - [x] **Exportar relatório completo (ZIP)** (v1.36): gerar ZIP com inventário CSV, histórico, logs e configurações (tudo offline).
