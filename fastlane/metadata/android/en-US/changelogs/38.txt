@@ -1,0 +1,7 @@
+- Offline breached password checker: compares SHA-1 hash against a local dictionary, no data sent.
+- Benchmark comparison with reference averages by device class.
+- Battery drain test in Benchmark with timed intervals.
+- Scheduled Game Turbo: auto-enable at set times.
+- Per-game profiles: save performance, DND, screen pinning and floating bar settings per app.
+- Floating in-game bar with real-time FPS and network speed.
+- Debug and release can be installed together.

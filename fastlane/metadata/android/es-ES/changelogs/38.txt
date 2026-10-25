@@ -1,0 +1,7 @@
+- Verificador de contraseñas filtradas (sin conexión): compara el hash SHA-1 con un diccionario local, sin enviar datos.
+- Comparación con promedios de referencia por clase de dispositivo en Benchmark.
+- Prueba de consumo de batería con intervalos temporizados.
+- Turbo programado: activa el Modo Juego automáticamente en horarios definidos.
+- Perfiles por juego: guarda configuración por app.
+- Barra flotante con FPS y velocidad de red en tiempo real.
+- Debug y release instalables juntos.

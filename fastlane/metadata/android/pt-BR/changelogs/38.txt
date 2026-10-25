@@ -1,0 +1,7 @@
+- Verificador de senhas vazadas (offline): compara o hash SHA-1 da senha com um dicionário local, sem enviar nada pela rede.
+- Comparação com médias de referência no Benchmark: mostra a classe (Baixo/Médio/Alto/Topo) em relação às faixas de dispositivos.
+- Teste de consumo de bateria no Benchmark: mede a drenagem em intervalos para estimativa de uso.
+- Turbo agendado: ativa o Modo Jogo automaticamente em horários definidos.
+- Perfil por jogo: salva configuração por app (desempenho, Não Perturbe, trava de tela e barra flutuante).
+- Barra flutuante com FPS e velocidade de rede em tempo real.
+- Co-instalação debug/release permitida.

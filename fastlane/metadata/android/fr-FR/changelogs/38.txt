@@ -1,0 +1,7 @@
+- Vérificateur de mots de passe compromis hors ligne : comparaison SHA-1 avec un dictionnaire local.
+- Comparaison avec des moyennes de référence par classe d'appareil dans le Benchmark.
+- Test de consommation batterie avec intervalles temporisés.
+- Turbo programmé : activation automatique aux heures définies.
+- Profils par jeu : paramètres enregistrés par application.
+- Barre flottante avec FPS et débit réseau en temps réel.
+- Debug et release installables simultanément.
