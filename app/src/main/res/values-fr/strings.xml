@@ -446,6 +446,11 @@
         <item>Raccourcis de l\'icône (appui long) : Analyser, Libérer la RAM et Tester le réseau.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_36_1_novidades" />
+    <string-array name="changelog_1_36_1_correcoes">
+        <item>La vérification des mises à jour signale désormais un échec de connexion au lieu d\'indiquer que vous avez déjà la dernière version.</item>
+        <item>Nouvelle méthode de vérification sans l\'API GitHub, évitant les limites de requêtes.</item>
+    </string-array>
     <string-array name="changelog_1_36_novidades">
         <item>Historique des nettoyages de RAM avec compteur et journal des derniers nettoyages.</item>
         <item>Métriques de session Game Turbo : temps total, sessions et nettoyages.</item>

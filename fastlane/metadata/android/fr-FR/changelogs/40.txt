@@ -1,0 +1,2 @@
+- La vérification des mises à jour signale désormais un échec de connexion au lieu d'indiquer que vous avez déjà la dernière version.
+- Nouvelle méthode de vérification sans l'API GitHub, évitant les limites de requêtes.

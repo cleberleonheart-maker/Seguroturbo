@@ -446,6 +446,11 @@
         <item>Accesos directos del icono (pulsación larga): Escanear, Liberar RAM y Probar red.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_36_1_novidades" />
+    <string-array name="changelog_1_36_1_correcoes">
+        <item>La comprobación de actualizaciones ahora avisa cuando no puede consultar, en lugar de decir que ya tienes la última versión.</item>
+        <item>Nueva vía de consulta sin la API de GitHub, evitando el límite de solicitudes.</item>
+    </string-array>
     <string-array name="changelog_1_36_novidades">
         <item>Historial de limpiezas de RAM con contador y registro de las últimas limpiezas.</item>
         <item>Métricas de sesión de Game Turbo: tiempo total, sesiones y limpiezas.</item>

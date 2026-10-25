@@ -1,0 +1,2 @@
+- The update check now reports when it cannot reach the server instead of saying you are already up to date.
+- Added a fallback check that does not use the GitHub API, avoiding rate limits.

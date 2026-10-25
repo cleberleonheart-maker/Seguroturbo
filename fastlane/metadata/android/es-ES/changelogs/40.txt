@@ -1,0 +1,2 @@
+- La comprobación de actualizaciones ahora avisa cuando no puede consultar, en lugar de decir que ya tienes la última versión.
+- Nueva vía de consulta sin la API de GitHub, evitando el límite de solicitudes.

@@ -446,6 +446,11 @@
         <item>Atalhos no ícone (toque longo): Escanear, Limpar RAM e Testar rede.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_36_1_novidades" />
+    <string-array name="changelog_1_36_1_correcoes">
+        <item>A verificação de atualizações agora avisa quando não consegue consultar, em vez de dizer que você já está na versão mais recente.</item>
+        <item>Nova via de consulta sem a API do GitHub, contornando o limite de requisições.</item>
+    </string-array>
     <string-array name="changelog_1_36_novidades">
         <item>Histórico de limpezas de RAM com contador e registros das últimas limpezas.</item>
         <item>Métricas de sessão do Game Turbo: tempo total, sessões e limpezas.</item>

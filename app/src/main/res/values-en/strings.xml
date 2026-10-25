@@ -446,6 +446,11 @@
         <item>Icon shortcuts (long press): Scan, Free RAM and Test network.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_36_1_novidades" />
+    <string-array name="changelog_1_36_1_correcoes">
+        <item>The update check now reports when it cannot reach the server instead of saying you are already up to date.</item>
+        <item>Added a fallback check that does not use the GitHub API, avoiding rate limits.</item>
+    </string-array>
     <string-array name="changelog_1_36_novidades">
         <item>RAM cleanup history with a counter and log of recent cleanups.</item>
         <item>Game Turbo session metrics: total time, sessions and cleanups.</item>

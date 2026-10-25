@@ -1,0 +1,2 @@
+- A verificação de atualizações agora avisa quando não consegue consultar, em vez de dizer que você já está na versão mais recente.
+- Nova via de consulta sem a API do GitHub, contornando o limite de requisições.
