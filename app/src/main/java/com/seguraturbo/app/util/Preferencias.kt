@@ -350,6 +350,44 @@ object Preferencias {
     fun totalMinutosGameTurbo(ctx: Context): Long = Armazenamento.lerLongo(ctx, K_METRICA_TOTAL_MIN, 0L)
     fun totalSessoesGameTurbo(ctx: Context): Int = Armazenamento.lerInteiro(ctx, K_METRICA_SESSOES, 0)
 
+    // ---- Material You (cores dinâmicas) ----
+    private const val K_MATERIAL_YOU = "material_you_ativo"
+    fun materialYouAtivo(ctx: Context): Boolean = Armazenamento.lerBooleano(ctx, K_MATERIAL_YOU, false)
+    fun definirMaterialYouAtivo(ctx: Context, ativo: Boolean) { Armazenamento.gravarBooleano(ctx, K_MATERIAL_YOU, ativo) }
+
+    // ---- Não Perturbe (DND) agendado ----
+    private const val K_DND_AGENDADO_ATIVO = "dnd_agendado_ativo"
+    private const val K_DND_HORA_INICIO = "dnd_hora_inicio"
+    private const val K_DND_MIN_INICIO = "dnd_min_inicio"
+    private const val K_DND_HORA_FIM = "dnd_hora_fim"
+    private const val K_DND_MIN_FIM = "dnd_min_fim"
+
+    fun dndAgendadoAtivo(ctx: Context): Boolean = Armazenamento.lerBooleano(ctx, K_DND_AGENDADO_ATIVO, false)
+    fun definirDndAgendadoAtivo(ctx: Context, ativo: Boolean) {
+        Armazenamento.gravarBooleano(ctx, K_DND_AGENDADO_ATIVO, ativo)
+        try { if (ativo) DndAgendador.agendar(ctx) else DndAgendador.cancelar(ctx) } catch (_: Exception) {}
+    }
+    fun dndHoraInicio(ctx: Context): Int = Armazenamento.lerInteiro(ctx, K_DND_HORA_INICIO, 22)
+    fun definirDndHoraInicio(ctx: Context, h: Int) {
+        Armazenamento.gravarInteiro(ctx, K_DND_HORA_INICIO, h.coerceIn(0, 23))
+        if (dndAgendadoAtivo(ctx)) DndAgendador.agendar(ctx)
+    }
+    fun dndMinInicio(ctx: Context): Int = Armazenamento.lerInteiro(ctx, K_DND_MIN_INICIO, 0)
+    fun definirDndMinInicio(ctx: Context, m: Int) {
+        Armazenamento.gravarInteiro(ctx, K_DND_MIN_INICIO, m.coerceIn(0, 59))
+        if (dndAgendadoAtivo(ctx)) DndAgendador.agendar(ctx)
+    }
+    fun dndHoraFim(ctx: Context): Int = Armazenamento.lerInteiro(ctx, K_DND_HORA_FIM, 7)
+    fun definirDndHoraFim(ctx: Context, h: Int) {
+        Armazenamento.gravarInteiro(ctx, K_DND_HORA_FIM, h.coerceIn(0, 23))
+        if (dndAgendadoAtivo(ctx)) DndAgendador.agendar(ctx)
+    }
+    fun dndMinFim(ctx: Context): Int = Armazenamento.lerInteiro(ctx, K_DND_MIN_FIM, 0)
+    fun definirDndMinFim(ctx: Context, m: Int) {
+        Armazenamento.gravarInteiro(ctx, K_DND_MIN_FIM, m.coerceIn(0, 59))
+        if (dndAgendadoAtivo(ctx)) DndAgendador.agendar(ctx)
+    }
+
     // ---- Perfil de uso automático por bateria ----
     fun aplicarEconomiaSeBaixa(ctx: Context) {
         try {

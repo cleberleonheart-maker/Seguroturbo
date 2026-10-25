@@ -53,6 +53,7 @@ import com.seguraturbo.app.util.Notificacoes
 import com.seguraturbo.app.util.PerfisUso
 import com.seguraturbo.app.util.Preferencias
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 /**
  * Diálogo de configurações rápidas: tema claro/escuro, tamanho da fonte,
@@ -72,6 +73,12 @@ fun ConfiguracoesDialog(
     var lembrete by remember { mutableStateOf(Preferencias.lembreteAtivo(ctx)) }
     var atualizacaoAuto by remember { mutableStateOf(Preferencias.atualizacaoAutomatica(ctx)) }
     var perfilUso by remember { mutableStateOf(Preferencias.perfilUso(ctx)) }
+    var materialYou by remember { mutableStateOf(Preferencias.materialYouAtivo(ctx)) }
+    var dndAtivo by remember { mutableStateOf(Preferencias.dndAgendadoAtivo(ctx)) }
+    var dndIniH by remember { mutableStateOf(Preferencias.dndHoraInicio(ctx)) }
+    var dndIniM by remember { mutableStateOf(Preferencias.dndMinInicio(ctx)) }
+    var dndFimH by remember { mutableStateOf(Preferencias.dndHoraFim(ctx)) }
+    var dndFimM by remember { mutableStateOf(Preferencias.dndMinFim(ctx)) }
     var mostrarNovidades by remember { mutableStateOf(false) }
     val assinatura by remember { mutableStateOf(AssinaturaApp.sha256(ctx)) }
     val sistemaEscuro = isSystemInDarkTheme()
@@ -89,6 +96,13 @@ fun ConfiguracoesDialog(
         lembrete = Preferencias.lembreteAtivo(ctx)
         atualizacaoAuto = Preferencias.atualizacaoAutomatica(ctx)
         perfilUso = Preferencias.perfilUso(ctx)
+        materialYou = Preferencias.materialYouAtivo(ctx)
+        Aparencia.materialYou = materialYou
+        dndAtivo = Preferencias.dndAgendadoAtivo(ctx)
+        dndIniH = Preferencias.dndHoraInicio(ctx)
+        dndIniM = Preferencias.dndMinInicio(ctx)
+        dndFimH = Preferencias.dndHoraFim(ctx)
+        dndFimM = Preferencias.dndMinFim(ctx)
         Notificacoes.criarCanal(ctx)
         if (lembrete) Agendador.agendar(ctx) else Agendador.cancelar(ctx)
         if (atualizacaoAuto) AgendadorAtualizacao.agendar(ctx) else AgendadorAtualizacao.cancelar(ctx)
@@ -146,6 +160,26 @@ fun ConfiguracoesDialog(
             if (ok) R.string.backup_restaurado else R.string.backup_erro,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val exportarRelatorio = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/zip")
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val ok = runCatching {
+                val dados = com.seguraturbo.app.util.RelatorioCompleto.gerar(ctx)
+                ctx.contentResolver.openOutputStream(uri)?.use { saida ->
+                    saida.write(dados)
+                } != null
+            }.getOrDefault(false)
+            Toast.makeText(
+                ctx,
+                if (ok) R.string.relatorio_ok else R.string.relatorio_erro,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     val opcoes = listOf(
@@ -270,6 +304,122 @@ fun ConfiguracoesDialog(
                                 stringResource(rotuloRes),
                                 color = cor,
                                 fontSize = if (opcoesTema.size > 3) 11.sp else 13.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(18.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.cfg_material_you),
+                            color = Cores.TextoClaro,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            stringResource(R.string.cfg_material_you_desc),
+                            color = Cores.TextoCinza,
+                            fontSize = 12.sp
+                        )
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        androidx.compose.material3.Switch(
+                            checked = materialYou,
+                            onCheckedChange = { ativo ->
+                                materialYou = ativo
+                                Aparencia.materialYou = ativo
+                                Preferencias.definirMaterialYouAtivo(ctx, ativo)
+                            }
+                        )
+                    } else {
+                        Text(
+                            stringResource(R.string.cfg_material_you_indisponivel),
+                            color = Cores.TextoCinza,
+                            fontSize = 11.sp
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(18.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.cfg_dnd),
+                            color = Cores.TextoClaro,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            stringResource(R.string.cfg_dnd_desc),
+                            color = Cores.TextoCinza,
+                            fontSize = 12.sp
+                        )
+                    }
+                    Switch(
+                        checked = dndAtivo,
+                        onCheckedChange = { ativo ->
+                            dndAtivo = ativo
+                            Preferencias.definirDndAgendadoAtivo(ctx, ativo)
+                            if (ativo && !com.seguraturbo.app.util.ModoConcentracao.temAcesso(ctx)) {
+                                com.seguraturbo.app.util.ModoConcentracao.pedirAcesso(ctx)
+                            }
+                        }
+                    )
+                }
+                if (dndAtivo) {
+                    Spacer(Modifier.height(6.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        TextButton(
+                            onClick = {
+                                android.app.TimePickerDialog(
+                                    ctx,
+                                    { _, h, m ->
+                                        dndIniH = h; dndIniM = m
+                                        Preferencias.definirDndHoraInicio(ctx, h)
+                                        Preferencias.definirDndMinInicio(ctx, m)
+                                    },
+                                    dndIniH, dndIniM, true
+                                ).show()
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                stringResource(R.string.cfg_dnd_inicio, "%02d:%02d".format(dndIniH, dndIniM)),
+                                color = Cores.Ciano,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        TextButton(
+                            onClick = {
+                                android.app.TimePickerDialog(
+                                    ctx,
+                                    { _, h, m ->
+                                        dndFimH = h; dndFimM = m
+                                        Preferencias.definirDndHoraFim(ctx, h)
+                                        Preferencias.definirDndMinFim(ctx, m)
+                                    },
+                                    dndFimH, dndFimM, true
+                                ).show()
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                stringResource(R.string.cfg_dnd_fim, "%02d:%02d".format(dndFimH, dndFimM)),
+                                color = Cores.Ciano,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -497,6 +647,28 @@ fun ConfiguracoesDialog(
                             fontWeight = FontWeight.Bold
                         )
                     }
+                }
+
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    stringResource(R.string.cfg_relatorio),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.cfg_relatorio_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
+                TextButton(
+                    onClick = { exportarRelatorio.launch(com.seguraturbo.app.util.RelatorioCompleto.nomeSugerido()) }
+                ) {
+                    Text(
+                        stringResource(R.string.cfg_relatorio_exportar),
+                        color = Cores.Ciano,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 Spacer(Modifier.height(18.dp))

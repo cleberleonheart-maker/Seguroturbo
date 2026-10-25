@@ -136,6 +136,17 @@
             </intent-filter>
         </receiver>
 
+        <!-- Recebe os alarmes do Não Perturbe agendado. -->
+        <receiver
+            android:name=".util.DndAgendadoReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.seguraturbo.app.DND_AGENDADO_LIGAR" />
+                <action android:name="com.seguraturbo.app.DND_AGENDADO_DESLIGAR" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <!-- Widget da tela inicial. -->
         <receiver
             android:name=".widget.SeguroTurboWidget"

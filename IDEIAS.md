@@ -123,13 +123,13 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 
 ## Novas ideias (propostas)
 
-- [ ] **Widget da tela inicial** (v1.36): widget para escanear rápido, limpar RAM, ligar/desligar Game Turbo direto da home.
+- [x] **Widget da tela inicial** (v1.36): widget para escanear rápido, limpar RAM, ligar/desligar Game Turbo direto da home.
 - [ ] **Atalho por app para perfis** (v1.36): abrir diretamente o perfil do jogo escolhido pelo app launcher (shortcuts).
 - [x] **Modo "Economia" automático** (v1.36): ativar perfis de economia com base em bateria baixa/temperatura.
 - [x] **Histórico de limpezas de RAM** (v1.36): registrar quando e quais apps foram encerrados, com contador.
-- [ ] **Exportar relatório completo (ZIP)** (v1.36): gerar ZIP com inventário CSV, histórico, logs e configurações (tudo offline).
-- [ ] **Tema dinâmico Material You** (v1.36): suporte a cores dinâmicas (Android 12+) com opção para desativar.
-- [ ] **Modo "Não incomodar" agendado** (v1.36): ligar DND em horários/períodos além do Game Turbo.
+- [x] **Exportar relatório completo (ZIP)** (v1.36): gerar ZIP com inventário CSV, histórico, logs e configurações (tudo offline).
+- [x] **Tema dinâmico Material You** (v1.36): suporte a cores dinâmicas (Android 12+) com opção para desativar.
+- [x] **Modo "Não incomodar" agendado** (v1.36): ligar DND em horários/períodos além do Game Turbo.
 - [x] **Verificador de apps com acessibilidade** (v1.36): listar apps com `BIND_ACCESSIBILITY_SERVICE` (requer atenção) e explicar riscos.
-- [ ] **Backup/restore de configurações** (v1.36): exportar/importar preferências JSON local (sem nuvem).
+- [x] **Backup/restore de configurações** (v1.36): exportar/importar preferências JSON local (sem nuvem).
 - [x] **Métricas de sessão Game Turbo** (v1.36): tempo em jogo, limpezas, ativação/desativação por sessão.

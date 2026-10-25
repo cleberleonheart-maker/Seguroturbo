@@ -3,6 +3,8 @@ package com.seguraturbo.app.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -11,17 +13,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.sp
+import android.os.Build
 import com.seguraturbo.app.model.TemaModo
 
 /** Estado global de aparência (tamanho da fonte e modo de tema). */
 object Aparencia {
     var escalaFonte by mutableStateOf(1f)
     var temaModo by mutableStateOf(TemaModo.ESCURO)
+    var materialYou by mutableStateOf(false)
 }
 
 private fun esquemaEscuro() = darkColorScheme(
@@ -83,9 +88,17 @@ fun SeguroTurboTheme(content: @Composable () -> Unit) {
     LaunchedEffect(modo, sistemaEscuro) {
         Cores.aplicarModo(modo, sistemaEscuro)
     }
+    val ctx = LocalContext.current
+    val usaDinamico = Aparencia.materialYou && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val esquema = when {
+        usaDinamico && Cores.escuro -> dynamicDarkColorScheme(ctx)
+        usaDinamico -> dynamicLightColorScheme(ctx)
+        Cores.escuro -> esquemaEscuro()
+        else -> esquemaClaro()
+    }
     CompositionLocalProvider(LocalDensity provides densidadeEscalada) {
         MaterialTheme(
-            colorScheme = if (Cores.escuro) esquemaEscuro() else esquemaClaro(),
+            colorScheme = esquema,
             typography = tipografia(),
             content = content
         )
