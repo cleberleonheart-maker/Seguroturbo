@@ -33,8 +33,22 @@ erro() { printf 'ERRO: %s\n' "$*" >&2; exit 1; }
 # ---- pré-checagens -----------------------------------------------------------
 
 command -v gh >/dev/null 2>&1 || erro "gh não encontrado (instale o GitHub CLI)."
-command -v fdroid >/dev/null 2>&1 || erro "fdroidserver não encontrado (pip install fdroidserver)."
 command -v git >/dev/null 2>&1 || erro "git não encontrado."
+
+# O fdroidserver do sistema (2.2.1 + androguard 3.4) falha ao ler os APKs do
+# Galinha ("ResParserError: res1 must be zero!"). Se o venv com androguard 4.x
+# existir, ele tem prioridade; dá para forçar com FDROID_BIN=/caminho/fdroid.
+if [ -z "${FDROID_BIN:-}" ]; then
+    if [ -x "$HOME/.venvs/fdroid/bin/fdroid" ]; then
+        FDROID_BIN="$HOME/.venvs/fdroid/bin/fdroid"
+    elif command -v fdroid >/dev/null 2>&1; then
+        FDROID_BIN="$(command -v fdroid)"
+    else
+        erro "fdroidserver não encontrado (instale com pip ou crie ~/.venvs/fdroid)."
+    fi
+fi
+log "fdroidserver: $FDROID_BIN"
+
 [ -d "$REPO_DIR" ] || erro "pasta do repositório F-Droid não existe: $REPO_DIR"
 
 # senha do keystore do repositório
@@ -102,7 +116,7 @@ fi
 # ---- 3. regenerar o índice assinado -----------------------------------------
 
 log "Regenerando o índice assinado..."
-( cd "$REPO_DIR" && fdroid update --create-metadata && fdroid update -c )
+( cd "$REPO_DIR" && "$FDROID_BIN" update --create-metadata && "$FDROID_BIN" update -c )
 
 NOVO_HASH="$(sha256sum "$REPO_DIR/repo/$APK_NAME" | cut -d' ' -f1)"
 log "APK publicado: $APK_NAME (sha256 ${NOVO_HASH:0:12}…)"
@@ -118,11 +132,16 @@ log "Sincronizando a pasta repo/ com o GitHub Pages..."
 git -C "$PAGES_DIR" pull --ff-only --quiet
 # publica o mesmo repo em tres caminhos, para que qualquer URL que o app
 # F-Droid tente funcionar (raiz, /fdroid/repo e o /repo antigo)
-rsync -a --delete --exclude='/fdroid' --exclude='/repo' \
+# '--filter=protect *.apk' mantem as versoes antigas no ar (os links ja
+# enviados continuam baixando); a retencao abaixo corta o excesso.
+rsync -a --delete --filter='protect *.apk' \
+      --exclude='/fdroid' --exclude='/repo' \
       --exclude='/.nojekyll' --exclude='/README.md' --exclude='/.git' \
       "$REPO_DIR/repo/" "$PAGES_DIR/"
-rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/fdroid/repo/"
-rsync -a --delete "$REPO_DIR/repo/" "$PAGES_DIR/repo/"
+rsync -a --delete --filter='protect *.apk' "$REPO_DIR/repo/" "$PAGES_DIR/fdroid/repo/"
+rsync -a --delete --filter='protect *.apk' "$REPO_DIR/repo/" "$PAGES_DIR/repo/"
+# retencao: so as 5 versoes mais novas de cada app em cada caminho
+python3 "$PROJ_DIR/fdroid/limpar-pages.py" "$PAGES_DIR" 5
 # pagina de boas-vindas (troca o index.html gerado pelo fdroidserver)
 python3 "$PROJ_DIR/fdroid/gerar-welcome.py" "$REPO_DIR/repo" "$PAGES_DIR/index.html" ""
 python3 "$PROJ_DIR/fdroid/gerar-welcome.py" "$REPO_DIR/repo" "$PAGES_DIR/fdroid/repo/index.html" "/fdroid/repo"

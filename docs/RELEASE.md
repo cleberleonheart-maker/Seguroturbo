@@ -68,14 +68,17 @@ O script checa: `entry.json` × `index-v2.json` (sha256), assinatura do
 ## 4. Publicação local (só quando precisar)
 
 `scripts/publicar-repo.sh` faz o mesmo caminho usando `gh` + `fdroidserver`
-locais. **Atenção:** o `fdroidserver` do sistema (2.2.1 + androguard 3.4) falha
-ao ler os APKs do Galinha:
+locais. Ele **prefere** `~/.venvs/fdroid/bin/fdroid` (ou `FDROID_BIN=...`) e
+aplica a mesma retenção de 5 versões do CI.
+
+**Atenção:** o `fdroidserver` do sistema (2.2.1 + androguard 3.4) falha ao ler
+os APKs do Galinha:
 
 ```
 androguard...ResParserError: res1 must be zero!
 ```
 
-Use o venv com `androguard` 4.x:
+Por isso o venv com `androguard` 4.x é o caminho seguro:
 
 ```bash
 ~/.venvs/fdroid/bin/fdroid update -c          # dentro de ~/fdroid-repo
