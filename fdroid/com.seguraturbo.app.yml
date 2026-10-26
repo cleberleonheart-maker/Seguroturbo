@@ -33,6 +33,16 @@ RepoType: git
 Repo: https://github.com/cleberleonheart-maker/Seguroturbo.git
 
 Builds:
+  - versionName: '1.36.1'
+    versionCode: 40
+    commit: 7756ae8683051b3bbda4e82be8d8757f404134ec
+    gradle:
+      - yes
+  - versionName: '1.36'
+    versionCode: 39
+    commit: 51a4c0c7c1c1e5e974bba8e0663195d27a9c08fa
+    gradle:
+      - yes
   - versionName: '1.35'
     versionCode: 38
     commit: def56f2e43e62c5c0cdfdcdcd37ded77a97824b3
@@ -51,5 +61,5 @@ Builds:
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 1.35
-CurrentVersionCode: 38
+CurrentVersion: 1.36.1
+CurrentVersionCode: 40
