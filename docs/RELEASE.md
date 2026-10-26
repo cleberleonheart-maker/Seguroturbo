@@ -53,6 +53,10 @@ sozinho quando o *Release* termina com sucesso (`workflow_run`):
 Também dá para rodar na mão: **Actions → Publicar repo F-Droid → Run workflow**
 (informando a tag) ou, localmente, `./scripts/publicar-repo.sh`.
 
+O CI usa **Python 3.12** e **fdroidserver 2.4.5** fixos (o `androguard` que vem
+junto já quebrou a leitura dos APKs do Galinha). Só suba essas versões depois de
+testar uma publicação de verdade.
+
 ### Conferir depois de publicar
 
 ```bash

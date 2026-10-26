@@ -47,7 +47,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Configurar Java
         uses: actions/setup-java@v6
@@ -56,7 +56,10 @@ jobs:
           java-version: '17'
 
       - name: Instalar fdroidserver
-        run: pip install fdroidserver
+        # Versão fixa: uma atualização do fdroidserver/androguard já quebrou a
+        # leitura dos APKs do Galinha ("ResParserError: res1 must be zero!").
+        # Só suba a versão depois de testar uma publicação de verdade.
+        run: pip install "fdroidserver==2.4.5"
 
       - name: Descobrir a tag
         id: tag
