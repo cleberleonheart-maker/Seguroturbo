@@ -67,6 +67,12 @@ build rápido e sem download de dependências:
 
 Sai em `apk/galinha-assada.apk`.
 
+A versão vem de [`android/version.properties`](./android/version.properties)
+(`versionCode` / `versionName`) e é a mesma usada pelo CI — assim, publicar duas
+vezes o mesmo código não cria versão nova. **Ao mudar o jogo, suba o
+`versionCode`** (sempre maior que o anterior). Sem o arquivo, o script volta ao
+modo antigo (minutos desde 1970).
+
 Requisitos: JDK 17+, Android SDK com `platforms/android-34` e `build-tools`, e
 `zip`/`unzip`. O script usa `ANDROID_HOME` (ou `~/android-sdk`).
 

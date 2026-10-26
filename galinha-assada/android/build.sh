@@ -18,19 +18,30 @@ KS="$PROJ/galinha.keystore"
 KS_PASS="${KS_PASS:-galinha123}"
 GAME="$(cd "$PROJ/.." && pwd)/index.html"
 
-# versao automatica: versionCode em minutos desde 1970.
-# cresce sempre, nao importa a maquina nem a ordem dos builds (a data sozinha
-# nao servia: dois builds no mesmo dia colidiam, e o CI publicava um numero
-# menor que o do build local, o que travava a atualizacao pelo F-Droid)
-# pode ser sobrescrita com VC_OVERRIDE / VN_OVERRIDE
-VC="${VC_OVERRIDE:-$(($(date +%s) / 60))}"
-VN="${VN_OVERRIDE:-1.$(date +%y).$(date +%m).$(date +%d)}"
+# versao: version.properties (deterministica, versionada no git) ou, se o
+# arquivo nao existir, minutos desde 1970. A versao pinada e' a mesma usada pelo
+# CI, entao republicar o mesmo codigo gera o mesmo APK (e o metadata do F-Droid
+# para de divergir). Pode ser sobrescrita com VC_OVERRIDE / VN_OVERRIDE.
+VERSION_FILE="$PROJ/version.properties"
+PINNED_VC=""
+PINNED_VN=""
+if [ -f "$VERSION_FILE" ]; then
+  PINNED_VC="$(sed -n 's/^versionCode=//p' "$VERSION_FILE" | tr -d '[:space:]')"
+  PINNED_VN="$(sed -n 's/^versionName=//p' "$VERSION_FILE" | tr -d '[:space:]')"
+fi
+VC="${VC_OVERRIDE:-${PINNED_VC:-$(($(date +%s) / 60))}}"
+VN="${VN_OVERRIDE:-${PINNED_VN:-1.$(date +%y).$(date +%m).$(date +%d)}}"
 
 # o versionCode tem que ser >= o do APK anterior, senao o Android recusa a atualizacao
 PREV_APK="$OUT/galinha-assada.apk"
 if [ -f "$PREV_APK" ]; then
   PREV_VC=$("$BT/aapt2" dump badging "$PREV_APK" 2>/dev/null | sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p")
-  if [ -n "$PREV_VC" ] && [ "$PREV_VC" -ge "$VC" ]; then
+  if [ -n "$PREV_VC" ] && [ "$PREV_VC" -gt "$VC" ]; then
+    if [ -n "$PINNED_VC" ] || [ -n "${VC_OVERRIDE:-}" ]; then
+      echo "erro: versionCode $VC e' menor que o do APK anterior ($PREV_VC)." >&2
+      echo "      suba o versionCode em $VERSION_FILE antes de compilar." >&2
+      exit 1
+    fi
     echo "==> versionCode $VC ja usado; subindo para $((PREV_VC + 1))"
     VC=$((PREV_VC + 1))
   fi
