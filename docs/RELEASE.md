@@ -9,7 +9,10 @@ O fluxo tem três pontos que precisam ficar **na mesma versão**:
 | `fdroid/com.seguraturbo.app.yml` | `Builds` + `CurrentVersion(Code)` | `40` / `1.36.1` |
 
 Se um deles sair do lugar, o `fdroiddata` recusa (`Repo git commit not found` ou
-"versão não encontrada") e o repo próprio publica uma versão trocada.
+"versão não encontrada") e o repo próprio publica uma versão trocada. Para
+evitar isso, o workflow **Publicar repo F-Droid** compara o `build.gradle` (app)
+e o `version.properties` (Galinha) com o metadata em `fdroid/` e **falha** com
+uma mensagem clara quando não batem — antes de compilar qualquer coisa.
 
 ---
 

@@ -89,24 +89,51 @@ jobs:
         run: |
           set -euo pipefail
           VCODE="$(sed -n 's/.*versionCode[^0-9]\+\([0-9]\+\).*/\1/p' app/build.gradle | head -n1)"
+          VNAME="$(sed -n 's/.*versionName[[:space:]]*"\([^"]*\)".*/\1/p' app/build.gradle | head -n1)"
           [ -n "$VCODE" ] || { echo "versionCode não encontrado" >&2; exit 1; }
+          [ -n "$VNAME" ] || { echo "versionName não encontrado" >&2; exit 1; }
+
+          MET="fdroid/${PACOTE}.yml"
+          MET_VC="$(sed -n 's/^CurrentVersionCode:[[:space:]]*//p' "$MET" | tr -d '[:space:]')"
+          MET_VN="$(sed -n 's/^CurrentVersion:[[:space:]]*//p' "$MET" | tr -d '[:space:]')"
+          if [ "$MET_VC" != "$VCODE" ] || [ "$MET_VN" != "$VNAME" ]; then
+            echo "erro: $MET está em $MET_VN ($MET_VC), mas app/build.gradle diz $VNAME ($VCODE)." >&2
+            echo "      atualize CurrentVersion/CurrentVersionCode no metadata antes de publicar." >&2
+            exit 1
+          fi
+
           echo "vcode=$VCODE" >> "$GITHUB_OUTPUT"
-          echo "versionCode: $VCODE"
+          echo "versionCode: $VCODE ($VNAME) — metadata em sincronia"
 
       - name: Ler a versão do Galinha Assada
+        id: galinha
         # A versão fica em version.properties (versionado) em vez de ser
         # derivada do relógio: publicar duas vezes o mesmo código gera o mesmo
         # APK, e o metadata em fdroid/ para de divergir do repo publicado.
+        # Esta etapa também é a trava anti-divergência: se o metadata não
+        # estiver na mesma versão, a publicação para aqui.
         run: |
           set -euo pipefail
           ARQ="galinha-assada/android/version.properties"
+          MET="fdroid/br.com.galinhaassada.yml"
           [ -f "$ARQ" ] || { echo "$ARQ não encontrado" >&2; exit 1; }
           VC="$(sed -n 's/^versionCode=//p' "$ARQ" | tr -d '[:space:]')"
           VN="$(sed -n 's/^versionName=//p' "$ARQ" | tr -d '[:space:]')"
           [ -n "$VC" ] && [ -n "$VN" ] || { echo "versionCode/versionName ausentes em $ARQ" >&2; exit 1; }
+
+          MET_VC="$(sed -n 's/^CurrentVersionCode:[[:space:]]*//p' "$MET" | tr -d '[:space:]')"
+          MET_VN="$(sed -n 's/^CurrentVersion:[[:space:]]*//p' "$MET" | tr -d '[:space:]')"
+          if [ "$MET_VC" != "$VC" ] || [ "$MET_VN" != "$VN" ]; then
+            echo "erro: $MET está em $MET_VN ($MET_VC), mas $ARQ diz $VN ($VC)." >&2
+            echo "      atualize CurrentVersion/CurrentVersionCode no metadata antes de publicar." >&2
+            exit 1
+          fi
+
+          echo "vc=$VC" >> "$GITHUB_OUTPUT"
+          echo "vn=$VN" >> "$GITHUB_OUTPUT"
           echo "VC_OVERRIDE=$VC" >> "$GITHUB_ENV"
           echo "VN_OVERRIDE=$VN" >> "$GITHUB_ENV"
-          echo "Galinha Assada: $VN ($VC)"
+          echo "Galinha Assada: $VN ($VC) — metadata em sincronia"
 
       - name: Montar o APK do Galinha Assada
         env:
@@ -138,16 +165,18 @@ jobs:
           cp fdroid/${PACOTE}.yml "$REPO_DIR/metadata/${PACOTE}.yml"
           cp app-release.apk "$REPO_DIR/repo/${PACOTE}_${{ steps.ver.outputs.vcode }}.apk"
 
-          # Galinha Assada (mesmo repositorio, app separado)
+          # Galinha Assada (mesmo repositorio, app separado). A versão vem de
+          # version.properties; aqui só confirmamos que o APK saiu com ela.
           if [ -f galinha-assada/apk/galinha-assada.apk ]; then
             BT="$(ls -d "${ANDROID_HOME:-$HOME/android-sdk}"/build-tools/*/ | sort -V | tail -1)"
             BADGING="$("$BT/aapt2" dump badging galinha-assada/apk/galinha-assada.apk)"
             GVC="$(sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p" <<<"$BADGING" | head -n1)"
             GVN="$(sed -n "s/.*versionName='\([^']*\)'.*/\1/p" <<<"$BADGING" | head -n1)"
             [ -n "$GVC" ] || { echo "versionCode do Galinha Assada nao encontrado" >&2; exit 1; }
-            sed -i -e "s|^CurrentVersionCode:.*|CurrentVersionCode: $GVC|" \
-                   -e "s|^CurrentVersion:.*|CurrentVersion: $GVN|" \
-                   fdroid/br.com.galinhaassada.yml
+            if [ "$GVC" != "${{ steps.galinha.outputs.vc }}" ] || [ "$GVN" != "${{ steps.galinha.outputs.vn }}" ]; then
+              echo "erro: o APK saiu como $GVN ($GVC), esperado ${{ steps.galinha.outputs.vn }} (${{ steps.galinha.outputs.vc }})" >&2
+              exit 1
+            fi
             cp fdroid/br.com.galinhaassada.yml "$REPO_DIR/metadata/br.com.galinhaassada.yml"
             cp galinha-assada/apk/galinha-assada.apk "$REPO_DIR/repo/br.com.galinhaassada_${GVC}.apk"
             echo "Galinha Assada $GVN ($GVC)"
