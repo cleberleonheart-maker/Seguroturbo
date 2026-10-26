@@ -86,8 +86,8 @@ já instalado. No CI a chave vem do secret
 ## Publicar no repositório F-Droid
 
 O metadata do app fica em [`../fdroid/br.com.galinhaassada.yml`](../fdroid/br.com.galinhaassada.yml).
-O workflow **Publicar repo F-Droid** compila este APK junto com o do
-SeguroTurbo e publica os dois no mesmo repositório F-Droid.
+O workflow **Publicar repo F-Droid** compila este APK e publica junto com o
+SeguroTurbo e os apps parceiros (Pulsa e Bússola) no mesmo repositório F-Droid.
 
 Veja [`../docs/F-DROID.md`](../docs/F-DROID.md).
 
