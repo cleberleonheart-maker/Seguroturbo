@@ -152,6 +152,13 @@ O repositório F-Droid publica **dois apps**: o SeguroTurbo e o
 o APK do Galinha Assada com [`../galinha-assada/android/build.sh`](../galinha-assada/android/build.sh)
 e inclui os dois no mesmo índice assinado.
 
+A versão do jogo é fixa em
+[`../galinha-assada/android/version.properties`](../galinha-assada/android/version.properties):
+publicar de novo o mesmo código **não** cria versão nova, e o workflow falha se
+esse arquivo divergir do metadata em `fdroid/br.com.galinhaassada.yml`. As
+pastas do Pages guardam só as **5 versões mais novas** de cada app em cada
+caminho (as antigas são limpas por `fdroid/limpar-pages.py`).
+
 Se `FDROID_GALINHA_KEYSTORE_BASE64` não estiver configurado, o workflow publica
 só o SeguroTurbo e avisa com um warning — nada quebra.
 
