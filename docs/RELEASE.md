@@ -18,7 +18,7 @@ Se um deles sair do lugar, o `fdroiddata` recusa (`Repo git commit not found` ou
 - [ ] `app/build.gradle`: `versionCode` +1 e `versionName` novo
 - [ ] Changelog nos **4 idiomas**: `fastlane/metadata/android/{pt-BR,en-US,es-ES,fr-FR}/changelogs/<versionCode>.txt`
 - [ ] `fdroid/com.seguraturbo.app.yml`: nova entrada em `Builds` + `CurrentVersion`/`CurrentVersionCode`
-- [ ] Galinha Assada (se mudou): `galinha-assada/` atualizado — o `versionCode` é automático (`build.sh` usa minutos desde 1970)
+- [ ] Galinha Assada (se mudou): `galinha-assada/` atualizado **e** `galinha-assada/android/version.properties` com `versionCode` novo (sempre maior que o anterior) + `versionName`. Sem isso, o CI republica a mesma versão — de propósito.
 - [ ] `./gradlew test lintDebug assembleDebug` ou só esperar o CI
 
 ## 2. Tag e release
@@ -40,10 +40,12 @@ sozinho quando o *Release* termina com sucesso (`workflow_run`):
 
 1. baixa o APK oficial da release
 2. monta o repo em `$RUNNER_TEMP` (metadados de `fdroid/`)
-3. compila o Galinha Assada e inclui no mesmo repo
+3. compila o Galinha Assada com a versão de `galinha-assada/android/version.properties` e inclui no mesmo repo
 4. roda `fdroid update --create-metadata` + `fdroid update -c` (índice assinado)
 5. publica em `pages/`, `pages/fdroid/repo/` e `pages/repo/`
 6. gera `index.html` de boas-vindas e `changelog.html`
+7. roda `fdroid/limpar-pages.py pages 5` — mantém as **5 versões mais novas**
+   de cada app em cada caminho e nunca remove um APK citado no índice
 
 Também dá para rodar na mão: **Actions → Publicar repo F-Droid → Run workflow**
 (informando a tag) ou, localmente, `./scripts/publicar-repo.sh`.

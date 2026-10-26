@@ -93,6 +93,21 @@ jobs:
           echo "vcode=$VCODE" >> "$GITHUB_OUTPUT"
           echo "versionCode: $VCODE"
 
+      - name: Ler a versão do Galinha Assada
+        # A versão fica em version.properties (versionado) em vez de ser
+        # derivada do relógio: publicar duas vezes o mesmo código gera o mesmo
+        # APK, e o metadata em fdroid/ para de divergir do repo publicado.
+        run: |
+          set -euo pipefail
+          ARQ="galinha-assada/android/version.properties"
+          [ -f "$ARQ" ] || { echo "$ARQ não encontrado" >&2; exit 1; }
+          VC="$(sed -n 's/^versionCode=//p' "$ARQ" | tr -d '[:space:]')"
+          VN="$(sed -n 's/^versionName=//p' "$ARQ" | tr -d '[:space:]')"
+          [ -n "$VC" ] && [ -n "$VN" ] || { echo "versionCode/versionName ausentes em $ARQ" >&2; exit 1; }
+          echo "VC_OVERRIDE=$VC" >> "$GITHUB_ENV"
+          echo "VN_OVERRIDE=$VN" >> "$GITHUB_ENV"
+          echo "Galinha Assada: $VN ($VC)"
+
       - name: Montar o APK do Galinha Assada
         env:
           FDROID_GALINHA_KEYSTORE_BASE64: ${{ secrets.FDROID_GALINHA_KEYSTORE_BASE64 }}
@@ -170,6 +185,10 @@ jobs:
           python3 fdroid/gerar-changelog.py fastlane/metadata/android pages/changelog.html ""
           python3 fdroid/gerar-changelog.py fastlane/metadata/android pages/fdroid/repo/changelog.html "/fdroid/repo"
           python3 fdroid/gerar-changelog.py fastlane/metadata/android pages/repo/changelog.html "/repo"
+          # retenção: mantém só as 5 versões mais novas de cada app em cada
+          # caminho (o Pages acumulava uma cópia de toda versão já publicada).
+          # nunca remove APK referenciado no índice daquele caminho.
+          python3 fdroid/limpar-pages.py pages 5
           # o jogo em si (index.html): o app Android usa esse arquivo para
           # atualizar o jogo direto, sem baixar nem instalar APK
           mkdir -p pages/galinha
