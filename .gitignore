@@ -28,3 +28,7 @@ CREDENCIAIS-KEYSTORE.txt
 fdroid/config.yml
 fdroid/*.apk
 fdroid/repo/
+
+# Python
+__pycache__/
+*.pyc

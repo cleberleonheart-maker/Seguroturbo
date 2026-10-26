@@ -63,14 +63,18 @@ def apps(index_v2):
 def render(apps_list):
     cards = []
     for a in apps_list:
+        # no index-v2 os nomes de arquivo vêm com "/" na frente; o link é
+        # montado a partir de {PREFIX} (vazio na raiz, "/fdroid/repo/" etc.)
+        apk_nome = a["apk"].lstrip("/")
+        icone_nome = (a["icon"] or "").lstrip("/")
         icon = (
-            f'<img class="icone" src="{{PREFIX}}{html.escape(a["icon"])}" alt="" width="64" height="64">'
-            if a["icon"]
+            f'<img class="icone" src="{{PREFIX}}{html.escape(icone_nome)}" alt="" width="64" height="64">'
+            if icone_nome
             else '<div class="icone vazio" aria-hidden="true"></div>'
         )
         apk_link = (
-            f'<a class="btn" href="{{PREFIX}}{html.escape(a["apk"])}">Baixar APK</a>'
-            if a["apk"]
+            f'<a class="btn" href="{{PREFIX}}{html.escape(apk_nome)}">Baixar APK</a>'
+            if apk_nome
             else ""
         )
         source = (
@@ -98,7 +102,7 @@ def render(apps_list):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Galinha Assada &amp; SeguroTurbo — repositório F-Droid</title>
+<title>Apps do Cleber — repositório F-Droid</title>
 <style>
   :root {{ color-scheme: light dark; --bg:#f6f6f4; --fg:#1c1b1a; --card:#fff;
            --borda:#dcdcd6; --destaque:#0a7d55; --suave:#6b6b66; }}
@@ -138,7 +142,7 @@ def render(apps_list):
 </head>
 <body>
 <main>
-  <h1>Galinha Assada &amp; SeguroTurbo</h1>
+  <h1>Apps do Cleber</h1>
   <p class="sub">Repositório F-Droid · código aberto (GPL-3.0) · sem anúncios, sem rastreamento</p>
 
   <div class="box">
@@ -147,7 +151,7 @@ def render(apps_list):
     <ol>
       <li>Abra o F-Droid e vá em <strong>Configurações → Repositórios</strong>.</li>
       <li>Toque em <strong>Adicionar repositório</strong> e cole a URL acima.</li>
-      <li>Pronto — os dois apps aparecem na lista, na aba <strong>Atualizar</strong>.</li>
+      <li>Pronto — os apps aparecem na lista, na aba <strong>Atualizar</strong>.</li>
     </ol>
   </div>
 
@@ -179,9 +183,10 @@ def main():
         return 1
     repo_dir, out = sys.argv[1], sys.argv[2]
     prefix = sys.argv[3] if len(sys.argv) > 3 else ""
-    if prefix and not prefix.startswith("/"):
-        prefix = "/" + prefix
-    prefix = prefix.rstrip("/")
+    # {PREFIX} entra colado no nome do arquivo: vazio na raiz (link relativo)
+    # ou com uma barra no fim (/fdroid/repo/). Sem a barra, o link da raiz
+    # virava "/app.apk" e caía no domínio, fora da pasta do projeto (404).
+    prefix = "/" + prefix.strip("/") + "/" if prefix.strip("/") else ""
 
     with open(os.path.join(repo_dir, "index-v2.json"), encoding="utf-8") as f:
         index_v2 = json.load(f)

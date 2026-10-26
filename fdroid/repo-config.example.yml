@@ -6,11 +6,11 @@
 # `repo_name`/`repo_description` aparecem dentro do app F-Droid do usuário.
 
 repo_url: https://cleberleonheart-maker.github.io/seguraturbo-fdroid/fdroid/repo
-repo_name: Galinha & SeguroTurbo
+repo_name: Apps do Cleber
 repo_description: |
-  Galinha Assada: Açaí & Peixe (jogo de labirinto) e SeguroTurbo (segurança,
-  privacidade e desempenho). Código aberto (GPL-3.0), sem rastreamento,
-  sem anúncios e sem coleta de dados.
+  SeguroTurbo (segurança e privacidade), Galinha Assada (jogo de labirinto),
+  Pulsa (player de música) e Bússola (ferramentas de navegação e sensores).
+  Código aberto (GPL-3.0), sem rastreamento, sem anúncios e sem coleta de dados.
 
 archive_older: 0
 repo_icon: icon.png

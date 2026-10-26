@@ -113,6 +113,32 @@ if [ -f "$PROJ_DIR/fdroid/$PACOTE.yml" ]; then
     cp "$PROJ_DIR/fdroid/$PACOTE.yml" "$REPO_DIR/metadata/$PACOTE.yml"
 fi
 
+# lista de categorias válidas (usada pelo `fdroid lint`; veja docs/F-DROID.md)
+mkdir -p "$REPO_DIR/config"
+cp "$PROJ_DIR/fdroid/categories.yml" "$REPO_DIR/config/categories.yml"
+
+# apps parceiros (metadata com campo Binaries). O script baixa o APK da
+# release de cada um e confere versão e assinatura; aqui só trocamos a versão
+# antiga pela nova, para o índice não acumular versões velhas.
+PARCEIROS_TMP="$(mktemp -d -t seguraturbo-parceiros-XXXXXX)"
+trap 'rm -rf "$PARCEIROS_TMP"' EXIT
+"$PROJ_DIR/scripts/baixar-parceiros.sh" "$PARCEIROS_TMP"
+# metadata de verdade = fdroid/<pacote>.yml; os arquivos de configuração
+# (categories.yml, repo-config.example.yml) não entram em metadata/, senão o
+# fdroidserver tenta lê-los como se fossem apps.
+for MET in "$PROJ_DIR"/fdroid/*.yml; do
+    case "$(basename "$MET")" in
+        categories.yml | repo-config.example.yml) continue ;;
+    esac
+    cp "$MET" "$REPO_DIR/metadata/"
+done
+for APK_PARCEIRO in "$PARCEIROS_TMP"/*.apk; do
+    PKG_PARCEIRO="$(basename "$APK_PARCEIRO" | sed 's/_[0-9]*\.apk$//')"
+    rm -f "$REPO_DIR/repo/${PKG_PARCEIRO}"_*.apk
+    cp "$APK_PARCEIRO" "$REPO_DIR/repo/"
+    log "parceiro: $(basename "$APK_PARCEIRO")"
+done
+
 # ---- 3. regenerar o índice assinado -----------------------------------------
 
 log "Regenerando o índice assinado..."

@@ -1,0 +1,36 @@
+Categories:
+  - Multimedia
+License: GPL-3.0-only
+AuthorName: cleberleonheart-maker
+SourceCode: https://github.com/cleberleonheart-maker/pulsa
+IssueTracker: https://github.com/cleberleonheart-maker/pulsa/issues
+Changelog: https://github.com/cleberleonheart-maker/pulsa/releases
+
+Name: Pulsa
+Summary: "Player de música com playlists, widgets e transmissão para TV"
+Description: |-
+  Pulsa é um player de música para Android, com a biblioteca organizada por
+  músicas, álbuns, artistas e playlists, além de busca e ordenação.
+
+  • Reprodução com Media3/ExoPlayer, incluindo HLS e DASH.
+  • Controles na notificação e widgets na tela inicial.
+  • Transmissão para Roku (ECP) e servidor DLNA para TVs.
+  • Podcasts e integração com o Android Auto.
+  • Atualização do app integrada, sem passar pela loja.
+
+  Código aberto (GPL-3.0), sem anúncios e sem coleta de dados.
+
+RepoType: git
+Repo: https://github.com/cleberleonheart-maker/pulsa.git
+
+UpdateCheckMode: None
+AutoUpdateMode: None
+
+# APK publicado pelo próprio app; o workflow baixa desta URL e confere a
+# versão e a assinatura antes de publicar no repo.
+Binaries: https://github.com/cleberleonheart-maker/pulsa/releases/download/v5.12.19/app-release.apk
+
+CurrentVersion: 5.12.19
+CurrentVersionCode: 216
+
+AllowedAPKSigningKeys: 2473785bafe4a3ad4c1254b37a2bd3af48325079cd0d4d880fbf3262d2c6bedd

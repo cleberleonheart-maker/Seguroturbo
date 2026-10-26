@@ -1,0 +1,37 @@
+Categories:
+  - Navigation
+License: GPL-3.0-only
+AuthorName: cleberleonheart-maker
+SourceCode: https://github.com/cleberleonheart-maker/B-ssola-
+IssueTracker: https://github.com/cleberleonheart-maker/B-ssola-/issues
+Changelog: https://github.com/cleberleonheart-maker/B-ssola-/releases
+
+Name: Bússola
+Summary: "Bússola digital com rumo, nível, AR e mapa offline"
+Description: |-
+  Bússola digital para Android, com rumo magnético e geográfico, destino,
+  nível por sensores e várias ferramentas de campo no mesmo app.
+
+  • Bússola com rumo em graus, pontos cardeais e norte magnético/geográfico.
+  • Navegação até um destino, com guia falado de rumo e distância.
+  • Nível, teodolito (ângulos, altura e azimute) e visão com realidade aumentada.
+  • Detector de metais, leitura EMF, vento estimado e trajetória do Sol/Lua.
+  • Mapa offline para saber onde está, gravação de trilhas e anotações de campo.
+  • Compartilhar a localização pelo WhatsApp ou SMS.
+
+  Código aberto (GPL-3.0), sem anúncios e sem coleta de dados.
+
+RepoType: git
+Repo: https://github.com/cleberleonheart-maker/B-ssola-.git
+
+UpdateCheckMode: None
+AutoUpdateMode: None
+
+# APK publicado pelo próprio app; o workflow baixa desta URL e confere a
+# versão e a assinatura antes de publicar no repo.
+Binaries: https://github.com/cleberleonheart-maker/B-ssola-/releases/download/bussola-apk/bussola-v197.apk
+
+CurrentVersion: 7.66
+CurrentVersionCode: 197
+
+AllowedAPKSigningKeys: a793040da05d694d65a2eaa19c9a2892e85b3aca4ca770cecc2babc4be44ae77

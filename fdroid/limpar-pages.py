@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Remove versões antigas de APK das pastas publicadas no GitHub Pages.
 
-O repositório F-Droid aponta sempre para a versão mais recente, mas o Pages
+O repositório F-Droid aponta sempre para as versões mais recentes, mas o Pages
 acumula uma cópia de cada versão em três caminhos (raiz, `/fdroid/repo` e
 `/repo`). Esta limpeza mantém apenas as N versões mais novas de cada app em cada
 caminho — e nunca remove um APK que o índice daquele caminho referencia.
+
+Cada app é identificado pelo nome do arquivo `<pacote>_<versionCode>.apk`; APKs
+com outro padrão de nome são ignorados (nunca apagados por engano).
 
 Uso:
     ./fdroid/limpar-pages.py pages [N]        # N padrão: 5
@@ -18,8 +21,18 @@ import os
 import re
 import sys
 
-PACOTES = ("com.seguraturbo.app", "br.com.galinhaassada")
 CAMINHOS = ("", "fdroid/repo", "repo")
+PADRAO_APK = re.compile(r"^(.+)_(\d+)\.apk$")
+
+
+def apps_por_pacote(pasta: str) -> dict[str, list[tuple[int, str]]]:
+    """Agrupa os APKs da pasta por pacote: {'com.exemplo': [(code, caminho)]}."""
+    grupos: dict[str, list[tuple[int, str]]] = {}
+    for caminho in glob.glob(os.path.join(pasta, "*.apk")):
+        m = PADRAO_APK.match(os.path.basename(caminho))
+        if m:
+            grupos.setdefault(m.group(1), []).append((int(m.group(2)), caminho))
+    return grupos
 
 
 def main() -> int:
@@ -47,13 +60,7 @@ def main() -> int:
                 for versao in pacote.get("versions", {}).values():
                     referenciados.add(os.path.basename(versao["file"]["name"]))
 
-        for pacote in PACOTES:
-            arquivos: list[tuple[int, str]] = []
-            for caminho in glob.glob(os.path.join(pasta, f"{pacote}_*.apk")):
-                m = re.search(r"_(\d+)\.apk$", caminho)
-                if m:
-                    arquivos.append((int(m.group(1)), caminho))
-
+        for pacote, arquivos in apps_por_pacote(pasta).items():
             if len(arquivos) <= manter_n:
                 continue
 

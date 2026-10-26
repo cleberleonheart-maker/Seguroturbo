@@ -151,6 +151,12 @@ jobs:
           echo "$FDROID_GALINHA_KEYSTORE_BASE64" | base64 -d > galinha-assada/android/galinha.keystore
           KS_PASS="$FDROID_GALINHA_KEYSTORE_PASS" ./galinha-assada/android/build.sh
 
+      - name: Baixar apps parceiros (Pulsa e Bússola)
+        # Os APKs vêm das releases dos próprios apps (campo Binaries no
+        # metadata). O script confere pacote, versão e assinatura contra o
+        # metadata: se alguém republicar um APK com outra chave, para aqui.
+        run: ./scripts/baixar-parceiros.sh "$RUNNER_TEMP/parceiros"
+
       - name: Montar o repositório F-Droid
         env:
           FDROID_REPO_KEYSTORE_BASE64: ${{ secrets.FDROID_REPO_KEYSTORE_BASE64 }}
@@ -161,12 +167,20 @@ jobs:
           mkdir -p "$REPO_DIR/repo" "$REPO_DIR/metadata"
           echo "$FDROID_REPO_KEYSTORE_BASE64" | base64 -d > "$REPO_DIR/keystore.jks"
           cp fdroid/repo-config.example.yml "$REPO_DIR/config.yml"
+          # lista de categorias válidas, só para o `fdroid lint` abaixo
+          mkdir -p "$REPO_DIR/config"
+          cp fdroid/categories.yml "$REPO_DIR/config/categories.yml"
           sed -i -e "s|^keystorepass:.*|keystorepass: ${FDROID_REPO_KEYSTORE_PASS}|" \
                  -e "s|^keypass:.*|keypass: ${FDROID_REPO_KEYSTORE_PASS}|" \
                  "$REPO_DIR/config.yml"
           cp fastlane/metadata/android/pt-BR/images/icon.png "$REPO_DIR/icon.png"
           cp fdroid/${PACOTE}.yml "$REPO_DIR/metadata/${PACOTE}.yml"
           cp app-release.apk "$REPO_DIR/repo/${PACOTE}_${{ steps.ver.outputs.vcode }}.apk"
+
+          # apps parceiros (APKs baixados das releases na etapa anterior)
+          cp fdroid/com.pulsa.player.yml fdroid/com.bussola.app.yml "$REPO_DIR/metadata/"
+          cp "$RUNNER_TEMP"/parceiros/*.apk "$REPO_DIR/repo/"
+          echo "Apps parceiros: $(ls "$RUNNER_TEMP"/parceiros/*.apk | xargs -n1 basename | tr '\n' ' ')"
 
           # Galinha Assada (mesmo repositorio, app separado). A versão vem de
           # version.properties; aqui só confirmamos que o APK saiu com ela.
@@ -184,6 +198,11 @@ jobs:
             cp galinha-assada/apk/galinha-assada.apk "$REPO_DIR/repo/br.com.galinhaassada_${GVC}.apk"
             echo "Galinha Assada $GVN ($GVC)"
           fi
+
+          # confere o metadata antes de gerar o índice. Pega categoria inválida,
+          # Summary faltando, link com /main em vez de /HEAD, descrição com
+          # espaço sobrando etc. Qualquer aviso interrompe a publicação.
+          ( cd "$REPO_DIR" && fdroid lint )
 
           cd "$REPO_DIR"
           export FDROID_KEY_STORE_PASS="$FDROID_REPO_KEYSTORE_PASS"

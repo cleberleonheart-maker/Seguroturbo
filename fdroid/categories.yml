@@ -1,0 +1,21 @@
+# Subconjunto do `config/categories.yml` oficial do fdroiddata, usado só para
+# o `fdroid lint` local (o fdroidserver não traz a lista de categorias embutida
+# e, sem este arquivo, acusa toda categoria como inválida).
+#
+# Fonte: https://gitlab.com/fdroid/fdroiddata/-/blob/master/config/categories.yml
+# Ao usar uma categoria nova em algum metadata, acrescente ela aqui com o mesmo
+# nome usado pelo F-Droid (a lista completa está no link acima).
+
+Casual Game:
+  name: Casual Game
+  description: Simple casual game
+
+Multimedia:
+  name: Multimedia
+
+Navigation:
+  name: Navigation
+  description: Maps, GPS, turn-by-turn directions, and route planning apps
+
+Security:
+  name: Security

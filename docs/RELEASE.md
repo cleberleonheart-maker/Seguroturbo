@@ -44,10 +44,14 @@ sozinho quando o *Release* termina com sucesso (`workflow_run`):
 1. baixa o APK oficial da release
 2. monta o repo em `$RUNNER_TEMP` (metadados de `fdroid/`)
 3. compila o Galinha Assada com a versão de `galinha-assada/android/version.properties` e inclui no mesmo repo
-4. roda `fdroid update --create-metadata` + `fdroid update -c` (índice assinado)
-5. publica em `pages/`, `pages/fdroid/repo/` e `pages/repo/`
-6. gera `index.html` de boas-vindas e `changelog.html`
-7. roda `fdroid/limpar-pages.py pages 5` — mantém as **5 versões mais novas**
+4. baixa os APKs dos apps parceiros (Pulsa e Bússola) das releases deles,
+   conferindo pacote, versão e assinatura contra o metadata
+   (`scripts/baixar-parceiros.sh`)
+5. roda `fdroid lint` e para se o metadata tiver qualquer aviso
+6. roda `fdroid update --create-metadata` + `fdroid update -c` (índice assinado)
+7. publica em `pages/`, `pages/fdroid/repo/` e `pages/repo/`
+8. gera `index.html` de boas-vindas e `changelog.html`
+9. roda `fdroid/limpar-pages.py pages 5` — mantém as **5 versões mais novas**
    de cada app em cada caminho e nunca remove um APK citado no índice
 
 Também dá para rodar na mão: **Actions → Publicar repo F-Droid → Run workflow**
@@ -68,6 +72,20 @@ testar uma publicação de verdade.
 O script checa: `entry.json` × `index-v2.json` (sha256), assinatura do
 `entry.jar`, existência/hash de cada APK, chave que assinou cada APK e
 `versionName`/`versionCode`. Sai com código 1 se algo divergir.
+
+### Atualizar um app parceiro (Pulsa, Bússola)
+
+Eles não são compilados aqui: o APK vem da release do repositório de cada um.
+Para publicar uma versão nova, no metadata `fdroid/<pacote>.yml`:
+
+- `Binaries:` → URL do APK novo (asset da release)
+- `CurrentVersion:` e `CurrentVersionCode:` → versão nova
+- `AllowedAPKSigningKeys:` só muda se o app trocar de chave (aí o Android
+  também recusa atualizar por cima — precisa ser uma troca consciente)
+
+Depois é só rodar o workflow **Publicar repo F-Droid**. `scripts/baixar-parceiros.sh`
+baixa e confere o APK; se a versão ou a assinatura não bater com o metadata, a
+publicação para antes de mexer no índice.
 
 ## 4. Publicação local (só quando precisar)
 

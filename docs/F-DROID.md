@@ -120,8 +120,10 @@ inteiro de uma release nova num comando:
 ```
 
 Ele: baixa o APK oficial da release, salva em `~/fdroid-repo/repo/` com o nome
-`com.seguraturbo.app_<versionCode>.apk`, regenera o índice assinado e publica a
-pasta `repo/` no repositório do GitHub Pages (`cleberleonheart-maker/seguraturbo-fdroid`).
+`com.seguraturbo.app_<versionCode>.apk`, atualiza o metadata de todos os apps de
+`fdroid/` (incluindo os parceiros, baixados e conferidos por
+`scripts/baixar-parceiros.sh`), regenera o índice assinado e publica a pasta
+`repo/` no repositório do GitHub Pages (`cleberleonheart-maker/seguraturbo-fdroid`).
 
 Requisitos: `gh` autenticado, `fdroidserver`, `git` e `rsync`. A senha do keystore
 do repositório é lida de `~/fdroid-repo/.keystore-pass`.
@@ -147,10 +149,12 @@ Ele precisa destes secrets no repositório do app:
 | `FDROID_GALINHA_KEYSTORE_BASE64` | `galinha.keystore` do Galinha Assada, em base64 |
 | `FDROID_GALINHA_KEYSTORE_PASS` | senha do keystore do Galinha Assada |
 
-O repositório F-Droid publica **dois apps**: o SeguroTurbo e o
-[Galinha Assada](../galinha-assada/) (jogo de labirinto). O workflow compila
-o APK do Galinha Assada com [`../galinha-assada/android/build.sh`](../galinha-assada/android/build.sh)
-e inclui os dois no mesmo índice assinado.
+O repositório F-Droid publica **quatro apps**: o SeguroTurbo, o
+[Galinha Assada](../galinha-assada/) (jogo de labirinto), a **Pulsa** (player de
+música) e a **Bússola** (ferramentas de navegação e sensores). O workflow
+compila o APK do Galinha Assada com
+[`../galinha-assada/android/build.sh`](../galinha-assada/android/build.sh) e
+inclui os quatro no mesmo índice assinado.
 
 A versão do jogo é fixa em
 [`../galinha-assada/android/version.properties`](../galinha-assada/android/version.properties):
@@ -159,8 +163,38 @@ esse arquivo divergir do metadata em `fdroid/br.com.galinhaassada.yml`. As
 pastas do Pages guardam só as **5 versões mais novas** de cada app em cada
 caminho (as antigas são limpas por `fdroid/limpar-pages.py`).
 
+A Pulsa e a Bússola entram como **apps parceiros**: o metadata
+([`com.pulsa.player.yml`](com.pulsa.player.yml), [`com.bussola.app.yml`](com.bussola.app.yml))
+aponta para o APK da release de cada repositório no campo `Binaries:`. O workflow
+usa [`../scripts/baixar-parceiros.sh`](../scripts/baixar-parceiros.sh), que baixa
+o APK e confere pacote, versão e assinatura contra o metadata antes de publicar.
+Para lançar uma versão nova deles, veja
+[`RELEASE.md`](RELEASE.md#atualizar-um-app-parceiro-pulsa-bússola).
+
+### Categorias e `fdroid lint`
+
+O `fdroidserver` não traz a lista de categorias junto: sem um `categories.yml`,
+o `fdroid lint` acusa **toda** categoria como inválida. Por isso o subconjunto
+usado por aqui fica em [`categories.yml`](categories.yml) (fonte: o
+[`config/categories.yml`](https://gitlab.com/fdroid/fdroiddata/-/blob/master/config/categories.yml)
+do fdroiddata). Ao adotar uma categoria nova em algum metadata, acrescente ela
+lá — e prefira os nomes exatos da lista oficial (é `Casual Game`, não `Game`).
+
+Para rodar o lint na mão, num diretório limpo (os ícones que o
+`fdroid update --create-metadata` cria em `metadata/<pacote>/` aparecem como
+"Unused file" se você rodar dentro de `~/fdroid-repo`):
+
+```bash
+tmp="$(mktemp -d)"
+mkdir -p "$tmp/metadata" "$tmp/config"
+cp fdroid/com.*.yml fdroid/br.com.galinhaassada.yml "$tmp/metadata/"
+cp fdroid/categories.yml "$tmp/config/categories.yml"
+cp fdroid/repo-config.example.yml "$tmp/config.yml"
+( cd "$tmp" && ~/.venvs/fdroid/bin/fdroid lint )
+```
+
 Se `FDROID_GALINHA_KEYSTORE_BASE64` não estiver configurado, o workflow publica
-só o SeguroTurbo e avisa com um warning — nada quebra.
+o SeguroTurbo e os apps parceiros e avisa com um warning — nada quebra.
 
 O keystore do Galinha Assada precisa ser **sempre o mesmo**: se a assinatura
 mudar, o Android recusa a atualização por cima do app já instalado no celular.
