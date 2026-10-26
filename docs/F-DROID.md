@@ -35,8 +35,11 @@ Só vale depois de cumprir a política dos 3 meses, mantendo o repositório ativ
 Quando estiver pronto:
 
 1. Faça fork de <https://gitlab.com/fdroid/fdroiddata>
-2. Crie `metadata/com.seguraturbo.app.yml` com o conteúdo de
-   [`fdroid/com.seguraturbo.app.yml`](../fdroid/com.seguraturbo.app.yml).
+2. Crie `metadata/com.seguraturbo.app.yml` com o conteúdo da seção
+   ["YAML final do MR"](./MR-fdroiddata.md#3-yaml-final-do-mr-copiar-como-metadatacomseguraturboappyyml)
+   — só a versão mais recente, sem `Summary`/`Description` e com
+   `AllowedAPKSigningKeys`. O rascunho completo do corpo do MR está em
+   [`docs/MR-fdroiddata.md`](./MR-fdroiddata.md).
 3. Abra um merge request **usando o template oficial** (não apague as seções
    obrigatórias — foi esse o erro do MR anterior). O template exige a checklist
    de inclusão preenchida no corpo do MR.
