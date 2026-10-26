@@ -63,3 +63,5 @@ AutoUpdateMode: Version
 UpdateCheckMode: Tags
 CurrentVersion: 1.36.1
 CurrentVersionCode: 40
+
+AllowedAPKSigningKeys: 3d548ee14413160b178d801ea467e7c0d4bcb4d9d91b0bfa1a02c279ec0b1d9f

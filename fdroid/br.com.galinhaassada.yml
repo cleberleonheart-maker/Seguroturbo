@@ -42,3 +42,5 @@ AutoUpdateMode: None
 
 CurrentVersion: 1.26.10.25
 CurrentVersionCode: 29882470
+
+AllowedAPKSigningKeys: cc1072fe5d740d8fd91cb94fd964e6eb621f8433788eb3305cadcec9e6af8464
