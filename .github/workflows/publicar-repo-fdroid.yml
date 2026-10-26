@@ -199,6 +199,11 @@ jobs:
             echo "Galinha Assada $GVN ($GVC)"
           fi
 
+          # ícones dos apps (layout do fdroidserver: metadata/<pacote>/<locale>/images/icon.png)
+          if [ -d fdroid/metadata ]; then
+            cp -r fdroid/metadata/. "$REPO_DIR/metadata/"
+          fi
+
           # confere o metadata antes de gerar o índice. Pega categoria inválida,
           # Summary faltando, link com /main em vez de /HEAD, descrição com
           # espaço sobrando etc. Qualquer aviso interrompe a publicação.

@@ -132,6 +132,10 @@ for MET in "$PROJ_DIR"/fdroid/*.yml; do
     esac
     cp "$MET" "$REPO_DIR/metadata/"
 done
+# ícones no layout do fdroidserver (metadata/<pacote>/<locale>/images/icon.png)
+if [ -d "$PROJ_DIR/fdroid/metadata" ]; then
+    cp -r "$PROJ_DIR/fdroid/metadata/." "$REPO_DIR/metadata/"
+fi
 for APK_PARCEIRO in "$PARCEIROS_TMP"/*.apk; do
     PKG_PARCEIRO="$(basename "$APK_PARCEIRO" | sed 's/_[0-9]*\.apk$//')"
     rm -f "$REPO_DIR/repo/${PKG_PARCEIRO}"_*.apk

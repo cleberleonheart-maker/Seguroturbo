@@ -188,6 +188,7 @@ Para rodar o lint na mão, num diretório limpo (os ícones que o
 tmp="$(mktemp -d)"
 mkdir -p "$tmp/metadata" "$tmp/config"
 cp fdroid/com.*.yml fdroid/br.com.galinhaassada.yml "$tmp/metadata/"
+cp -r fdroid/metadata/. "$tmp/metadata/"
 cp fdroid/categories.yml "$tmp/config/categories.yml"
 cp fdroid/repo-config.example.yml "$tmp/config.yml"
 ( cd "$tmp" && ~/.venvs/fdroid/bin/fdroid lint )
@@ -212,12 +213,25 @@ O `FDROID_PAGES_TOKEN` é um [token de acesso pessoal](https://github.com/settin
 > O script `scripts/publicar-repo.sh` continua útil para publicar manualmente ou
 > recuperar de uma falha no CI.
 
-### Ícone e screenshots
+### Ícones e screenshots
 
-O F-Droid extrai o ícone do APK automaticamente. O guia oficial recomenda também:
+O F-Droid extrai o ícone do APK automaticamente. Para os apps deste repositório,
+o ícone publicado também pode vir de um arquivo próprio, no layout que o
+`fdroidserver` lê:
 
-- `fastlane/metadata/android/en-US/images/icon.png` (512×512 px)
-- `fastlane/metadata/android/en-US/images/phoneScreenshots/1.png` (capturas de tela)
+- `fdroid/metadata/<pacote>/<locale>/images/icon.png` — ícone publicado
+  (ex.: `fdroid/metadata/com.pulsa.player/en-US/images/icon.png`)
+
+O workflow e o `scripts/publicar-repo.sh` copiam `fdroid/metadata/.` para
+`metadata/` antes do `fdroid update`; o índice passa a apontar para o arquivo
+copiado (`/<pacote>/en-US/icon_<hash>.png`) e não para o ícone extraído do APK.
+Os três ícones atuais são 512×512, exceto o da Bússola, que usa o PNG nativo de
+192×192 do APK (a Pulsa só tem VectorDrawable no repositório).
+
+Para a ficha no F-Droid oficial, o guia recomenda manter no fastlane do app:
+
+- `fastlane/metadata/android/<locale>/images/icon.png` (512×512 px)
+- `fastlane/metadata/android/<locale>/images/phoneScreenshots/1.png` (capturas)
 
 Screenshots aumentam a qualidade da ficha do app — vale tirar 3–4 do app rodando.
 
