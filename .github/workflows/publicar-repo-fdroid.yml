@@ -39,7 +39,7 @@ jobs:
   publicar:
     # No workflow_run, só prossegue se a release deu certo.
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout do app
         uses: actions/checkout@v7
