@@ -107,6 +107,10 @@ fun ConfiguracoesDialog(
         Notificacoes.criarCanal(ctx)
         if (lembrete) Agendador.agendar(ctx) else Agendador.cancelar(ctx)
         if (atualizacaoAuto) AgendadorAtualizacao.agendar(ctx) else AgendadorAtualizacao.cancelar(ctx)
+        if (Preferencias.turboAgendadoAtivo(ctx)) com.seguraturbo.app.util.TurboAgendador.agendar(ctx)
+        else com.seguraturbo.app.util.TurboAgendador.cancelar(ctx)
+        if (Preferencias.dndAgendadoAtivo(ctx)) com.seguraturbo.app.util.DndAgendador.agendar(ctx)
+        else com.seguraturbo.app.util.DndAgendador.cancelar(ctx)
     }
 
     fun aplicarPerfil(perfil: PerfilUso) {
@@ -381,8 +385,12 @@ fun ConfiguracoesDialog(
                         onCheckedChange = { ativo ->
                             dndAtivo = ativo
                             Preferencias.definirDndAgendadoAtivo(ctx, ativo)
-                            if (ativo && !com.seguraturbo.app.util.ModoConcentracao.temAcesso(ctx)) {
-                                com.seguraturbo.app.util.ModoConcentracao.pedirAcesso(ctx)
+                            if (ativo) {
+                                if (!com.seguraturbo.app.util.ModoConcentracao.temAcesso(ctx)) {
+                                    com.seguraturbo.app.util.ModoConcentracao.pedirAcesso(ctx)
+                                } else {
+                                    com.seguraturbo.app.util.AlarmeExato.pedirPermissao(ctx)
+                                }
                             }
                         }
                     )

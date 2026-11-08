@@ -45,13 +45,17 @@ object DndAgendador {
             set(Calendar.MILLISECOND, 0)
             if (timeInMillis <= System.currentTimeMillis()) add(Calendar.DAY_OF_YEAR, 1)
         }
-        try {
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pendente(ctx, pedido, acao))
-        } catch (_: Exception) {
+        if (AlarmeExato.podeAgendar(ctx)) {
             try {
-                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pendente(ctx, pedido, acao))
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pendente(ctx, pedido, acao))
+                return
             } catch (_: Exception) {
+                // Cai para o alarme inexato logo abaixo.
             }
+        }
+        try {
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pendente(ctx, pedido, acao))
+        } catch (_: Exception) {
         }
     }
 

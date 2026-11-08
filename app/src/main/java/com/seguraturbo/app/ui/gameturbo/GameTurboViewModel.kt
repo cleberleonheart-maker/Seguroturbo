@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.seguraturbo.app.model.Game
 import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.model.PerfilDesempenho
+import com.seguraturbo.app.util.AlarmeExato
 import com.seguraturbo.app.util.BloqueioTela
 import com.seguraturbo.app.util.GerenciadorRam
 import com.seguraturbo.app.util.HistoricoStore
@@ -108,7 +109,9 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
 
     fun definirTurboAgendadoAtivo(ativo: Boolean) {
         turboAgendadoAtivo = ativo
-        Preferencias.definirTurboAgendadoAtivo(getApplication<Application>(), ativo)
+        val app = getApplication<Application>()
+        Preferencias.definirTurboAgendadoAtivo(app, ativo)
+        if (ativo) AlarmeExato.pedirPermissao(app)
     }
 
     fun definirTurboHoraLigar(hora: Int, minuto: Int) {

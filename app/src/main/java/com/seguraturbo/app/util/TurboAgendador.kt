@@ -35,15 +35,19 @@ object TurboAgendador {
                 add(Calendar.DAY_OF_YEAR, 1)
             }
         }
-        try {
-            val pi = pendente(ctx, pedido, acao)
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pi)
-        } catch (_: Exception) {
+        if (AlarmeExato.podeAgendar(ctx)) {
             try {
                 val pi = pendente(ctx, pedido, acao)
-                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pi)
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pi)
+                return
             } catch (_: Exception) {
+                // Cai para o alarme inexato logo abaixo.
             }
+        }
+        try {
+            val pi = pendente(ctx, pedido, acao)
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pi)
+        } catch (_: Exception) {
         }
     }
 
