@@ -81,6 +81,8 @@ fun ConfiguracoesDialog(
     var dndFimH by remember { mutableStateOf(Preferencias.dndHoraFim(ctx)) }
     var dndFimM by remember { mutableStateOf(Preferencias.dndMinFim(ctx)) }
     var mostrarNovidades by remember { mutableStateOf(false) }
+    var editandoDndInicio by remember { mutableStateOf(false) }
+    var editandoDndFim by remember { mutableStateOf(false) }
     val assinatura by remember { mutableStateOf(AssinaturaApp.sha256(ctx)) }
     val sistemaEscuro = isSystemInDarkTheme()
 
@@ -402,17 +404,7 @@ fun ConfiguracoesDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         TextButton(
-                            onClick = {
-                                android.app.TimePickerDialog(
-                                    ctx,
-                                    { _, h, m ->
-                                        dndIniH = h; dndIniM = m
-                                        Preferencias.definirDndHoraInicio(ctx, h)
-                                        Preferencias.definirDndMinInicio(ctx, m)
-                                    },
-                                    dndIniH, dndIniM, true
-                                ).show()
-                            },
+                            onClick = { editandoDndInicio = true },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
@@ -422,17 +414,7 @@ fun ConfiguracoesDialog(
                             )
                         }
                         TextButton(
-                            onClick = {
-                                android.app.TimePickerDialog(
-                                    ctx,
-                                    { _, h, m ->
-                                        dndFimH = h; dndFimM = m
-                                        Preferencias.definirDndHoraFim(ctx, h)
-                                        Preferencias.definirDndMinFim(ctx, m)
-                                    },
-                                    dndFimH, dndFimM, true
-                                ).show()
-                            },
+                            onClick = { editandoDndFim = true },
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
@@ -726,6 +708,35 @@ fun ConfiguracoesDialog(
 
     if (mostrarNovidades) {
         NovidadesDialog(versoes = Changelog.versoes, onFechar = { mostrarNovidades = false })
+    }
+
+    if (editandoDndInicio) {
+        HoraDialog(
+            titulo = stringResource(R.string.cfg_dnd_inicio, "%02d:%02d".format(dndIniH, dndIniM)),
+            horaInicial = dndIniH,
+            minutoInicial = dndIniM,
+            onConfirmar = { h, m ->
+                dndIniH = h; dndIniM = m
+                Preferencias.definirDndHoraInicio(ctx, h)
+                Preferencias.definirDndMinInicio(ctx, m)
+                editandoDndInicio = false
+            },
+            onDismiss = { editandoDndInicio = false }
+        )
+    }
+    if (editandoDndFim) {
+        HoraDialog(
+            titulo = stringResource(R.string.cfg_dnd_fim, "%02d:%02d".format(dndFimH, dndFimM)),
+            horaInicial = dndFimH,
+            minutoInicial = dndFimM,
+            onConfirmar = { h, m ->
+                dndFimH = h; dndFimM = m
+                Preferencias.definirDndHoraFim(ctx, h)
+                Preferencias.definirDndMinFim(ctx, m)
+                editandoDndFim = false
+            },
+            onDismiss = { editandoDndFim = false }
+        )
     }
 }
 
