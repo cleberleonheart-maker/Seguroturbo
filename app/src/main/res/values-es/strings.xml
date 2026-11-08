@@ -250,6 +250,8 @@
     <string name="backup_erro">No se pudo usar ese archivo</string>
     <string name="notif_canal_atualizacao">Actualizaciones</string>
     <string name="notif_canal_atualizacao_desc">Avisos de nuevas versiones de SeguroTurbo</string>
+    <string name="notif_canal_lembrete">Recordatorios</string>
+    <string name="notif_canal_lembrete_desc">Recordatorios de revisión de seguridad</string>
 
     <!-- Notificación / Widget -->
     <string name="notif_titulo">Hora de revisar el dispositivo</string>

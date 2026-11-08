@@ -250,6 +250,8 @@
     <string name="backup_erro">Could not use that file</string>
     <string name="notif_canal_atualizacao">Updates</string>
     <string name="notif_canal_atualizacao_desc">Notifications about new SeguroTurbo versions</string>
+    <string name="notif_canal_lembrete">Reminders</string>
+    <string name="notif_canal_lembrete_desc">Security check reminders</string>
 
     <!-- Notificação / Widget -->
     <string name="notif_titulo">Time to check your device</string>

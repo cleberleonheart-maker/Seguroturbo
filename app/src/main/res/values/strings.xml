@@ -250,6 +250,8 @@
     <string name="backup_erro">Não foi possível usar esse arquivo</string>
     <string name="notif_canal_atualizacao">Atualizações</string>
     <string name="notif_canal_atualizacao_desc">Avisos de novas versões do SeguroTurbo</string>
+    <string name="notif_canal_lembrete">Lembretes</string>
+    <string name="notif_canal_lembrete_desc">Lembretes de verificação de segurança</string>
 
     <!-- Notificação / Widget -->
     <string name="notif_titulo">Hora de verificar o aparelho</string>

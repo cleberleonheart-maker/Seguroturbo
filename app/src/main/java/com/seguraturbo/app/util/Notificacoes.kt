@@ -26,10 +26,10 @@ object Notificacoes {
             if (mgr.getNotificationChannel(CANAL) == null) {
                 val canal = NotificationChannel(
                     CANAL,
-                    "Lembretes",
+                    ctx.getString(R.string.notif_canal_lembrete),
                     NotificationManager.IMPORTANCE_DEFAULT
                 ).apply {
-                    description = "Lembretes de verificação de segurança"
+                    description = ctx.getString(R.string.notif_canal_lembrete_desc)
                 }
                 mgr.createNotificationChannel(canal)
             }
