@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.seguraturbo.app.ui.MainScreen
 import com.seguraturbo.app.ui.onboarding.OnboardingScreen
 import com.seguraturbo.app.ui.splash.SplashScreen
@@ -23,6 +24,7 @@ import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.ui.theme.SeguroTurboTheme
 import com.seguraturbo.app.util.Agendador
 import com.seguraturbo.app.util.AgendadorAtualizacao
+import com.seguraturbo.app.util.Armazenamento
 import com.seguraturbo.app.util.AtalhoAcao
 import com.seguraturbo.app.util.AtalhoPendente
 import com.seguraturbo.app.util.AtalhosJogos
@@ -35,6 +37,7 @@ import com.seguraturbo.app.util.BloqueioTela
 import com.seguraturbo.app.service.PermissaoSobreposicao
 import com.seguraturbo.app.service.ServicoBarraJogo
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -126,6 +129,12 @@ class MainActivity : ComponentActivity() {
         // Ao voltar para o app, a bateria pode ter mudado: aplica ou devolve o
         // modo economia automático conforme o estado guardado.
         try { Preferencias.aplicarEconomiaSeBaixa(this) } catch (_: Exception) {}
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Garante que a última alteração de preferências já está no disco.
+        lifecycleScope.launch { Armazenamento.sincronizar() }
     }
 
     /**
