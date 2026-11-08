@@ -67,6 +67,17 @@
     <string name="perm_microfone">Microphone</string>
     <string name="perm_localizacao">Localisation</string>
     <string name="perm_sms">SMS</string>
+
+    <!-- Vérificateur de mots de passe divulgués -->
+    <string name="senhas_titulo">Vérificateur de mots de passe divulgués (hors ligne)</string>
+    <string name="senhas_cartao_desc">Vérification entièrement hors ligne. Compare le hash SHA-1 localement.</string>
+    <string name="senhas_cartao_toque">Appuyez pour vérifier</string>
+    <string name="senhas_desc">Tout reste local. Le mot de passe ne quitte jamais l\'appareil. Utilise SHA-1 + k-anonymity (seul le préfixe serait interrogé dans le dictionnaire).</string>
+    <string name="senhas_campo">Mot de passe</string>
+    <string name="senhas_verificar">Vérifier</string>
+    <string name="senhas_fechar">Fermer</string>
+    <string name="senhas_resultado_vazada">⚠ Ce mot de passe apparaît dans des listes de mots de passe divulgués (%1$d mots de passe compromis dans le même groupe). Changez-le maintenant.</string>
+    <string name="senhas_resultado_segura">✓ Ce mot de passe est introuvable dans le dictionnaire local. Utilisez quand même un mot de passe long et unique.</string>
     <string name="perm_contatos">Contacts</string>
     <string name="perm_chamadas">Appels</string>
     <string name="perm_telefone">Téléphone</string>

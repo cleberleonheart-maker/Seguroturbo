@@ -67,6 +67,17 @@
     <string name="perm_microfone">Microphone</string>
     <string name="perm_localizacao">Location</string>
     <string name="perm_sms">SMS</string>
+
+    <!-- Leaked password checker -->
+    <string name="senhas_titulo">Leaked password checker (offline)</string>
+    <string name="senhas_cartao_desc">Fully offline check. Compares the SHA-1 hash locally.</string>
+    <string name="senhas_cartao_toque">Tap to check</string>
+    <string name="senhas_desc">Everything stays local. The password never leaves the device. Uses SHA-1 + k-anonymity (only the prefix would be queried in the dictionary).</string>
+    <string name="senhas_campo">Password</string>
+    <string name="senhas_verificar">Check</string>
+    <string name="senhas_fechar">Close</string>
+    <string name="senhas_resultado_vazada">⚠ This password appears in leaked password lists (%1$d compromised passwords in the same group). Change it now.</string>
+    <string name="senhas_resultado_segura">✓ We didn\'t find this password in the local dictionary. Still use a long, unique password.</string>
     <string name="perm_contatos">Contacts</string>
     <string name="perm_chamadas">Calls</string>
     <string name="perm_telefone">Phone</string>

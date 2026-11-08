@@ -109,6 +109,8 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
 
         item { CartaoAuditoriaPermissoes(vm, { mostrarPermissoes = true }) }
 
+        item { CartaoSenhasVazadas({ mostrarSenhasVazadas = true }) }
+
         if (vm.limpando || vm.mensagemLimpeza != null) {
             item {
                 CartaoFuturista {
@@ -392,11 +394,24 @@ private fun CartaoSenhasVazadas(onAbrir: () -> Unit) {
     CartaoFuturista(onClick = onAbrir) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text("Verificador de senhas vazadas", color = Cores.TextoClaro, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(R.string.senhas_titulo),
+                    color = Cores.TextoClaro,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Spacer(Modifier.height(2.dp))
-                Text("Verificação 100% offline. Compara hash SHA-1 localmente.", color = Cores.TextoCinza, fontSize = 12.sp)
+                Text(
+                    stringResource(R.string.senhas_cartao_desc),
+                    color = Cores.TextoCinza,
+                    fontSize = 12.sp
+                )
                 Spacer(Modifier.height(4.dp))
-                Text("Toque para verificar", color = Cores.Ciano, fontSize = 11.sp)
+                Text(
+                    stringResource(R.string.senhas_cartao_toque),
+                    color = Cores.Ciano,
+                    fontSize = 11.sp
+                )
             }
             Spacer(Modifier.width(10.dp))
             SeloStatus("OFFLINE", Cores.Verde)

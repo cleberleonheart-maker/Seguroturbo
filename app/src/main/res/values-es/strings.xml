@@ -67,6 +67,17 @@
     <string name="perm_microfone">Micrófono</string>
     <string name="perm_localizacao">Ubicación</string>
     <string name="perm_sms">SMS</string>
+
+    <!-- Verificador de contraseñas filtradas -->
+    <string name="senhas_titulo">Verificador de contraseñas filtradas (sin conexión)</string>
+    <string name="senhas_cartao_desc">Verificación totalmente sin conexión. Compara el hash SHA-1 localmente.</string>
+    <string name="senhas_cartao_toque">Toca para verificar</string>
+    <string name="senhas_desc">Todo local. La contraseña no sale del dispositivo. Usa SHA-1 + k-anonymity (solo se consultaría el prefijo en el diccionario).</string>
+    <string name="senhas_campo">Contraseña</string>
+    <string name="senhas_verificar">Verificar</string>
+    <string name="senhas_fechar">Cerrar</string>
+    <string name="senhas_resultado_vazada">⚠ Esta contraseña aparece en listas de contraseñas filtradas (%1$d contraseñas comprometidas en el mismo grupo). Cámbiala ahora.</string>
+    <string name="senhas_resultado_segura">✓ No encontramos esta contraseña en el diccionario local. Usa aun así una contraseña larga y única.</string>
     <string name="perm_contatos">Contactos</string>
     <string name="perm_chamadas">Llamadas</string>
     <string name="perm_telefone">Teléfono</string>

@@ -67,6 +67,17 @@
     <string name="perm_microfone">Microfone</string>
     <string name="perm_localizacao">Localização</string>
     <string name="perm_sms">SMS</string>
+
+    <!-- Verificador de senhas vazadas -->
+    <string name="senhas_titulo">Verificador de senhas vazadas (offline)</string>
+    <string name="senhas_cartao_desc">Verificação totalmente offline. Compara o hash SHA-1 localmente.</string>
+    <string name="senhas_cartao_toque">Toque para verificar</string>
+    <string name="senhas_desc">Tudo local. A senha não sai do aparelho. Usa SHA-1 + k-anonymity (apenas o prefixo seria consultado no dicionário).</string>
+    <string name="senhas_campo">Senha</string>
+    <string name="senhas_verificar">Verificar</string>
+    <string name="senhas_fechar">Fechar</string>
+    <string name="senhas_resultado_vazada">⚠ Esta senha aparece em listas de senhas vazadas (%1$d senhas comprometidas no mesmo grupo). Troque-a agora.</string>
+    <string name="senhas_resultado_segura">✓ Não encontramos esta senha no dicionário local. Use uma senha longa e única mesmo assim.</string>
     <string name="perm_contatos">Contatos</string>
     <string name="perm_chamadas">Chamadas</string>
     <string name="perm_telefone">Telefone</string>
