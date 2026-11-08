@@ -67,8 +67,13 @@ object DetectorStalkerware {
      * não houver nada suspeito). Roda fora da main thread.
      */
     suspend fun procurar(ctx: Context): List<Suspeito> = withContext(Dispatchers.IO) {
+        procurarBloqueante(ctx)
+    }
+
+    /** Versão bloqueante de [procurar], para quem já está em uma thread de fundo. */
+    fun procurarBloqueante(ctx: Context): List<Suspeito> {
         val pm = ctx.packageManager
-        CONHECIDOS.mapNotNull { assinatura ->
+        return CONHECIDOS.mapNotNull { assinatura ->
             if (instalado(pm, assinatura.pacote)) {
                 Suspeito(
                     pacote = assinatura.pacote,
@@ -100,19 +105,24 @@ object DetectorStalkerware {
 
     /**
      * Heurística leve para apps com atividade de launcher que combinam sinais
-     * típicos de vigilância: acessibilidade + leitura de SMS/contatos + localização
-     * concedidos ao mesmo tempo. Não é prova (apps legítimos podem pedir isso),
+     * típicos de vigilância: leitura de SMS/contatos + localização + microfone
+     * pedidos ao mesmo tempo. Não é prova (apps legítimos podem pedir isso),
      * por isso o risco é baixo e a descrição é explicativa.
      */
     suspend fun combinacaoSuspeita(ctx: Context): List<String> = withContext(Dispatchers.IO) {
+        combinacaoSuspeitaBloqueante(ctx)
+    }
+
+    /** Versão bloqueante de [combinacaoSuspeita]. */
+    fun combinacaoSuspeitaBloqueante(ctx: Context): List<String> {
         val pm = ctx.packageManager
         val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
         val resolvidos = try {
             pm.queryIntentActivities(intent, 0)
         } catch (e: Exception) {
-            return@withContext emptyList()
+            return emptyList()
         }
-        resolvidos.asSequence()
+        return resolvidos.asSequence()
             .mapNotNull { it.activityInfo?.applicationInfo }
             .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
             .distinctBy { it.packageName }

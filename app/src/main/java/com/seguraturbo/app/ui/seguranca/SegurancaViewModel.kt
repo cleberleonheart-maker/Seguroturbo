@@ -72,29 +72,32 @@ class SegurancaViewModel(app: Application) : AndroidViewModel(app) {
             jaEscaneou = true
             ameacas = emptyList()
             categoriaFiltro = null
-            val resultado = SecurityScanner.scan(getApplication<Application>()) { encontrada ->
-                ameacas = ameacas + encontrada
-            }
-            ameacas = resultado.ameacas
-            score = resultado.score
-            escaneando = false
-            // Guarda o último score (para o widget) e atualiza o widget.
-            Preferencias.definirUltimoScore(getApplication<Application>(), resultado.score)
-            SeguroTurboWidget.atualizarTodos(getApplication<Application>())
-            HistoricoStore.adicionar(
-                getApplication<Application>(),
-                HistoricoEntrada(
-                    tipo = HistoricoEntrada.Tipo.SCAN,
-                    data = System.currentTimeMillis(),
-                    titulo = if (resultado.ameacas.isEmpty()) "Dispositivo seguro"
-                    else "${resultado.ameacas.size} alerta(s)",
-                    detalhe = "Pontuação ${resultado.score}/100 · " +
-                        resultado.ameacas.joinToString(", ") { it.nome }
-                            .ifBlank { "Nenhum problema encontrado" }
+            try {
+                val resultado = SecurityScanner.scan(getApplication<Application>()) { encontrada ->
+                    ameacas = ameacas + encontrada
+                }
+                ameacas = resultado.ameacas
+                score = resultado.score
+                // Guarda o último score (para o widget) e atualiza o widget.
+                Preferencias.definirUltimoScore(getApplication<Application>(), resultado.score)
+                SeguroTurboWidget.atualizarTodos(getApplication<Application>())
+                HistoricoStore.adicionar(
+                    getApplication<Application>(),
+                    HistoricoEntrada(
+                        tipo = HistoricoEntrada.Tipo.SCAN,
+                        data = System.currentTimeMillis(),
+                        titulo = if (resultado.ameacas.isEmpty()) "Dispositivo seguro"
+                        else "${resultado.ameacas.size} alerta(s)",
+                        detalhe = "Pontuação ${resultado.score}/100 · " +
+                            resultado.ameacas.joinToString(", ") { it.nome }
+                                .ifBlank { "Nenhum problema encontrado" }
+                    )
                 )
-            )
-            carregarHistorico()
-            carregarPerfisRisco()
+                carregarHistorico()
+                carregarPerfisRisco()
+            } finally {
+                escaneando = false
+            }
         }
     }
 
@@ -104,27 +107,30 @@ class SegurancaViewModel(app: Application) : AndroidViewModel(app) {
             limpando = true
             mensagemLimpeza = null
             progressoLimpeza = 0
-            val liberado = withContext(Dispatchers.IO) {
-                StorageCleaner.limparCache(getApplication<Application>())
-            }
-            for (i in 1..100) {
-                progressoLimpeza = i
-                delay(8)
-            }
-            mensagemLimpeza = "${Formato.tamanho(liberado)} liberados"
-            limpando = false
-            HistoricoStore.adicionar(
-                getApplication<Application>(),
-                HistoricoEntrada(
-                    tipo = HistoricoEntrada.Tipo.LIMPEZA,
-                    data = System.currentTimeMillis(),
-                    titulo = "Limpeza de cache",
-                    detalhe = mensagemLimpeza ?: ""
+            try {
+                val liberado = withContext(Dispatchers.IO) {
+                    StorageCleaner.limparCache(getApplication<Application>())
+                }
+                for (i in 1..100) {
+                    progressoLimpeza = i
+                    delay(8)
+                }
+                mensagemLimpeza = "${Formato.tamanho(liberado)} liberados"
+                HistoricoStore.adicionar(
+                    getApplication<Application>(),
+                    HistoricoEntrada(
+                        tipo = HistoricoEntrada.Tipo.LIMPEZA,
+                        data = System.currentTimeMillis(),
+                        titulo = "Limpeza de cache",
+                        detalhe = mensagemLimpeza ?: ""
+                    )
                 )
-            )
-            carregarHistorico()
-            // Reavalia o cache após a limpeza.
-            jaEscaneou = false
+                carregarHistorico()
+                // Reavalia o cache após a limpeza.
+                jaEscaneou = false
+            } finally {
+                limpando = false
+            }
         }
     }
 

@@ -12,7 +12,6 @@ import android.view.accessibility.AccessibilityManager
 import com.seguraturbo.app.model.AcaoConfig
 import com.seguraturbo.app.model.Threat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 /**
@@ -35,27 +34,24 @@ object SecurityScanner {
 
     data class Resultado(val ameacas: List<Threat>, val score: Int)
 
-    /** Permissões consideradas sensíveis para a listagem informativa. */
-    private val PERMISSOES_SENSIVEIS = listOf(
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.READ_SMS",
-        "android.permission.SEND_SMS",
-        "android.permission.READ_CONTACTS",
-        "android.permission.READ_CALL_LOG",
-        "android.permission.READ_PHONE_STATE",
-        "android.permission.BODY_SENSORS",
-        "android.permission.READ_CALENDAR"
-    )
-
+    /**
+     * Executa o scan completo. Toda a coleta roda fora da main thread; o
+     * retorno acontece no dispatcher de quem chamou, para que a UI possa
+     * atualizar o estado com segurança.
+     */
     suspend fun scan(ctx: Context, onThreatFound: (Threat) -> Unit): Resultado {
+        val encontradas = withContext(Dispatchers.IO) { coletar(ctx) }
+        encontradas.forEach { onThreatFound(it) }
+        val score = (100 - encontradas.sumOf { it.peso }).coerceIn(0, 100)
+        return Resultado(encontradas, score)
+    }
+
+    /** Coleta as ameaças (executa dentro de Dispatchers.IO). */
+    private fun coletar(ctx: Context): List<Threat> {
         val encontradas = mutableListOf<Threat>()
 
-        delay(350)
         verificarIntegridade(ctx).forEach { encontradas += it }
 
-        delay(350)
         if (!temBloqueioDeTela(ctx)) {
             encontradas += Threat(
                 nome = "Sem bloqueio de tela",
@@ -67,13 +63,11 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
         verificarBloqueioAutomatico(ctx)?.let { encontradas += it }
 
-        delay(350)
-        val servicosAcessibilidade = withContext(Dispatchers.IO) { servicosAcessibilidadeAtivosCount(ctx) }
+        val servicosAcessibilidade = servicosAcessibilidadeAtivosCount(ctx)
         if (servicosAcessibilidade > 0) {
-            val lista = withContext(Dispatchers.IO) { servicosAcessibilidadeAtivosLista(ctx) }
+            val lista = servicosAcessibilidadeAtivosLista(ctx)
             val nomes = StringBuilder()
             for (s in lista) { if (nomes.isNotEmpty()) nomes.append(", "); nomes.append(s) }
             val desc = "$servicosAcessibilidade serviço(s): $nomes. Habilite apenas o que você reconhece."
@@ -87,7 +81,6 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
         if (fontesDesconhecidas(ctx)) {
             encontradas += Threat(
                 nome = "Fontes desconhecidas ativadas",
@@ -99,7 +92,6 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
         if (opcoesDesenvolvedor(ctx)) {
             encontradas += Threat(
                 nome = "Opções de desenvolvedor ativas",
@@ -111,20 +103,15 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
         verificarPatchSeguranca()?.let { encontradas += it }
 
-        delay(350)
         verificarPlayProtect(ctx)?.let { encontradas += it }
 
-        delay(350)
         verificarRede(ctx)?.let { encontradas += it }
 
-        delay(350)
         verificarPerfilDispositivo(ctx)?.let { encontradas += it }
 
-        delay(350)
-        val appsSensiveis = withContext(Dispatchers.IO) { appsComPermissoesSensiveis(ctx) }
+        val appsSensiveis = appsComPermissoesSensiveis(ctx)
         if (appsSensiveis.isNotEmpty()) {
             encontradas += Threat(
                 nome = "${appsSensiveis.size} app(s) com permissões sensíveis",
@@ -137,8 +124,7 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
-        val foraDaLoja = withContext(Dispatchers.IO) { appsForaDaLoja(ctx) }
+        val foraDaLoja = appsForaDaLoja(ctx)
         if (foraDaLoja.isNotEmpty()) {
             encontradas += Threat(
                 nome = "${foraDaLoja.size} app(s) instalados fora da loja",
@@ -152,8 +138,7 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
-        val stalkerware = withContext(Dispatchers.IO) { DetectorStalkerware.procurar(ctx) }
+        val stalkerware = DetectorStalkerware.procurarBloqueante(ctx)
         stalkerware.forEach { app ->
             encontradas += Threat(
                 nome = "App de vigilância conhecido: ${app.nome}",
@@ -171,8 +156,7 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
-        val combinacao = withContext(Dispatchers.IO) { DetectorStalkerware.combinacaoSuspeita(ctx) }
+        val combinacao = DetectorStalkerware.combinacaoSuspeitaBloqueante(ctx)
         if (combinacao.isNotEmpty()) {
             encontradas += Threat(
                 nome = "${combinacao.size} app(s) com combinação incomum de permissões",
@@ -188,8 +172,7 @@ object SecurityScanner {
             )
         }
 
-        delay(350)
-        val cache = withContext(Dispatchers.IO) { StorageCleaner.calcularCacheBytes(ctx) }
+        val cache = StorageCleaner.calcularCacheBytes(ctx)
         if (cache > 0) {
             encontradas += Threat(
                 nome = "Arquivos temporários acumulados",
@@ -201,9 +184,7 @@ object SecurityScanner {
             )
         }
 
-        encontradas.forEach { onThreatFound(it) }
-        val score = (100 - encontradas.sumOf { it.peso }).coerceIn(0, 100)
-        return Resultado(encontradas, score)
+        return encontradas
     }
 
     /**
@@ -297,8 +278,9 @@ object SecurityScanner {
     }
 
     /**
-     * Lista os apps com atividade de launcher que pedem permissões sensíveis.
-     * Enxergamos apenas os apps visíveis (regra do Android 11+), o que é suficiente.
+     * Lista os apps com atividade de launcher que têm permissões sensíveis
+     * **concedidas**. Enxergamos apenas os apps visíveis (regra do Android 11+),
+     * o que é suficiente.
      */
     private fun appsComPermissoesSensiveis(ctx: Context): List<String> {
         val pm = ctx.packageManager
@@ -312,7 +294,7 @@ object SecurityScanner {
             .mapNotNull { it.activityInfo?.applicationInfo }
             .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
             .distinctBy { it.packageName }
-            .filter { app -> appPedePermissaoSensivel(pm, app.packageName) }
+            .filter { app -> temPermissaoSensivelConcedida(pm, app.packageName) }
             .map { runCatching { it.loadLabel(pm).toString() }.getOrDefault(it.packageName) }
             .sorted()
             .toList()
@@ -354,14 +336,13 @@ object SecurityScanner {
         null
     }
 
-    @Suppress("DEPRECATION")
-    private fun appPedePermissaoSensivel(pm: PackageManager, pacote: String): Boolean = try {
-        val info = pm.getPackageInfo(pacote, PackageManager.GET_PERMISSIONS)
-        val pedidas = info.requestedPermissions?.toSet() ?: emptySet()
-        pedidas.any { it in PERMISSOES_SENSIVEIS }
-    } catch (e: Exception) {
-        false
-    }
+    /**
+     * Verdadeiro quando o app tem alguma permissão sensível **concedida**.
+     * Pedir não é o mesmo que ter: app que pede e o usuário nega não merece
+     * alerta de privacidade.
+     */
+    private fun temPermissaoSensivelConcedida(pm: PackageManager, pacote: String): Boolean =
+        AuditoriaPermissoes.gruposConcedidos(pm, pacote).isNotEmpty()
 
     /**
      * A partir do Android 8 (API 26) a instalação de fontes desconhecidas é por app,
