@@ -7,6 +7,8 @@ import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -20,13 +22,14 @@ object RelatorioPdf {
     private const val ALTURA = 842
     private const val MARGEM = 40f
 
-    fun gerar(
+    /** Gera o PDF em segundo plano (a renderização e a escrita são pesadas). */
+    suspend fun gerar(
         ctx: Context,
         titulo: String,
         subtitulo: String,
         pontuacao: Int?,
         linhas: List<Pair<String, String>>
-    ): Uri? {
+    ): Uri? = withContext(Dispatchers.IO) {
         val documento = PdfDocument()
         val pagina = documento.startPage(
             PdfDocument.PageInfo.Builder(LARGURA, ALTURA, 1).create()
@@ -88,7 +91,7 @@ object RelatorioPdf {
 
         val dir = File(ctx.cacheDir, "relatorios").apply { mkdirs() }
         val arquivo = File(dir, "seguraturbo_${System.currentTimeMillis()}.pdf")
-        return try {
+        try {
             FileOutputStream(arquivo).use { documento.writeTo(it) }
             documento.close()
             FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", arquivo)
@@ -98,16 +101,22 @@ object RelatorioPdf {
         }
     }
 
-    fun compartilhar(ctx: Context, uri: Uri, texto: String) {
+    /** Abre o compartilhamento do PDF. Retorna false se não foi possível. */
+    fun compartilhar(ctx: Context, uri: Uri, texto: String): Boolean {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "application/pdf"
             putExtra(Intent.EXTRA_STREAM, uri)
             putExtra(Intent.EXTRA_TEXT, texto)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        ctx.startActivity(
-            Intent.createChooser(intent, texto).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        return try {
+            ctx.startActivity(
+                Intent.createChooser(intent, texto).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun corDaPontuacao(score: Int): Int = when {

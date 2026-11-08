@@ -68,6 +68,7 @@ fun ConfiguracoesDialog(
     onFechar: () -> Unit
 ) {
     val ctx = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     var modo by remember { mutableStateOf(Aparencia.temaModo) }
     var escala by remember { mutableStateOf(Aparencia.escalaFonte) }
     var lembrete by remember { mutableStateOf(Preferencias.lembreteAtivo(ctx)) }
@@ -133,47 +134,56 @@ fun ConfiguracoesDialog(
         ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
-        val ok = runCatching {
-            ctx.contentResolver.openOutputStream(uri)?.use { saida ->
-                saida.write(Backup.montar(ctx).toByteArray())
-            } != null
-        }.getOrDefault(false)
-        Toast.makeText(
-            ctx,
-            if (ok) R.string.backup_ok else R.string.backup_erro,
-            Toast.LENGTH_SHORT
-        ).show()
+        scope.launch {
+            val ok = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                runCatching {
+                    ctx.contentResolver.openOutputStream(uri)?.use { saida ->
+                        saida.write(Backup.montar(ctx).toByteArray())
+                    } != null
+                }.getOrDefault(false)
+            }
+            Toast.makeText(
+                ctx,
+                if (ok) R.string.backup_ok else R.string.backup_erro,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     val importarBackup = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
-        val ok = runCatching {
-            ctx.contentResolver.openInputStream(uri)?.use { entrada ->
-                Backup.aplicar(ctx, entrada.readBytes().decodeToString())
-            } ?: false
-        }.getOrDefault(false)
-        if (ok) reaplicarPreferencias()
-        Toast.makeText(
-            ctx,
-            if (ok) R.string.backup_restaurado else R.string.backup_erro,
-            Toast.LENGTH_SHORT
-        ).show()
+        scope.launch {
+            val ok = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                runCatching {
+                    ctx.contentResolver.openInputStream(uri)?.use { entrada ->
+                        Backup.aplicarDeFluxo(ctx, entrada)
+                    } ?: false
+                }.getOrDefault(false)
+            }
+            if (ok) reaplicarPreferencias()
+            Toast.makeText(
+                ctx,
+                if (ok) R.string.backup_restaurado else R.string.backup_erro,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
-    val scope = androidx.compose.runtime.rememberCoroutineScope()
     val exportarRelatorio = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/zip")
     ) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
-            val ok = runCatching {
-                val dados = com.seguraturbo.app.util.RelatorioCompleto.gerar(ctx)
-                ctx.contentResolver.openOutputStream(uri)?.use { saida ->
-                    saida.write(dados)
-                } != null
-            }.getOrDefault(false)
+            val ok = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                runCatching {
+                    val dados = com.seguraturbo.app.util.RelatorioCompleto.gerar(ctx)
+                    ctx.contentResolver.openOutputStream(uri)?.use { saida ->
+                        saida.write(dados)
+                    } != null
+                }.getOrDefault(false)
+            }
             Toast.makeText(
                 ctx,
                 if (ok) R.string.relatorio_ok else R.string.relatorio_erro,

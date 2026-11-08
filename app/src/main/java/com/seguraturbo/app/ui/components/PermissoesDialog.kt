@@ -1,5 +1,6 @@
 package com.seguraturbo.app.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import com.seguraturbo.app.util.AppComPermissoes
 import com.seguraturbo.app.util.AuditoriaPermissoes
 import com.seguraturbo.app.util.InventarioCsv
 import com.seguraturbo.app.util.RiscoApp
+import kotlinx.coroutines.launch
 
 /**
  * Diálogo de auditoria de permissões: mostra um resumo por permissão e a lista
@@ -43,6 +46,7 @@ fun PermissoesDialog(onFechar: () -> Unit) {
     val ctx = LocalContext.current
     var carregando by remember { mutableStateOf(true) }
     var apps by remember { mutableStateOf<List<AppComPermissoes>>(emptyList()) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         apps = AuditoriaPermissoes.listar(ctx)
@@ -191,12 +195,17 @@ fun PermissoesDialog(onFechar: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (!carregando && apps.isNotEmpty()) {
                     TextButton(onClick = {
-                        InventarioCsv.compartilhar(
-                            ctx,
-                            apps,
-                            rotulo = { ctx.getString(it.rotuloRes) },
-                            texto = ctx.getString(R.string.perm_exportar_texto)
-                        )
+                        scope.launch {
+                            val ok = InventarioCsv.compartilhar(
+                                ctx,
+                                apps,
+                                rotulo = { ctx.getString(it.rotuloRes) },
+                                texto = ctx.getString(R.string.perm_exportar_texto)
+                            )
+                            if (!ok) {
+                                Toast.makeText(ctx, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }) {
                         Text(
                             stringResource(R.string.perm_exportar),

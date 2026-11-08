@@ -1,5 +1,6 @@
 package com.seguraturbo.app.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +41,7 @@ import com.seguraturbo.app.model.HistoricoEntrada
 import com.seguraturbo.app.ui.theme.Cores
 import com.seguraturbo.app.util.Formato
 import com.seguraturbo.app.util.RelatorioCsv
+import kotlinx.coroutines.launch
 
 /** Cartão com aparência de vidro (glassmorphism) e gradiente sutil. */
 @Composable
@@ -220,6 +223,7 @@ fun HistoricoSecao(
 ) {
     val contexto = LocalContext.current
     val tituloCompartilhar = stringResource(R.string.hist_export)
+    val scope = rememberCoroutineScope()
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -230,7 +234,11 @@ fun HistoricoSecao(
             if (historico.isNotEmpty()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TextButton(onClick = {
-                        RelatorioCsv.compartilhar(contexto, historico, tituloCompartilhar)
+                        scope.launch {
+                            if (!RelatorioCsv.compartilhar(contexto, historico, tituloCompartilhar)) {
+                                Toast.makeText(contexto, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }) {
                         Text(stringResource(R.string.hist_csv), color = Cores.Ciano, fontSize = 12.sp)
                     }

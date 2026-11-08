@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,6 +64,7 @@ import com.seguraturbo.app.util.AuditoriaPermissoes
 import com.seguraturbo.app.util.RiscoApp
 import com.seguraturbo.app.util.RelatorioImagem
 import com.seguraturbo.app.util.RelatorioPdf
+import kotlinx.coroutines.launch
 
 @Composable
 fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
@@ -69,6 +72,7 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
     var selecionada by remember { mutableStateOf<Threat?>(null) }
     var mostrarPermissoes by remember { mutableStateOf(false) }
     var mostrarSenhasVazadas by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     // Atalho "Escanear" do ícone: dispara a varredura ao abrir a tela.
     LaunchedEffect(Unit) {
@@ -184,13 +188,13 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         BotaoNeon(
                             texto = stringResource(R.string.share_image),
-                            onClick = { compartilharScan(contexto, vm, score, pdf = false) },
+                            onClick = { scope.launch { compartilharScan(contexto, vm, score, pdf = false) } },
                             cor = Cores.Verde,
                             modifier = Modifier.weight(1f).height(48.dp)
                         )
                         BotaoNeon(
                             texto = stringResource(R.string.share_pdf),
-                            onClick = { compartilharScan(contexto, vm, score, pdf = true) },
+                            onClick = { scope.launch { compartilharScan(contexto, vm, score, pdf = true) } },
                             cor = Cores.Ciano,
                             modifier = Modifier.weight(1f).height(48.dp)
                         )
@@ -230,7 +234,7 @@ fun SegurancaScreen(vm: SegurancaViewModel = viewModel()) {
 }
 
 /** Gera o relatório (imagem ou PDF) do resultado do scan e abre o compartilhamento. */
-private fun compartilharScan(ctx: Context, vm: SegurancaViewModel, score: Int, pdf: Boolean) {
+private suspend fun compartilharScan(ctx: Context, vm: SegurancaViewModel, score: Int, pdf: Boolean) {
     val linhas = buildList {
         add(ctx.getString(R.string.rep_alertas) to vm.ameacas.size.toString())
         vm.ameacas.take(8).forEach { add(it.nome to it.risco) }
@@ -239,13 +243,21 @@ private fun compartilharScan(ctx: Context, vm: SegurancaViewModel, score: Int, p
     val titulo = ctx.getString(R.string.rep_sec_title)
     val subtitulo = ctx.getString(R.string.rep_sec_subtitle)
     val rotulo = ctx.getString(R.string.sec_share)
-    if (pdf) {
-        val uri = RelatorioPdf.gerar(ctx, titulo, subtitulo, score, linhas) ?: return
+    val uri = if (pdf) {
+        RelatorioPdf.gerar(ctx, titulo, subtitulo, score, linhas)
+    } else {
+        RelatorioImagem.gerar(ctx, titulo, subtitulo, score, linhas)
+    }
+    if (uri == null) {
+        Toast.makeText(ctx, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
+        return
+    }
+    val ok = if (pdf) {
         RelatorioPdf.compartilhar(ctx, uri, rotulo)
     } else {
-        val uri = RelatorioImagem.gerar(ctx, titulo, subtitulo, score, linhas) ?: return
         RelatorioImagem.compartilhar(ctx, uri, rotulo)
     }
+    if (!ok) Toast.makeText(ctx, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
 }
 
 @Composable

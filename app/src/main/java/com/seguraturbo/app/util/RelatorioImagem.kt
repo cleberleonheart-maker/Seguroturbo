@@ -9,6 +9,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.net.Uri
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -22,13 +24,14 @@ object RelatorioImagem {
     private const val LARGURA = 1080
     private const val ALTURA = 1500
 
-    fun gerar(
+    /** Gera a imagem em segundo plano (desenhar e comprimir o PNG é pesado). */
+    suspend fun gerar(
         ctx: Context,
         titulo: String,
         subtitulo: String,
         pontuacao: Int?,
         linhas: List<Pair<String, String>>
-    ): Uri? {
+    ): Uri? = withContext(Dispatchers.IO) {
         val bitmap = Bitmap.createBitmap(LARGURA, ALTURA, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -91,7 +94,7 @@ object RelatorioImagem {
 
         val dir = File(ctx.cacheDir, "relatorios").apply { mkdirs() }
         val arquivo = File(dir, "seguraturbo_${System.currentTimeMillis()}.png")
-        return try {
+        try {
             FileOutputStream(arquivo).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
             bitmap.recycle()
             FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", arquivo)
@@ -105,13 +108,13 @@ object RelatorioImagem {
      * Gera uma imagem (PNG) com o gráfico de evolução das pontuações do benchmark
      * e devolve um Uri pronto para compartilhar. Desenhado no próprio aparelho.
      */
-    fun gerarGrafico(
+    suspend fun gerarGrafico(
         ctx: Context,
         titulo: String,
         subtitulo: String,
         pontuacoes: List<Int>
-    ): Uri? {
-        if (pontuacoes.isEmpty()) return null
+    ): Uri? = withContext(Dispatchers.IO) {
+        if (pontuacoes.isEmpty()) return@withContext null
         val bitmap = Bitmap.createBitmap(LARGURA, ALTURA, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -221,7 +224,7 @@ object RelatorioImagem {
 
         val dirCache = File(ctx.cacheDir, "relatorios").apply { mkdirs() }
         val arquivo = File(dirCache, "seguraturbo_grafico_${System.currentTimeMillis()}.png")
-        return try {
+        try {
             FileOutputStream(arquivo).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
             bitmap.recycle()
             FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", arquivo)
@@ -231,16 +234,22 @@ object RelatorioImagem {
         }
     }
 
-    fun compartilhar(ctx: Context, uri: Uri, texto: String) {
+    /** Abre o compartilhamento da imagem. Retorna false se não foi possível. */
+    fun compartilhar(ctx: Context, uri: Uri, texto: String): Boolean {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "image/png"
             putExtra(Intent.EXTRA_STREAM, uri)
             putExtra(Intent.EXTRA_TEXT, texto)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        ctx.startActivity(
-            Intent.createChooser(intent, texto).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        return try {
+            ctx.startActivity(
+                Intent.createChooser(intent, texto).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun corDaPontuacao(score: Int): Int = when {

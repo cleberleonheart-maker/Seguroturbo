@@ -3,6 +3,8 @@ package com.seguraturbo.app.util
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -16,8 +18,6 @@ import java.util.Locale
  */
 object InventarioCsv {
 
-    private val formatoNome = SimpleDateFormat("yyyy-MM-dd_HHmm", Locale.getDefault())
-
     /**
      * Monta o texto CSV do inventário. Função pura (sem Android): recebe os apps e
      * uma função que traduz o rótulo de cada grupo de permissão.
@@ -29,23 +29,23 @@ object InventarioCsv {
         val sb = StringBuilder()
         sb.append("pacote;nome;permissoes_sensiveis\n")
         apps.sortedBy { it.nome.lowercase() }.forEach { app ->
-            sb.append(campo(app.pacote)).append(';')
-                .append(campo(app.nome)).append(';')
-                .append(campo(app.grupos.joinToString(", ") { rotulo(it) }))
+            sb.append(CsvUtil.campo(app.pacote)).append(';')
+                .append(CsvUtil.campo(app.nome)).append(';')
+                .append(CsvUtil.campo(app.grupos.joinToString(", ") { rotulo(it) }))
                 .append('\n')
         }
         return sb.toString()
     }
 
     /** Gera o arquivo CSV do inventário no cache. Retorna null se não deu. */
-    fun gerar(
+    suspend fun gerar(
         ctx: Context,
         apps: List<AppComPermissoes>,
         rotulo: (GrupoPermissao) -> String
-    ): File? {
+    ): File? = withContext(Dispatchers.IO) {
         val dir = File(ctx.cacheDir, "relatorios").apply { mkdirs() }
         val arquivo = File(dir, "seguraturbo_inventario.csv")
-        return try {
+        try {
             arquivo.writeText(montarCsv(apps, rotulo))
             arquivo
         } catch (e: Exception) {
@@ -57,7 +57,7 @@ object InventarioCsv {
      * Gera o CSV do inventário e abre o compartilhamento. [rotulo] traduz os grupos
      * (normalmente `{ ctx.getString(it.rotuloRes) }`). Retorna false se falhar.
      */
-    fun compartilhar(
+    suspend fun compartilhar(
         ctx: Context,
         apps: List<AppComPermissoes>,
         rotulo: (GrupoPermissao) -> String,
@@ -86,7 +86,8 @@ object InventarioCsv {
     }
 
     /** Nome sugerido do arquivo, com a data (ex.: seguraturbo_inventario_2026-10-20_1430.csv). */
-    fun nomeSugerido(): String = "seguraturbo_inventario_${formatoNome.format(Date())}.csv"
-
-    private fun campo(valor: String): String = "\"" + valor.replace("\"", "\"\"") + "\""
+    fun nomeSugerido(): String {
+        val formato = SimpleDateFormat("yyyy-MM-dd_HHmm", Locale.getDefault())
+        return "seguraturbo_inventario_${formato.format(Date())}.csv"
+    }
 }

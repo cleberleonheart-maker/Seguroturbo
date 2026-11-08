@@ -1,7 +1,6 @@
 package com.seguraturbo.app.util
 
 import android.content.Context
-import com.seguraturbo.app.model.HistoricoEntrada
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -18,9 +17,6 @@ import java.util.zip.ZipOutputStream
  */
 object RelatorioCompleto {
 
-    private val formatoNome = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
-    private val formatoData = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-
     suspend fun gerar(ctx: Context): ByteArray = withContext(Dispatchers.IO) {
         val apps = AuditoriaPermissoes.listar(ctx)
         val entradas = ArrayList<Pair<String, String>>()
@@ -31,7 +27,7 @@ object RelatorioCompleto {
             ctx.getString(it.rotuloRes)
         }
 
-        entradas += "historico-acoes.csv" to historicoCsv(HistoricoStore.listar(ctx))
+        entradas += "historico-acoes.csv" to RelatorioCsv.montarCsv(HistoricoStore.listar(ctx))
 
         val limpezas = Preferencias.historicoLimpezas(ctx)
         entradas += "historico-limpezas-ram.csv" to limpezasCsv(limpezas)
@@ -51,26 +47,16 @@ object RelatorioCompleto {
         saida.toByteArray()
     }
 
-    fun nomeSugerido(): String =
-        "seguroturbo-relatorio-${formatoNome.format(Date())}.zip"
-
-    private fun historicoCsv(lista: List<HistoricoEntrada>): String {
-        val sb = StringBuilder()
-        sb.append("data;tipo;titulo;detalhe\n")
-        lista.sortedByDescending { it.data }.forEach { e ->
-            sb.append(campo(formatoData.format(Date(e.data)))).append(';')
-                .append(campo(e.tipo.name)).append(';')
-                .append(campo(e.titulo)).append(';')
-                .append(campo(e.detalhe)).append('\n')
-        }
-        return sb.toString()
+    fun nomeSugerido(): String {
+        val formato = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
+        return "seguroturbo-relatorio-${formato.format(Date())}.zip"
     }
 
     private fun limpezasCsv(lista: List<Pair<Long, Int>>): String {
         val sb = StringBuilder()
         sb.append("data;apps_encerrados\n")
         lista.forEach { (t, q) ->
-            sb.append(campo(formatoData.format(Date(t)))).append(';')
+            sb.append(CsvUtil.campo(CsvUtil.dataHoraSegundos(t))).append(';')
                 .append(q).append('\n')
         }
         return sb.toString()
@@ -89,7 +75,7 @@ object RelatorioCompleto {
         val i = DeviceInfo.coletar(ctx)
         return buildString {
             appendLine("SeguroTurbo - Relatório do dispositivo")
-            appendLine("Gerado em: ${formatoData.format(Date())}")
+            appendLine("Gerado em: ${CsvUtil.dataHoraSegundos(System.currentTimeMillis())}")
             appendLine()
             appendLine("Fabricante: ${i.fabricante}")
             appendLine("Modelo: ${i.modelo}")
@@ -102,6 +88,4 @@ object RelatorioCompleto {
             appendLine("Versão: ${i.versaoAndroid}")
         }
     }
-
-    private fun campo(valor: String): String = "\"" + valor.replace("\"", "\"\"") + "\""
 }

@@ -2,6 +2,7 @@ package com.seguraturbo.app.ui.benchmark
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,11 +51,13 @@ import com.seguraturbo.app.util.Comparacao
 import com.seguraturbo.app.util.ReferenciaClasse
 import com.seguraturbo.app.util.RelatorioImagem
 import com.seguraturbo.app.util.RelatorioPdf
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
 fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
     val contexto = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     // Atalho "Testar rede" do ícone: dispara a medição ao abrir a tela.
     LaunchedEffect(Unit) {
@@ -147,13 +151,13 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     BotaoNeon(
                         texto = stringResource(R.string.share_image),
-                        onClick = { compartilhar(contexto, r, vm.info, pdf = false) },
+                        onClick = { scope.launch { compartilhar(contexto, r, vm.info, pdf = false) } },
                         cor = Cores.Verde,
                         modifier = Modifier.weight(1f).height(48.dp)
                     )
                     BotaoNeon(
                         texto = stringResource(R.string.share_pdf),
-                        onClick = { compartilhar(contexto, r, vm.info, pdf = true) },
+                        onClick = { scope.launch { compartilhar(contexto, r, vm.info, pdf = true) } },
                         cor = Cores.Ciano,
                         modifier = Modifier.weight(1f).height(48.dp)
                     )
@@ -219,7 +223,7 @@ fun BenchmarkScreen(vm: BenchmarkViewModel = viewModel()) {
                     Spacer(Modifier.height(14.dp))
                     BotaoNeon(
                         texto = stringResource(R.string.bm_share_chart),
-                        onClick = { compartilharGrafico(contexto, vm.pontuacoes) },
+                        onClick = { scope.launch { compartilharGrafico(contexto, vm.pontuacoes) } },
                         cor = Cores.Ciano,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -345,7 +349,7 @@ private fun CartaoDispositivo(info: DeviceInfo.Info?) {    CartaoFuturista {
 }
 
 /** Monta o relatório (imagem ou PDF) do resultado e abre o compartilhamento. */
-private fun compartilhar(ctx: Context, r: BenchmarkResult, info: DeviceInfo.Info?, pdf: Boolean) {
+private suspend fun compartilhar(ctx: Context, r: BenchmarkResult, info: DeviceInfo.Info?, pdf: Boolean) {
     val linhas = buildList {
         info?.let { add(ctx.getString(R.string.rep_aparelho) to "${it.fabricante} ${it.modelo}") }
         info?.let { add(ctx.getString(R.string.rep_chipset) to it.chipset) }
@@ -365,13 +369,21 @@ private fun compartilhar(ctx: Context, r: BenchmarkResult, info: DeviceInfo.Info
     val titulo = ctx.getString(R.string.rep_bm_title)
     val subtitulo = ctx.getString(R.string.rep_bm_subtitle)
     val rotulo = ctx.getString(R.string.bm_share)
-    if (pdf) {
-        val uri = RelatorioPdf.gerar(ctx, titulo, subtitulo, null, linhas) ?: return
+    val uri = if (pdf) {
+        RelatorioPdf.gerar(ctx, titulo, subtitulo, null, linhas)
+    } else {
+        RelatorioImagem.gerar(ctx, titulo, subtitulo, null, linhas)
+    }
+    if (uri == null) {
+        Toast.makeText(ctx, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
+        return
+    }
+    val ok = if (pdf) {
         RelatorioPdf.compartilhar(ctx, uri, rotulo)
     } else {
-        val uri = RelatorioImagem.gerar(ctx, titulo, subtitulo, null, linhas) ?: return
         RelatorioImagem.compartilhar(ctx, uri, rotulo)
     }
+    if (!ok) Toast.makeText(ctx, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
 }
 
 @Composable
@@ -393,14 +405,20 @@ private fun CartaoBateriaTeste(vm: BenchmarkViewModel) {
 }
 
 /** Gera a imagem do gráfico de evolução das pontuações e abre o compartilhamento. */
-private fun compartilharGrafico(ctx: Context, pontuacoes: List<Int>) {
+private suspend fun compartilharGrafico(ctx: Context, pontuacoes: List<Int>) {
     val uri = RelatorioImagem.gerarGrafico(
         ctx,
         ctx.getString(R.string.rep_bm_title),
         ctx.getString(R.string.bm_history_chart),
         pontuacoes
-    ) ?: return
-    RelatorioImagem.compartilhar(ctx, uri, ctx.getString(R.string.bm_share_chart))
+    )
+    if (uri == null) {
+        Toast.makeText(ctx, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
+        return
+    }
+    if (!RelatorioImagem.compartilhar(ctx, uri, ctx.getString(R.string.bm_share_chart))) {
+        Toast.makeText(ctx, R.string.relatorio_erro, Toast.LENGTH_SHORT).show()
+    }
 }
 
 @Composable
