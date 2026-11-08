@@ -5,6 +5,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
+/**
+ * Testes do parser do histórico em JSON, incluindo entradas com tipo
+ * desconhecido (não podem derrubar a leitura do backup inteiro).
+ */
 class HistoricoJsonTest {
 
     @Test
@@ -33,5 +37,28 @@ class HistoricoJsonTest {
     @Test
     fun jsonVazio() {
         assertTrue(HistoricoStore.entradasDeJson(org.json.JSONArray()).isEmpty())
+    }
+
+    @Test
+    fun tipoDesconhecidoNaoCorrompeAsOutrasEntradas() {
+        val json = org.json.JSONArray().apply {
+            put(org.json.JSONObject().put("tipo", "TIPO_INVALIDO").put("data", 1L))
+            put(org.json.JSONObject().put("tipo", "LIMPEZA").put("data", 2L))
+        }
+        val lido = HistoricoStore.entradasDeJson(json)
+        assertEquals(2, lido.size)
+        assertEquals(HistoricoEntrada.Tipo.SCAN, lido[0].tipo)
+        assertEquals(HistoricoEntrada.Tipo.LIMPEZA, lido[1].tipo)
+    }
+
+    @Test
+    fun entradaNaoObjetoEhIgnorada() {
+        val json = org.json.JSONArray().apply {
+            put("texto solto")
+            put(org.json.JSONObject().put("tipo", "LIMPEZA").put("data", 2L))
+        }
+        val lido = HistoricoStore.entradasDeJson(json)
+        assertEquals(1, lido.size)
+        assertEquals(HistoricoEntrada.Tipo.LIMPEZA, lido[0].tipo)
     }
 }

@@ -83,7 +83,7 @@ object HistoricoStore {
         (0 until arr.length()).mapNotNull { i ->
             val o = arr.optJSONObject(i) ?: return@mapNotNull null
             HistoricoEntrada(
-                tipo = runCatching { HistoricoEntrada.Tipo.valueOf(arr.optJSONObject(i)!!.optString("tipo")) }
+                tipo = runCatching { HistoricoEntrada.Tipo.valueOf(o.optString("tipo")) }
                     .getOrDefault(HistoricoEntrada.Tipo.SCAN),
                 data = o.optLong("data"),
                 titulo = o.optString("titulo"),
