@@ -72,6 +72,16 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
     /** Memória do aparelho (total/livre em MB) para o cartão de limpeza de RAM. */
     var memoria by mutableStateOf(GerenciadorRam.Memoria(0L, 0L))
 
+    /** Métricas do Game Turbo (tempo, sessões e limpezas). */
+    var metricas by mutableStateOf(MetricasTurbo(0L, 0, 0))
+
+    /** Resumo das métricas de uso do Game Turbo. */
+    data class MetricasTurbo(
+        val minutos: Long,
+        val sessoes: Int,
+        val limpezas: Int
+    )
+
     /** true = o diálogo de limpeza de RAM está aberto. */
     var mostrarLimpezaRam by mutableStateOf(false)
 
@@ -79,6 +89,7 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         perfil = Preferencias.perfilDesempenho(getApplication<Application>())
         atualizarTemperatura()
         carregarHistorico()
+        carregarMetricas()
         // A detecção lê ícones de todos os apps: faz fora da thread principal.
         viewModelScope.launch {
             val detectados = withContext(Dispatchers.IO) {
@@ -96,6 +107,16 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         autoLimparRamJogo = Preferencias.autoLimparRamJogo(getApplication<Application>())
         carregarSessaoFoco()
         carregarTurboAgendado()
+    }
+
+    /** Lê as métricas de uso do Game Turbo (preferências + histórico de limpezas). */
+    private fun carregarMetricas() {
+        val app = getApplication<Application>()
+        metricas = MetricasTurbo(
+            minutos = Preferencias.totalMinutosGameTurbo(app),
+            sessoes = Preferencias.totalSessoesGameTurbo(app),
+            limpezas = Preferencias.historicoLimpezas(app).sumOf { it.second }
+        )
     }
 
     private fun carregarTurboAgendado() {
@@ -157,6 +178,7 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
         } else {
             mensagem = null
         }
+        carregarMetricas()
     }
 
     /** Consulta se o app está isento da otimização de bateria (Doze). */
