@@ -1,6 +1,7 @@
 package com.seguraturbo.app.util
 
 import android.content.Context
+import com.seguraturbo.app.model.EstadoPerfis
 import com.seguraturbo.app.model.PerfilDesempenho
 import com.seguraturbo.app.model.PerfilUso
 import com.seguraturbo.app.model.TemaModo
@@ -389,13 +390,52 @@ object Preferencias {
     }
 
     // ---- Perfil de uso automático por bateria ----
+    private const val K_ECONOMIA_AUTO_ATIVA = "economia_auto_ativa"
+    private const val K_ECONOMIA_AUTO_ESTADO = "economia_auto_estado"
+
+    /**
+     * Aplica o perfil "Bateria" quando a carga chega a [EconomiaAuto.LIMITE_BAIXO]%
+     * ou menos e restaura o estado anterior quando ela volta acima disso. Só age
+     * em transições, para não sobrescrever a escolha do usuário a cada abertura
+     * do app.
+     */
     fun aplicarEconomiaSeBaixa(ctx: Context) {
         try {
             val bm = ctx.getSystemService(Context.BATTERY_SERVICE) as android.os.BatteryManager
             val nivel = bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)
-            if (nivel in 1..20) {
-                definirPerfilUso(ctx, com.seguraturbo.app.model.PerfilUso.BATERIA)
+            val ativa = Armazenamento.lerBooleano(ctx, K_ECONOMIA_AUTO_ATIVA, false)
+            val acao = EconomiaAuto.decidir(nivel, ativa, perfilUso(ctx))
+            when (acao) {
+                EconomiaAuto.Acao.APLICAR -> {
+                    // Guarda o estado completo (não só o perfil) para devolver tudo como estava.
+                    Armazenamento.gravarTexto(
+                        ctx,
+                        K_ECONOMIA_AUTO_ESTADO,
+                        PerfisUso.estadoAtual(ctx).toJson()
+                    )
+                    Armazenamento.gravarBooleano(ctx, K_ECONOMIA_AUTO_ATIVA, true)
+                    PerfisUso.aplicar(ctx, PerfilUso.BATERIA)
+                }
+                EconomiaAuto.Acao.RESTAURAR -> {
+                    Armazenamento.gravarBooleano(ctx, K_ECONOMIA_AUTO_ATIVA, false)
+                    val guardado = EstadoPerfis.fromJson(
+                        Armazenamento.lerTexto(ctx, K_ECONOMIA_AUTO_ESTADO, null)
+                    )
+                    if (guardado != null) {
+                        PerfisUso.restaurar(ctx, guardado)
+                        Armazenamento.remover(ctx, K_ECONOMIA_AUTO_ESTADO)
+                    } else {
+                        PerfisUso.aplicar(ctx, PerfilUso.PADRAO)
+                    }
+                }
+                EconomiaAuto.Acao.DESCARTAR -> {
+                    // O usuário trocou o perfil no meio do caminho: respeita a escolha.
+                    Armazenamento.gravarBooleano(ctx, K_ECONOMIA_AUTO_ATIVA, false)
+                    Armazenamento.remover(ctx, K_ECONOMIA_AUTO_ESTADO)
+                }
+                EconomiaAuto.Acao.NADA -> Unit
             }
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
     }
 }

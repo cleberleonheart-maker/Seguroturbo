@@ -1,6 +1,7 @@
 package com.seguraturbo.app.util
 
 import android.content.Context
+import com.seguraturbo.app.model.EstadoPerfis
 import com.seguraturbo.app.model.PerfilDesempenho
 import com.seguraturbo.app.model.PerfilUso
 
@@ -87,5 +88,39 @@ object PerfisUso {
         else AgendadorAtualizacao.cancelar(ctx)
 
         return c.lembrete
+    }
+
+    /**
+     * Fotografia de todos os ajustes que um perfil de uso mexe. É o que o modo
+     * economia automático guarda antes de assumir o perfil Bateria, para
+     * devolver tudo exatamente como estava (inclusive ajustes que o usuário fez
+     * depois de escolher o perfil).
+     */
+    fun estadoAtual(ctx: Context): EstadoPerfis = EstadoPerfis(
+        perfilUso = Preferencias.perfilUso(ctx),
+        perfilDesempenho = Preferencias.perfilDesempenho(ctx),
+        dndAuto = Preferencias.dndAuto(ctx),
+        travaTela = Preferencias.travaTelaJogo(ctx),
+        silenciarMidia = Preferencias.silenciarMidia(ctx),
+        lembrete = Preferencias.lembreteAtivo(ctx),
+        atualizacaoAuto = Preferencias.atualizacaoAutomatica(ctx)
+    )
+
+    /**
+     * Devolve o estado guardado. Não reaplica um preset: cada ajuste volta ao
+     * valor que tinha antes, e os agendadores são reprogramados.
+     */
+    fun restaurar(ctx: Context, estado: EstadoPerfis) {
+        Preferencias.definirPerfilDesempenho(ctx, estado.perfilDesempenho)
+        Preferencias.definirDndAuto(ctx, estado.dndAuto)
+        Preferencias.definirTravaTelaJogo(ctx, estado.travaTela)
+        Preferencias.definirSilenciarMidia(ctx, estado.silenciarMidia)
+        Preferencias.definirLembreteAtivo(ctx, estado.lembrete)
+        Preferencias.definirAtualizacaoAutomatica(ctx, estado.atualizacaoAuto)
+        Preferencias.definirPerfilUso(ctx, estado.perfilUso)
+
+        if (estado.lembrete) Agendador.agendar(ctx) else Agendador.cancelar(ctx)
+        if (estado.atualizacaoAuto) AgendadorAtualizacao.agendar(ctx)
+        else AgendadorAtualizacao.cancelar(ctx)
     }
 }

@@ -121,6 +121,13 @@ class MainActivity : ComponentActivity() {
         tratarAtalhoJogo(intent)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Ao voltar para o app, a bateria pode ter mudado: aplica ou devolve o
+        // modo economia automático conforme o estado guardado.
+        try { Preferencias.aplicarEconomiaSeBaixa(this) } catch (_: Exception) {}
+    }
+
     /**
      * Abre o jogo de um atalho dinâmico, aplicando o perfil salvo (barra do Game
      * Turbo, Não Perturbe e bloqueio de tela).
