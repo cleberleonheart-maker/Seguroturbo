@@ -356,10 +356,15 @@ class GameTurboViewModel(app: Application) : AndroidViewModel(app) {
             else SilenciarMidia.restaurar(app)
         }
         if (ativo && autoLimparRamJogo) {
-            val apps = GerenciadorRam.appsFechaveis(app)
-            if (apps.isNotEmpty()) {
-                GerenciadorRam.liberar(app, apps.map { it.pacote })
-                memoriasEncerradas(apps.size)
+            // Enumerar e encerrar apps em segundo plano: na main thread trava a tela.
+            viewModelScope.launch {
+                val apps = withContext(Dispatchers.IO) { GerenciadorRam.appsFechaveis(app) }
+                if (apps.isNotEmpty()) {
+                    withContext(Dispatchers.IO) {
+                        GerenciadorRam.liberar(app, apps.map { it.pacote })
+                    }
+                    memoriasEncerradas(apps.size)
+                }
             }
         }
         HistoricoStore.adicionar(

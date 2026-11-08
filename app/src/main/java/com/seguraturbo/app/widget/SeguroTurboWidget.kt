@@ -12,6 +12,10 @@ import com.seguraturbo.app.MainActivity
 import com.seguraturbo.app.R
 import com.seguraturbo.app.util.GerenciadorRam
 import com.seguraturbo.app.util.Preferencias
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 /**
  * Widget da tela inicial: mostra o último score de segurança e abre o app ao toque.
@@ -32,18 +36,34 @@ class SeguroTurboWidget : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         if (intent.action == ACTION_LIMPAR_RAM) {
-            val apps = GerenciadorRam.appsFechaveis(context)
-            if (apps.isNotEmpty()) {
-                GerenciadorRam.liberar(context, apps.map { it.pacote })
+            // A limpeza enumera e encerra apps: pode demorar. Usa goAsync para
+            // não devolver o controle enquanto o trabalho ainda está rodando.
+            val pending = goAsync()
+            escopo.launch {
+                try {
+                    val apps = GerenciadorRam.appsFechaveis(context)
+                    if (apps.isNotEmpty()) {
+                        GerenciadorRam.liberar(context, apps.map { it.pacote })
+                    }
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.widget_limpar_ram_ok),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    atualizarTodos(context)
+                } finally {
+                    pending.finish()
+                }
             }
-            Toast.makeText(context, context.getString(R.string.widget_limpar_ram_ok), Toast.LENGTH_SHORT).show()
-            atualizarTodos(context)
         }
     }
 
     companion object {
 
         private const val ACTION_LIMPAR_RAM = "com.seguraturbo.app.widget.LIMPAR_RAM"
+
+        /** Escopo usado para o trabalho em segundo plano do widget. */
+        private val escopo = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
         /** Monta as RemoteViews com o último score conhecido. */
         private fun construirViews(context: Context): RemoteViews {

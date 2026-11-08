@@ -10,6 +10,7 @@ import android.media.MediaRecorder
 import android.media.projection.MediaProjection
 import android.os.Build
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.WindowManager
@@ -87,7 +88,10 @@ object BarraJogo {
         val leitor = android.media.ImageReader.newInstance(
             largura, altura, android.graphics.PixelFormat.RGBA_8888, 2
         )
-        val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        // A cópia do buffer e a compressão do PNG são pesadas: rodam em uma
+        // thread própria para não travar a interface.
+        val thread = HandlerThread("seguraturbo-captura").apply { start() }
+        val handler = Handler(thread.looper)
         var vd: VirtualDisplay? = null
         leitor.setOnImageAvailableListener({ r ->
             val imagem = try { r.acquireLatestImage() } catch (e: Exception) { null }
@@ -118,6 +122,7 @@ object BarraJogo {
                     imagem.close()
                     try { vd?.release() } catch (e: Exception) { }
                     try { leitor.close() } catch (e: Exception) { }
+                    thread.quitSafely()
                 }
             }
         }, handler)
@@ -128,6 +133,7 @@ object BarraJogo {
                 leitor.surface, null, handler
             )
         } catch (e: Exception) {
+            thread.quitSafely()
             onResultado(null)
         }
     }
