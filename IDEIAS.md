@@ -133,3 +133,11 @@ Lista de ideias para o SeguroTurbo, agrupadas por tema. É o backlog do que aind
 - [x] **Verificador de apps com acessibilidade** (v1.36): listar apps com `BIND_ACCESSIBILITY_SERVICE` (requer atenção) e explicar riscos.
 - [x] **Backup/restore de configurações** (v1.36): exportar/importar preferências JSON local (sem nuvem).
 - [x] **Métricas de sessão Game Turbo** (v1.36): tempo em jogo, limpezas, ativação/desativação por sessão.
+- [x] **Verificador de senhas vazadas com dicionário offline** (v1.37): hash SHA-1 calculado no
+      aparelho e comparado com uma lista local de senhas comprometidas; exposto na tela de Segurança.
+- [x] **Economia automática que restaura o estado completo** (v1.37): ao voltar da bateria baixa,
+      cada ajuste (inclusive os ajustados pelo usuário depois) volta ao valor original.
+- [x] **Relatórios em segundo plano** (v1.37): PDF, imagem e CSV gerados fora da main thread, com
+      aviso ao usuário quando o compartilhamento falha.
+- [x] **Classificação de aparelho na escala real do benchmark** (v1.37): faixas corrigidas para
+      acompanhar a soma das métricas (antes tudo caía em "Topo").

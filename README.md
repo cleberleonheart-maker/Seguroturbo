@@ -57,6 +57,41 @@ Aplicativo Android que une três módulos em um só app, com tema futurista neon
 - **SDK alvo:** 34 (Android 14)
 - **Otimização:** R8 / minify + shrinkResources no release
 
+## Novidades da versão 1.37
+
+- **Verificador de senhas vazadas offline**: agora vem com um dicionário local de
+  senhas comprometidas e aparece na tela de Segurança. A senha é transformada em
+  hash SHA-1 **no próprio aparelho** e comparada localmente — nada sai do device.
+- **Economia automática que devolve tudo como estava**: ao sair do modo bateria,
+  cada ajuste volta ao valor original, inclusive as mudanças que você fez depois
+  de ativar o modo.
+- **Relatórios sem travar a interface**: PDF, imagem e CSV passaram a ser gerados
+  em segundo plano, e o app avisa quando o compartilhamento não abre.
+- **Classificação de aparelho corrigida**: a faixa de desempenho acompanha a
+  escala real do benchmark (antes qualquer aparelho era classificado como “Topo”).
+
+### Correções
+
+- A varredura de segurança só alerta sobre permissões **realmente concedidas** —
+  apps que apenas pedem acesso não são mais marcados como risco.
+- A varredura ficou muito mais rápida: os atrasos artificiais foram removidos e
+  toda a checagem roda fora da thread principal.
+- Preferências em cache em memória: as telas não vão mais ao disco a cada leitura.
+- A limpeza de RAM pelo widget e a captura de tela da barra do Game Turbo não
+  travam mais a interface.
+- Backups maiores que 2 MB são recusados, e um histórico corrompido no backup não
+  apaga mais as demais entradas.
+
+## Novidades da versão 1.36
+
+- **Perfis de uso**: presets Padrão, Gamer, Casual, Bateria e Segurança máxima.
+- **Relatório completo em ZIP** (inventário, histórico, limpezas, métricas e dados
+  do aparelho), tudo offline.
+- **Não Perturbe agendado** em horários definidos e **Material You** (Android 12+).
+- **Detector de stalkerware**: procura apps de vigilância conhecidos e combinações
+  incomuns de permissões.
+- **Métricas de sessão do Game Turbo** e **histórico de limpezas de RAM**.
+
 ## Novidades da versão 1.35
 
 - **Widget com limpar RAM**: um botão no widget da tela inicial limpa a memória
