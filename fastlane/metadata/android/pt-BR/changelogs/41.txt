@@ -1,0 +1,13 @@
+- Verificador de senhas vazadas offline: agora vem com um dicionário local de senhas comprometidas e aparece na tela de Segurança. A senha nunca sai do aparelho.
+- Economia automática que devolve tudo como estava: ao sair do modo bateria, cada ajuste volta ao valor original — inclusive as mudanças que você fez depois.
+- Relatórios (PDF, imagem e CSV) gerados em segundo plano: a interface não trava mais ao compartilhar.
+- Classificação de aparelho corrigida: a faixa de desempenho agora acompanha a escala real do benchmark (antes todos os aparelhos caíam em “Topo”).
+- A varredura de segurança só alerta sobre permissões realmente concedidas — apps que apenas pedem acesso não são mais marcados como risco.
+- A varredura ficou muito mais rápida: os atrasos artificiais foram removidos e a checagem inteira roda fora da thread principal.
+- Preferências guardadas em cache em memória: as telas abrem sem ir ao disco a cada leitura.
+- A limpeza de RAM pelo widget e a captura de tela da barra do Game Turbo não travam mais a interface.
+- Ao compartilhar um relatório, o app avisa quando não consegue gerar ou abrir o compartilhamento, em vez de falhar em silêncio.
+- Backup: arquivos maiores que 2 MB são recusados em vez de sobrecarregar o aparelho.
+- Importar um backup com histórico corrompido não apaga mais as demais entradas.
+- Seletor de hora do Não Perturbe agendado agora usa o mesmo diálogo do resto do app.
+- Textos do verificador de senhas e do canal de lembrete traduzidos nos quatro idiomas.

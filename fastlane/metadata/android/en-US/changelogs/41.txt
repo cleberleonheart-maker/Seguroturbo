@@ -1,0 +1,13 @@
+- Offline leaked password checker: it now ships with a local dictionary of breached passwords and shows up on the Security screen. The password never leaves the device.
+- Automatic battery mode that restores everything as it was: when the battery mode ends, every setting goes back to its original value — including the changes you made afterwards.
+- Reports (PDF, image and CSV) are generated in the background: the UI no longer freezes when you share.
+- Fixed device classification: the performance range now follows the benchmark’s real scale (before, every device landed in “Top”).
+- The security scan only warns about permissions that are actually granted — apps that merely ask for access are no longer flagged as a risk.
+- The scan is much faster now: the artificial delays were removed and the whole check runs off the main thread.
+- Preferences are kept in an in-memory cache: screens open without hitting the disk on every read.
+- RAM cleanup from the widget and the Game Turbo bar screenshot no longer freeze the interface.
+- When sharing a report, the app now tells you if it couldn’t generate or open the share sheet instead of failing silently.
+- Backup: files larger than 2 MB are refused instead of overloading the device.
+- Importing a backup with a corrupted history no longer wipes the remaining entries.
+- The scheduled Do Not Disturb time picker now uses the same dialog as the rest of the app.
+- Leaked password checker and reminder channel texts translated into all four languages.

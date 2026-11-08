@@ -1,0 +1,13 @@
+- Vérificateur de mots de passe divulgués hors ligne : il embarque maintenant un dictionnaire local de mots de passe divulgués et apparaît sur l’écran Sécurité. Le mot de passe ne quitte jamais l’appareil.
+- Mode batterie automatique qui restaure tout à l’identique : à la sortie du mode batterie, chaque réglage retrouve sa valeur d’origine — y compris les modifications faites ensuite.
+- Rapports (PDF, image et CSV) générés en arrière-plan : l’interface ne se fige plus lors du partage.
+- Classification des appareils corrigée : la plage de performance suit maintenant l’échelle réelle du benchmark (avant, tous les appareils tombaient dans « Top »).
+- L’analyse de sécurité n’alerte plus que sur les permissions réellement accordées : les apps qui demandent seulement l’accès ne sont plus signalées comme risquées.
+- L’analyse est beaucoup plus rapide : les délais artificiels ont été supprimés et toute la vérification s’exécute hors du thread principal.
+- Les préférences sont conservées en cache mémoire : les écrans s’ouvrent sans accéder au disque à chaque lecture.
+- Le nettoyage de la RAM depuis le widget et la capture d’écran de la barre Game Turbo ne figent plus l’interface.
+- Lors du partage d’un rapport, l’application prévient si elle n’a pas pu le générer ou ouvrir le menu de partage, au lieu d’échouer en silence.
+- Sauvegarde : les fichiers de plus de 2 Mo sont refusés au lieu de surcharger l’appareil.
+- Importer une sauvegarde dont l’historique est corrompu n’efface plus les autres entrées.
+- Le sélecteur d’heure du mode Ne pas déranger programmé utilise désormais la même boîte de dialogue que le reste de l’application.
+- Textes du vérificateur de mots de passe et du canal de rappel traduits dans les quatre langues.

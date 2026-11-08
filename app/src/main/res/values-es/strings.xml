@@ -459,6 +459,23 @@
         <item>Accesos directos del icono (pulsación larga): Escanear, Liberar RAM y Probar red.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_37_novidades">
+        <item>Verificador de contraseñas filtradas sin conexión: ahora incluye un diccionario local de contraseñas filtradas y aparece en la pantalla de Seguridad. La contraseña nunca sale del dispositivo.</item>
+        <item>Modo automático de batería que lo deja todo como estaba: al salir del modo batería, cada ajuste vuelve a su valor original — incluidos los cambios que hiciste después.</item>
+        <item>Informes (PDF, imagen y CSV) generados en segundo plano: la interfaz ya no se congela al compartir.</item>
+        <item>Clasificación del dispositivo corregida: el rango de rendimiento ahora sigue la escala real del benchmark (antes todos los dispositivos caían en «Top»).</item>
+    </string-array>
+    <string-array name="changelog_1_37_correcoes">
+        <item>El escaneo de seguridad solo avisa de permisos realmente concedidos: las apps que solo piden acceso ya no se marcan como riesgo.</item>
+        <item>El escaneo es mucho más rápido: se eliminaron los retardos artificiales y toda la comprobación se ejecuta fuera del hilo principal.</item>
+        <item>Las preferencias se guardan en una caché en memoria: las pantallas abren sin ir al disco en cada lectura.</item>
+        <item>La limpieza de RAM desde el widget y la captura de pantalla de la barra del Game Turbo ya no congelan la interfaz.</item>
+        <item>Al compartir un informe, la app avisa si no pudo generarlo o abrir el menú de compartir, en lugar de fallar en silencio.</item>
+        <item>Copia de seguridad: los archivos de más de 2 MB se rechazan en lugar de saturar el dispositivo.</item>
+        <item>Importar una copia con el historial dañado ya no borra las demás entradas.</item>
+        <item>El selector de hora del No molestar programado ahora usa el mismo diálogo que el resto de la app.</item>
+        <item>Textos del verificador de contraseñas y del canal de recordatorio traducidos a los cuatro idiomas.</item>
+    </string-array>
     <string-array name="changelog_1_36_1_novidades" />
     <string-array name="changelog_1_36_1_correcoes">
         <item>La comprobación de actualizaciones ahora avisa cuando no puede consultar, en lugar de decir que ya tienes la última versión.</item>

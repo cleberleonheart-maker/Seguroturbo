@@ -459,6 +459,23 @@
         <item>Atalhos no ícone (toque longo): Escanear, Limpar RAM e Testar rede.</item>
     </string-array>
     <string-array name="changelog_1_34_correcoes" />
+    <string-array name="changelog_1_37_novidades">
+        <item>Verificador de senhas vazadas offline: agora vem com um dicionário local de senhas comprometidas e aparece na tela de Segurança. A senha nunca sai do aparelho.</item>
+        <item>Economia automática que devolve tudo como estava: ao sair do modo bateria, cada ajuste volta ao valor original — inclusive as mudanças que você fez depois.</item>
+        <item>Relatórios (PDF, imagem e CSV) gerados em segundo plano: a interface não trava mais ao compartilhar.</item>
+        <item>Classificação de aparelho corrigida: a faixa de desempenho agora acompanha a escala real do benchmark (antes todos os aparelhos caíam em “Topo”).</item>
+    </string-array>
+    <string-array name="changelog_1_37_correcoes">
+        <item>A varredura de segurança só alerta sobre permissões realmente concedidas — apps que apenas pedem acesso não são mais marcados como risco.</item>
+        <item>A varredura ficou muito mais rápida: os atrasos artificiais foram removidos e a checagem inteira roda fora da thread principal.</item>
+        <item>Preferências guardadas em cache em memória: as telas abrem sem ir ao disco a cada leitura.</item>
+        <item>A limpeza de RAM pelo widget e a captura de tela da barra do Game Turbo não travam mais a interface.</item>
+        <item>Ao compartilhar um relatório, o app avisa quando não consegue gerar ou abrir o compartilhamento, em vez de falhar em silêncio.</item>
+        <item>Backup: arquivos maiores que 2 MB são recusados em vez de sobrecarregar o aparelho.</item>
+        <item>Importar um backup com histórico corrompido não apaga mais as demais entradas.</item>
+        <item>Seletor de hora do Não Perturbe agendado agora usa o mesmo diálogo do resto do app.</item>
+        <item>Textos do verificador de senhas e do canal de lembrete traduzidos nos quatro idiomas.</item>
+    </string-array>
     <string-array name="changelog_1_36_1_novidades" />
     <string-array name="changelog_1_36_1_correcoes">
         <item>A verificação de atualizações agora avisa quando não consegue consultar, em vez de dizer que você já está na versão mais recente.</item>
